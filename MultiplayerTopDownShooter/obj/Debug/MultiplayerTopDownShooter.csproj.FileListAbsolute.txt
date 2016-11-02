@@ -1,0 +1,11 @@
+C:\Users\Charles-Isaac\Desktop\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\MultiplayerTopDownShooter.exe.config
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\MultiplayerTopDownShooter.exe.config
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\MultiplayerTopDownShooter.exe
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\MultiplayerTopDownShooter.pdb
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\protobuf-net.dll
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\MultiplayerTopDownShooter.csprojResolveAssemblyReference.cache
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\MultiplayerTopDownShooter.Main.resources
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\MultiplayerTopDownShooter.Properties.Resources.resources
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\MultiplayerTopDownShooter.csproj.GenerateResource.Cache
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\MultiplayerTopDownShooter.exe
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\MultiplayerTopDownShooter.pdb
