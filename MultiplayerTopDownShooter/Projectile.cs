@@ -14,18 +14,25 @@ namespace ClonesEngine
     class Projectile
     {
         private Point m_Position;
-        private Point m_DirectionDeplacement;
+        private PointF m_DirectionDeplacement;
         byte m_Velocite;
-        long m_LastTickUpdate;
-        public Projectile(long LastTickCount)
+        int m_LastTickUpdate;
+        public Projectile()
         {
             m_Position = new Point(0, 0);
             m_DirectionDeplacement = new Point(0, 0);
             m_Velocite = 20;
+            m_LastTickUpdate = LastTickUpdate;
+        }
+        public Projectile(int LastTickCount)
+        {
+            m_Position = new Point(0, 0);
+            m_DirectionDeplacement = new PointF(0, 0);
+            m_Velocite = 20;
             m_LastTickUpdate = LastTickCount;
         }
 
-        public Projectile(Point Position, Point DirectionDeplacement, byte Velocite, long LastTickCount)
+        public Projectile(Point Position, PointF DirectionDeplacement, byte Velocite, int LastTickCount)
         {
             m_Position = Position;
             m_DirectionDeplacement = DirectionDeplacement;
@@ -35,8 +42,10 @@ namespace ClonesEngine
 
         public void UpdateStatus(long LastTickCount)
         {
-            m_Position.X = (int)(m_DirectionDeplacement.X * m_Velocite * (LastTickCount - m_LastTickUpdate) / 20);
-            m_Position.Y = (int)(m_DirectionDeplacement.Y * m_Velocite * (LastTickCount - m_LastTickUpdate) / 20);
+            m_Position.X += (int)(m_DirectionDeplacement.X * m_Velocite * (LastTickCount - m_LastTickUpdate) / 20);
+            m_Position.Y += (int)(m_DirectionDeplacement.Y * m_Velocite * (LastTickCount - m_LastTickUpdate) / 20);
+            
+            
         }
 
         #region Propriete
@@ -46,17 +55,21 @@ namespace ClonesEngine
             get { return m_Position; }
             set { m_Position = value; }
         }
-        public Point Direction
+        public PointF Direction
         {
             get { return m_DirectionDeplacement; }
             set { m_DirectionDeplacement = value; }
         }
-        public long LastTickCount
+        public int LastTickUpdate
         {
             get { return m_LastTickUpdate; }
             set { m_LastTickUpdate = value; }
         }
-
+        public byte Velocite
+        {
+            get { return m_Velocite; }
+            set { m_Velocite = value; }
+        }
         #endregion
     }
 }

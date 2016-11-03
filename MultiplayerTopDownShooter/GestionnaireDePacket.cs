@@ -90,6 +90,8 @@ namespace ClonesEngine
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Point)].Add(1, "X").Add(2, "Y");
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(PointF), true);
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(PointF)].Add(1, "X").Add(2, "Y");
+            ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Projectile), true);
+            ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Projectile)].Add(1, "Position").Add(2, "Direction").Add(3, "LastTickUpdate").Add(4, "Velocite");
 
             for (int i = 0; i < 255; i++)
             {

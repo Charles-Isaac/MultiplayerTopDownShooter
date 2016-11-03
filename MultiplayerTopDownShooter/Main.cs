@@ -28,8 +28,7 @@ namespace MultiplayerTopDownShooter
             this.DoubleBuffered = true;
 
             FPSTimer = Environment.TickCount;
-            MessageBox.Show(System.IO.Directory.GetCurrentDirectory());
-        }
+       }
 
         private void Main_Paint(object sender, PaintEventArgs e)
         {
@@ -37,15 +36,19 @@ namespace MultiplayerTopDownShooter
             {
                 for (int i = 1; i <= GP.PlayerCount; i++)
                 {
-                    int X, Y;
-                    X = GP.PlayerList[i].Position.X;
-                    Y = GP.PlayerList[i].Position.Y;
+                    e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
+                        GP.PlayerList[i].Position.X - 10, GP.PlayerList[i].Position.Y - 10, 20, 20);
 
-                    e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), X - 10, Y - 10, 20, 20);
+                    for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
+                    {
+                        e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), GP.PlayerList[i].Bullet[j].Position.X - 5, GP.PlayerList[i].Bullet[j].Position.Y - 5, 10, 10);
+                    }
+
                 }
                 e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 10);
                 if (Environment.TickCount - FPSTimer > 1000)
                 {
+
                     FPSLast = FPSCounter;
                     FPSTimer = Environment.TickCount;
                     FPSCounter = 0;
@@ -54,6 +57,7 @@ namespace MultiplayerTopDownShooter
                 e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 30);
                 GP.UpdatePlayer(GP.ID);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
+                //Thread.Sleep(RNG.Next(100)); //random ping generator ;)
                 this.Invalidate();
             }));
 
@@ -61,7 +65,13 @@ namespace MultiplayerTopDownShooter
 
         private void Main_MouseDown(object sender, MouseEventArgs e)
         {
-            GP.PlayerList[GP.ID].AjouterProjectile(Environment.TickCount);
+            int X, Y;
+            X = PointToClient(Cursor.Position).X;
+            Y = PointToClient(Cursor.Position).Y;
+            int tywa = GP.PlayerList[GP.ID].Position.X;
+            GP.PlayerList[GP.ID].AjouterProjectile(new PointF(((X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((X - GP.PlayerList[GP.ID].Position.X) * (X - GP.PlayerList[GP.ID].Position.X) + (Y - GP.PlayerList[GP.ID].Position.Y) * (Y - GP.PlayerList[GP.ID].Position.Y))),
+                ((Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((X - GP.PlayerList[GP.ID].Position.X) * (X - GP.PlayerList[GP.ID].Position.X) + (Y - GP.PlayerList[GP.ID].Position.Y) * (Y - GP.PlayerList[GP.ID].Position.Y)))));
+            
             //GP.PlayerList[GP.ID].PlayerBullet.RemoveAt(j);
         }
 
