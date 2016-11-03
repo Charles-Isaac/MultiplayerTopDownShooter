@@ -62,10 +62,10 @@ namespace ClonesEngine
             //Bullet.Add(new Projectile(TickCount));
         }
 
-        public void UpdateStats(long TickCount)
+        public void UpdateStats(int TickCount)
         {
-            m_Position.X += (int)(m_DirectionDeplacement.X * m_Velocite * (TickCount - m_LastTickUpdate) / 20);
-            m_Position.Y += (int)(m_DirectionDeplacement.Y * m_Velocite * (TickCount - m_LastTickUpdate) / 20);
+            m_Position.X += (int)(m_DirectionDeplacement.X * m_Velocite * (Environment.TickCount - TickCount) / 20);
+            m_Position.Y += (int)(m_DirectionDeplacement.Y * m_Velocite * (Environment.TickCount - TickCount) / 20);
 
 
 

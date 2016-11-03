@@ -32,7 +32,7 @@ namespace ClonesEngine
         Thread ThreadReception;
         //public TramePreGen PreGen;
         PlayerData[] m_PlayerList = new PlayerData[255];
-        long[] m_PlayerTime = new long[256];
+        int[] m_PlayerTime = new int[256];
         byte m_ID;
         int AutoVerifData = 0;
         Random RNG = new Random();
@@ -74,6 +74,13 @@ namespace ClonesEngine
         {
             get { return m_PacketID; }
         }
+       
+        protected int[] PlayerTime
+        {
+            get { return m_PlayerTime; }
+            set { m_PlayerTime = value; }
+        }
+
         #endregion
 
 
@@ -228,7 +235,7 @@ namespace ClonesEngine
                                 break;
                         }//Switch
 
-                        if (LastTickCheck + 5000 < Environment.TickCount)
+                        if (LastTickCheck + 2500 < Environment.TickCount)
                         {
                             LastTickCheck = Environment.TickCount + RNG.Next(1, 500);
                             Send(TramePreGen.AskAutoVerif(m_ID));
@@ -246,7 +253,7 @@ namespace ClonesEngine
                     //Send(TramePreGen.AnswerMap)
                 }
                 TryCount = 0;
-                Thread.Sleep(300);
+                Thread.Sleep(150);
                 Send(TramePreGen.AskAutoVerif(ID));
             }
         }
@@ -275,6 +282,15 @@ namespace ClonesEngine
         public void Send(string sdata)
         {
 
+        }
+
+        public void UpdatePlayer(byte ID)
+        {
+            if (ID != 0)
+            {
+                m_PlayerList[ID].UpdateStats(m_PlayerTime[ID]);
+                m_PlayerTime[ID] = Environment.TickCount;
+            }
         }
     }
 }
