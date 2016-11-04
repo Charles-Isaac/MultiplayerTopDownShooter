@@ -38,10 +38,12 @@ namespace MultiplayerTopDownShooter
                 {
                     e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
                         GP.PlayerList[i].Position.X - 10, GP.PlayerList[i].Position.Y - 10, 20, 20);
-
-                    for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
+                    lock (GP.PlayerList[i])
                     {
-                        e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), GP.PlayerList[i].Bullet[j].Position.X - 5, GP.PlayerList[i].Bullet[j].Position.Y - 5, 10, 10);
+                        for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
+                        {
+                            e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), GP.PlayerList[i].Bullet[j].Position.X - 5, GP.PlayerList[i].Bullet[j].Position.Y - 5, 10, 10);
+                        }
                     }
 
                 }
@@ -57,6 +59,10 @@ namespace MultiplayerTopDownShooter
                 e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 30);
                 GP.UpdatePlayer(GP.ID);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
+                if (MouseButtons == MouseButtons.Left)
+                {
+                    Main_MouseDown(sender, new MouseEventArgs(MouseButtons.Left,1,10,10,1));
+                }
                 //Thread.Sleep(RNG.Next(100)); //random ping generator ;)
                 this.Invalidate();
             }));
@@ -65,10 +71,10 @@ namespace MultiplayerTopDownShooter
 
         private void Main_MouseDown(object sender, MouseEventArgs e)
         {
-            int X, Y;
+            int X, Y; 
             X = PointToClient(Cursor.Position).X;
             Y = PointToClient(Cursor.Position).Y;
-            int tywa = GP.PlayerList[GP.ID].Position.X;
+            
             GP.PlayerList[GP.ID].AjouterProjectile(new PointF(((X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((X - GP.PlayerList[GP.ID].Position.X) * (X - GP.PlayerList[GP.ID].Position.X) + (Y - GP.PlayerList[GP.ID].Position.Y) * (Y - GP.PlayerList[GP.ID].Position.Y))),
                 ((Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((X - GP.PlayerList[GP.ID].Position.X) * (X - GP.PlayerList[GP.ID].Position.X) + (Y - GP.PlayerList[GP.ID].Position.Y) * (Y - GP.PlayerList[GP.ID].Position.Y)))));
             

@@ -13,26 +13,23 @@ namespace ClonesEngine
     [XmlType]
     class Projectile
     {
-        private Point m_Position;
+        private PointF m_Position;
         private PointF m_DirectionDeplacement;
         byte m_Velocite;
         int m_LastTickUpdate;
         public Projectile()
         {
-            m_Position = new Point(0, 0);
-            m_DirectionDeplacement = new Point(0, 0);
-            m_Velocite = 20;
-            m_LastTickUpdate = LastTickUpdate;
+            
         }
         public Projectile(int LastTickCount)
         {
-            m_Position = new Point(0, 0);
+            m_Position = new PointF(0, 0);
             m_DirectionDeplacement = new PointF(0, 0);
-            m_Velocite = 20;
+            m_Velocite = 1;
             m_LastTickUpdate = LastTickCount;
         }
 
-        public Projectile(Point Position, PointF DirectionDeplacement, byte Velocite, int LastTickCount)
+        public Projectile(PointF Position, PointF DirectionDeplacement, byte Velocite, int LastTickCount)
         {
             m_Position = Position;
             m_DirectionDeplacement = DirectionDeplacement;
@@ -40,17 +37,17 @@ namespace ClonesEngine
             m_LastTickUpdate = LastTickCount;
         }
 
-        public void UpdateStatus(long LastTickCount)
+        public void UpdateStatus(int LastTickCount)
         {
-            m_Position.X += (int)(m_DirectionDeplacement.X * m_Velocite * (LastTickCount - m_LastTickUpdate) / 20);
-            m_Position.Y += (int)(m_DirectionDeplacement.Y * m_Velocite * (LastTickCount - m_LastTickUpdate) / 20);
+            m_Position.X += (m_DirectionDeplacement.X * m_Velocite * (LastTickCount - m_LastTickUpdate) / 100);
+            m_Position.Y += (m_DirectionDeplacement.Y * m_Velocite * (LastTickCount - m_LastTickUpdate) / 100);
             
             
         }
 
         #region Propriete
 
-        public Point Position
+        public PointF Position
         {
             get { return m_Position; }
             set { m_Position = value; }

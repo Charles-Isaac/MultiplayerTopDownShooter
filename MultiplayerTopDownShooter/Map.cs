@@ -18,7 +18,7 @@ namespace ClonesEngine
             Random RNG = new Random();
             for (int i = 0; i < NombreDeMurs; i++)
             {
-               // Murs[i].A = new Point(RNG.Next(Settings.DefaultResolution.X);
+               // Murs[i].A = new PointF(RNG.Next(Settings.DefaultResolution.X);
                      
             }
 

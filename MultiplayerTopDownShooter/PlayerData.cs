@@ -17,9 +17,9 @@ namespace ClonesEngine
         [XmlElement(Order = 1)]
         byte m_ID;
         [XmlElement(Order = 2)]
-        Point m_Position;
+        PointF m_Position;
         [XmlElement(Order = 3)]
-        Point m_DirectionRegard;
+        PointF m_DirectionRegard;
         [XmlElement(Order = 4)]
         PointF m_DirectionDeplacement;
         [XmlElement(Order = 5)]
@@ -35,8 +35,8 @@ namespace ClonesEngine
         public PlayerData()
         {
             m_LastTickUpdate = 0;
-            m_Position = new Point(0, 0);
-            m_DirectionRegard = new Point(0, 0);
+            m_Position = new PointF(0, 0);
+            m_DirectionRegard = new PointF(0, 0);
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = 0;
             m_Velocite = 10;
@@ -45,8 +45,8 @@ namespace ClonesEngine
         public PlayerData(byte IDConstructeur, long TickCount)
         {
             m_LastTickUpdate = TickCount;
-            m_Position = new Point(0, 0);
-            m_DirectionRegard = new Point(0, 0);
+            m_Position = new PointF(0, 0);
+            m_DirectionRegard = new PointF(0, 0);
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = IDConstructeur;
             m_Velocite = 10;
@@ -77,7 +77,8 @@ namespace ClonesEngine
             for (int i = m_LBullet.Count - 1; i > 0; i--)
             {
                 m_LBullet[i].UpdateStatus(TickCount);
-                if (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
+                
+                if (System.Windows.Forms.Form.ActiveForm == null || m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
                 {
                     m_LBullet.RemoveAt(i);
                 }
@@ -102,7 +103,7 @@ namespace ClonesEngine
             get { return m_ID; }
         }
   */
-        public Point Position
+        public PointF Position
         {
             get { return m_Position; }
             set { m_Position = value; }
