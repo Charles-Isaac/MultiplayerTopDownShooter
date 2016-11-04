@@ -38,12 +38,12 @@ namespace MultiplayerTopDownShooter
                 {
                     e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
                         GP.PlayerList[i].Position.X - 10, GP.PlayerList[i].Position.Y - 10, 20, 20);
-                    lock (GP.PlayerList[i])
+                    lock (GP.PlayerList[i].BulletLock)
                     {
-                        for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
-                        {
-                            e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), GP.PlayerList[i].Bullet[j].Position.X - 5, GP.PlayerList[i].Bullet[j].Position.Y - 5, 10, 10);
-                        }
+                            for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
+                            {
+                                e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), GP.PlayerList[i].Bullet[j].Position.X - 5, GP.PlayerList[i].Bullet[j].Position.Y - 5, 10, 10);
+                            }
                     }
 
                 }
@@ -107,8 +107,11 @@ namespace MultiplayerTopDownShooter
                 case Keys.Space:
                     ChangeArrowsState(ArrowsPressed.Space, true);
                     Point Light = this.PointToClient(Cursor.Position);
-
                     GP.PlayerList[GP.ID].Position = Light;
+                    break;
+                case Keys.Return:
+
+                    GP.Send(new byte[] {(byte)PacketUse.ResetAllID, GP.ID});
                     break;
                 default:
                     return;

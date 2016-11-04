@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace ClonesEngine
 {
-    enum PacketUse
+    enum PacketUse : byte
     {
         AskNumberOfPlayer = 0, //{PacketUse,ID}
         AnswerNumberOfPlayer = 1, //{PacketUse,ID,PlayerCount}
@@ -180,11 +180,12 @@ namespace ClonesEngine
 
                                 break;
                             case (byte)PacketUse.InfoJoueur:
+                                lock (m_PlayerList[m_Receiver[1]].BulletLock)
+                                {
+                                    m_PlayerList[m_Receiver[1]] = TramePreGen.ReceiverInfoJoueur(m_Receiver);
+                                    m_PlayerTime[m_Receiver[1]] = Environment.TickCount;
 
-                                m_PlayerList[m_Receiver[1]] = TramePreGen.ReceiverInfoJoueur(m_Receiver);
-                                m_PlayerTime[m_Receiver[1]] = Environment.TickCount;
-
-
+                                }
 
                                 break;
                             case (byte)PacketUse.ResetAllID:
@@ -246,6 +247,9 @@ namespace ClonesEngine
                     } while (m_ID != 0);//While(true)
                     Enter();
                 } while (TryCount < 10 && m_ID == 0);
+
+                
+
                 if (TryCount == 10 && m_ID == 0)
                 {
                     //GenMap();

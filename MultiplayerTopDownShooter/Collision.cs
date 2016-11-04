@@ -22,5 +22,9 @@ namespace ClonesEngine
 
             return (r >= 0 && r <= 1) && (s >= 0 && s <= 1);
         }
+        public static PointF PlayerBorder(PointF Position, PointF Deplacement)
+        {
+            return new PointF();
+        }
     }
 }

@@ -14,6 +14,13 @@ namespace ClonesEngine
     [XmlType]
     class PlayerData
     {
+
+        private static object m_BulletLock = new object();
+        public object BulletLock
+        {
+            get { return m_BulletLock; }
+        }
+
         [XmlElement(Order = 1)]
         byte m_ID;
         [XmlElement(Order = 2)]
@@ -34,13 +41,16 @@ namespace ClonesEngine
 
         public PlayerData()
         {
-            m_LastTickUpdate = 0;
-            m_Position = new PointF(0, 0);
-            m_DirectionRegard = new PointF(0, 0);
-            m_DirectionDeplacement = new PointF(0, 0);
-            m_ID = 0;
-            m_Velocite = 10;
-            m_Couleur = Color.Black.ToArgb();
+            lock (m_BulletLock)
+            {
+                m_LastTickUpdate = 0;
+                m_Position = new PointF(0, 0);
+                m_DirectionRegard = new PointF(0, 0);
+                m_DirectionDeplacement = new PointF(0, 0);
+                m_ID = 0;
+                m_Velocite = 10;
+                m_Couleur = Color.Black.ToArgb();
+            }
         }
         public PlayerData(byte IDConstructeur, long TickCount)
         {
@@ -68,19 +78,27 @@ namespace ClonesEngine
             m_Position.X += (int)(m_DirectionDeplacement.X * m_Velocite * (Environment.TickCount - TickCount) / 20);
             m_Position.Y += (int)(m_DirectionDeplacement.Y * m_Velocite * (Environment.TickCount - TickCount) / 20);
 
+            /*
+            if (System.Windows.Forms.Form.ActiveForm == null || m_Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
+            {
+                m_LBullet.RemoveAt(i);
+            }
             /*  for (int i = m_LBullet.Count - 1; i > 0; i--)
               {
                   m_LBullet[i].Position = new Point((m_LBullet[i].Position.X * m_LBullet[i].Velocite * (Environment.TickCount - TickCount) / 20 + m_LBullet[i].Position.X), (m_LBullet[i].Position.Y * m_LBullet[i].Velocite * (Environment.TickCount - TickCount) / 20 + m_LBullet[i].Position.Y));
               }
               */
-      //      Enter();
+            //      Enter();
             for (int i = m_LBullet.Count - 1; i > 0; i--)
             {
                 m_LBullet[i].UpdateStatus(TickCount);
-                
+
                 if (System.Windows.Forms.Form.ActiveForm == null || m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
                 {
-                    m_LBullet.RemoveAt(i);
+                    lock (m_BulletLock)
+                    {
+                        m_LBullet.RemoveAt(i);
+                    }
                 }
             }
       //      Exit();
