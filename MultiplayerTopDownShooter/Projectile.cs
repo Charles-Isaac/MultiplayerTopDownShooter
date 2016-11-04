@@ -16,7 +16,7 @@ namespace ClonesEngine
         private PointF m_Position;
         private PointF m_DirectionDeplacement;
         byte m_Velocite;
-        int m_LastTickUpdate;
+       // int m_LastTickUpdate;
         public Projectile()
         {
             
@@ -26,7 +26,7 @@ namespace ClonesEngine
             m_Position = new PointF(0, 0);
             m_DirectionDeplacement = new PointF(0, 0);
             m_Velocite = 1;
-            m_LastTickUpdate = LastTickCount;
+            //m_LastTickUpdate = LastTickCount;
         }
 
         public Projectile(PointF Position, PointF DirectionDeplacement, byte Velocite, int LastTickCount)
@@ -34,14 +34,14 @@ namespace ClonesEngine
             m_Position = Position;
             m_DirectionDeplacement = DirectionDeplacement;
             m_Velocite = Velocite;
-            m_LastTickUpdate = LastTickCount;
+            //m_LastTickUpdate = LastTickCount;
         }
 
-        public void UpdateStatus(int LastTickCount)
+        public void UpdateStatus(int OldTime, int NewTime)
         {
-            m_Position.X += (m_DirectionDeplacement.X * m_Velocite * (LastTickCount - m_LastTickUpdate) / 100);
-            m_Position.Y += (m_DirectionDeplacement.Y * m_Velocite * (LastTickCount - m_LastTickUpdate) / 100);
-            
+            m_Position.X += (m_DirectionDeplacement.X * m_Velocite * (NewTime - OldTime) / 100);
+            m_Position.Y += (m_DirectionDeplacement.Y * m_Velocite * (NewTime - OldTime) / 100);
+            //m_LastTickUpdate = LastTickCount;
             
         }
 
@@ -57,11 +57,11 @@ namespace ClonesEngine
             get { return m_DirectionDeplacement; }
             set { m_DirectionDeplacement = value; }
         }
-        public int LastTickUpdate
+        /*public int LastTickUpdate
         {
             get { return m_LastTickUpdate; }
             set { m_LastTickUpdate = value; }
-        }
+        }*/
         public byte Velocite
         {
             get { return m_Velocite; }

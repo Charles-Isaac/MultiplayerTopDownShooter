@@ -91,7 +91,7 @@ namespace ClonesEngine
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(PointF), true);
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(PointF)].Add(1, "X").Add(2, "Y");
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Projectile), true);
-            ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Projectile)].Add(1, "Position").Add(2, "Direction").Add(3, "LastTickUpdate").Add(4, "Velocite");
+            ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Projectile)].Add(1, "Position").Add(2, "Direction").Add(3, "Velocite");
 
             for (int i = 0; i < 255; i++)
             {
@@ -293,9 +293,11 @@ namespace ClonesEngine
         public void UpdatePlayer(byte ID)
         {
             if (ID != 0)
-            {
-                m_PlayerList[ID].UpdateStats(m_PlayerTime[ID]);
+            {   
+                int Time = m_PlayerTime[ID];
                 m_PlayerTime[ID] = Environment.TickCount;
+                m_PlayerList[ID].UpdateStats(Time, m_PlayerTime[ID]);
+                
             }
         }
     }

@@ -29,32 +29,42 @@ namespace ClonesEngine
         PointF m_DirectionRegard;
         [XmlElement(Order = 4)]
         PointF m_DirectionDeplacement;
-        [XmlElement(Order = 5)]
-        long m_LastTickUpdate;
+       // [XmlElement(Order = 5)]
+       // long m_LastTickUpdate;
         [XmlElement(Order = 6)]
         byte m_Velocite;
         [XmlElement(Order = 7)]
         int m_Couleur;
-
         [XmlElement(Order = 8)]
+        byte m_DeathStatus;
+
+
+        [XmlElement(Order = 9)]
         List<Projectile> m_LBullet = new List<Projectile>();
 
         public PlayerData()
         {
             lock (m_BulletLock)
             {
-                m_LastTickUpdate = 0;
+                //m_LastTickUpdate = 0;
                 m_Position = new PointF(0, 0);
                 m_DirectionRegard = new PointF(0, 0);
                 m_DirectionDeplacement = new PointF(0, 0);
                 m_ID = 0;
+                m_DeathStatus = 1;
                 m_Velocite = 10;
                 m_Couleur = Color.Black.ToArgb();
             }
         }
+        public byte DeathStatus
+        {
+            get { return m_DeathStatus; }
+            set { m_DeathStatus = value; }
+        }
+
         public PlayerData(byte IDConstructeur, long TickCount)
         {
-            m_LastTickUpdate = TickCount;
+            //m_LastTickUpdate = TickCount;
             m_Position = new PointF(0, 0);
             m_DirectionRegard = new PointF(0, 0);
             m_DirectionDeplacement = new PointF(0, 0);
@@ -73,10 +83,10 @@ namespace ClonesEngine
             m_LBullet.Add(new Projectile(m_Position, Direction, 1, Environment.TickCount));
         }
 
-        public void UpdateStats(int TickCount)
+        public void UpdateStats(int OldTime, int NewTime)
         {
-            m_Position.X += (int)(m_DirectionDeplacement.X * m_Velocite * (Environment.TickCount - TickCount) / 20);
-            m_Position.Y += (int)(m_DirectionDeplacement.Y * m_Velocite * (Environment.TickCount - TickCount) / 20);
+            m_Position.X += (int)(m_DirectionDeplacement.X * m_Velocite * (NewTime - OldTime) / 20);
+            m_Position.Y += (int)(m_DirectionDeplacement.Y * m_Velocite * (NewTime - OldTime) / 20);
 
             /*
             if (System.Windows.Forms.Form.ActiveForm == null || m_Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
@@ -91,10 +101,10 @@ namespace ClonesEngine
             //      Enter();
             for (int i = m_LBullet.Count - 1; i > 0; i--)
             {
-                m_LBullet[i].UpdateStatus(TickCount);
-
-                if (System.Windows.Forms.Form.ActiveForm == null || m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
-                {
+                m_LBullet[i].UpdateStatus(OldTime, NewTime);
+                
+                if ((m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0)) //Crash without the '?'
+                {   
                     lock (m_BulletLock)
                     {
                         m_LBullet.RemoveAt(i);
@@ -103,7 +113,7 @@ namespace ClonesEngine
             }
       //      Exit();
 
-            m_LastTickUpdate = TickCount;
+            //m_LastTickUpdate = OldTime;
         }
   /*      private bool Locked = false;
         public void Enter()
