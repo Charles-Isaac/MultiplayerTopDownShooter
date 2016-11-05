@@ -297,8 +297,7 @@ namespace ClonesEngine
                 int Time = m_PlayerTime[ID];
                 m_PlayerTime[ID] = Environment.TickCount;
                 m_PlayerList[ID].UpdateStats(Time, m_PlayerTime[ID]);
-                
-                
+                //int* test[34];
             }
         }
     }
