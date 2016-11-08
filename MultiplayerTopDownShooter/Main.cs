@@ -37,12 +37,12 @@ namespace MultiplayerTopDownShooter
                 for (int i = 1; i <= GP.PlayerCount; i++)
                 {
                     e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
-                        GP.PlayerList[i].Position.X - 10, GP.PlayerList[i].Position.Y - 10, 20, 20);
+                        GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
                     lock (GP.PlayerList[i].BulletLock)
                     {
                             for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
                             {
-                                e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), GP.PlayerList[i].Bullet[j].Position.X - 5, GP.PlayerList[i].Bullet[j].Position.Y - 5, 10, 10);
+                                e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), GP.PlayerList[i].Bullet[j].Position.X - 2, GP.PlayerList[i].Bullet[j].Position.Y - 2, 4, 4);
                             }
                     }
 
@@ -50,7 +50,6 @@ namespace MultiplayerTopDownShooter
                 e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 10);
                 if (Environment.TickCount - FPSTimer > 1000)
                 {
-
                     FPSLast = FPSCounter;
                     FPSTimer = Environment.TickCount;
                     FPSCounter = 0;
@@ -59,10 +58,10 @@ namespace MultiplayerTopDownShooter
                 e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 30);
                 GP.UpdatePlayer(GP.ID);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
-                if (MouseButtons == MouseButtons.Left)
+                /*if (MouseButtons == MouseButtons.Left)
                 {
                     Main_MouseDown(sender, new MouseEventArgs(MouseButtons.Left,1,10,10,1));
-                }
+                }*/
                 //Thread.Sleep(RNG.Next(100)); //random ping generator ;)
                 this.Invalidate();
             }));

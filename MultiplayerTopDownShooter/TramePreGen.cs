@@ -92,7 +92,22 @@ namespace ClonesEngine
             return Trame;
         }
 
+        public static byte[] PlayerDamage(byte ID, PlayerDamage Info)
+        {
+            byte[] Trame = new byte[4];
+            Trame[0] = (byte)PacketUse.InfoPlayerDamage;
+            Trame[1] = ID;
+            Trame[2] = Info.ID;
+            Trame[3] = Info.Damage;
 
-
+            return Trame;
+        }
+        public static byte[] AcknowledgeDamage(byte ID)
+        {
+            byte[] Trame = new byte[2];
+            Trame[0] = (byte)PacketUse.AcknowledgeDamage;
+            Trame[1] = ID;
+            return Trame;
+        }
     }
 }

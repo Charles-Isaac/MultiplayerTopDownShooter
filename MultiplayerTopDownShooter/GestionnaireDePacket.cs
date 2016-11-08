@@ -22,6 +22,8 @@ namespace ClonesEngine
         Pong = 9, //{PacketUse,ID,TargetID,TickData}
         AskAutoVerif = 10, //{PacketUse,ID}  gen random and keep in memory if rand is smaller than received then reset ID and PlayerCount
         AnswerAutoVerif = 11, //{PacketUse,ID,RandomData}
+        InfoPlayerDamage = 12, //{PacketUse,ID,TagetID, Damage}
+        AcknowledgeDamage = 13, //{PacketUse,ID}
 
 
     }
@@ -38,6 +40,10 @@ namespace ClonesEngine
         Random RNG = new Random();
         int LastTickCheck = 0;
 
+        bool ResendDamage = false;
+        byte DamageTarget = 0;
+        bool Updatable = true;
+        List<PlayerDamage> BulletDamage = new List<PlayerDamage>();
 
         byte m_PlayerCount;
         //byte[] m_PlayerList = new byte[255];
@@ -139,7 +145,7 @@ namespace ClonesEngine
                     TryCount++;
                     Thread.Sleep(250);
                     Send(TramePreGen.AskNumberOfPlayer);
-                    Thread.Sleep(50);
+                    //Thread.Sleep(50);
                     do
                     {
                         m_Receiver = ConnectionUDP.Receiver();
@@ -234,7 +240,23 @@ namespace ClonesEngine
                                 }
                                 break;
 
+                            case (byte)PacketUse.InfoPlayerDamage:
+                                if (m_Receiver[2] == m_ID)
+                                {
+                                    m_PlayerList[m_ID].Position = new PointF(RNG.Next(1000), RNG.Next(500));
+                                    Send(TramePreGen.AcknowledgeDamage(m_ID));
+                                    Send(TramePreGen.InfoJoueur(m_PlayerList[ID], m_ID, m_PacketID));
+                                }
+                                break;
+                            case (byte)PacketUse.AcknowledgeDamage:
+                                if (m_Receiver[1] == DamageTarget)
+                                {
+                                    ResendDamage = false;
+                                }
+                                break;
                             default:
+                                System.Windows.Forms.MessageBox.Show("Unknown package format");
+                                //Thread.Sleep(5);
                                 break;
                         }//Switch
 
@@ -247,9 +269,6 @@ namespace ClonesEngine
                     } while (m_ID != 0);//While(true)
                     Enter();
                 } while (TryCount < 10 && m_ID == 0);
-
-                
-
                 if (TryCount == 10 && m_ID == 0)
                 {
                     //GenMap();
@@ -293,12 +312,30 @@ namespace ClonesEngine
         public void UpdatePlayer(byte ID)
         {
             if (ID != 0)
-            {   
-               // int Time = m_PlayerTime[ID];
-               // m_PlayerTime[ID] = Environment.TickCount;
-                List<PlayerDamage> PlayerDamage = m_PlayerList[ID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID);
+            {
+                // int Time = m_PlayerTime[ID];
+                // m_PlayerTime[ID] = Environment.TickCount;
+                List<PlayerDamage> BulletDamageBuffer = m_PlayerList[ID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID);
                 //int* test[34];
+                BulletDamage = BulletDamage.Concat(BulletDamageBuffer).ToList();
 
+                if (Updatable)
+                {
+                    Updatable = false;
+                    for (int i = BulletDamage.Count - 1; i > 0; i--)
+                    {
+                        DamageTarget = BulletDamage[i].ID;
+                        ResendDamage = true;
+                        while (ResendDamage)
+                        {
+                            Send(TramePreGen.PlayerDamage(m_ID, BulletDamage[i]));
+                            Thread.Sleep(10);
+                        }
+                        BulletDamage.RemoveAt(i);
+                        i = i;
+                    }
+                    Updatable = true;
+                }
             }
         }
     }

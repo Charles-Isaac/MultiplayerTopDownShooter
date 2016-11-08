@@ -37,9 +37,11 @@ namespace ClonesEngine
         int m_Couleur;
         [XmlElement(Order = 8)]
         byte m_DeathStatus;
-
-
         [XmlElement(Order = 9)]
+        byte m_Size;
+
+
+        [XmlElement(Order = 10)]
         List<Projectile> m_LBullet = new List<Projectile>();
 
         public PlayerData()
@@ -54,6 +56,7 @@ namespace ClonesEngine
                 m_DeathStatus = 1;
                 m_Velocite = 10;
                 m_Couleur = Color.Black.ToArgb();
+                m_Size = 10;
             }
         }
         public byte DeathStatus
@@ -70,6 +73,7 @@ namespace ClonesEngine
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = IDConstructeur;
             m_Velocite = 10;
+            m_Size = 10;
         }
 
         public int Couleur
@@ -111,26 +115,29 @@ namespace ClonesEngine
                 PointF OldPosition = m_LBullet[i].Position;
 
                 m_LBullet[i].UpdateStatus(OldTime[ID], NewTime);
-                for (byte j = 1; j <= PlayerCount; j++)
-                {
-                    if (j != ID && Collision.PlayerBulletCollision(Player[j], OldPosition, m_LBullet[i].Position))
-                    {
-                        lock (m_BulletLock)
-                        {
-                            m_LBullet.RemoveAt(i);
-                            BulletDamage.Add(new PlayerDamage(j, 1));
-                        }
-                    }
-                }                
-
-
                 if (float.IsNaN(m_LBullet[i].Position.X) || (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0)) //Crash without the '?'
-                {   
+                {
                     lock (m_BulletLock)
                     {
                         m_LBullet.RemoveAt(i);
                     }
                 }
+                else
+                {
+                    for (byte j = 1; j <= PlayerCount; j++)
+                    {
+                        if (j != ID && Collision.PlayerBulletCollision(Player[j], OldPosition, m_LBullet[i].Position))
+                        {
+                            lock (m_BulletLock)
+                            {
+                                m_LBullet.RemoveAt(i);
+                                BulletDamage.Add(new PlayerDamage(j, 1));
+                            }
+                        }
+                    }
+                }
+
+                
             }
 
             return BulletDamage;
@@ -154,6 +161,11 @@ namespace ClonesEngine
             get { return m_ID; }
         }
   */
+        public  byte Size
+        {
+            get { return m_Size; }
+            set { m_Size = value; }
+        }
         public PointF Position
         {
             get { return m_Position; }

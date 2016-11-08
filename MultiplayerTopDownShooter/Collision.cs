@@ -26,17 +26,17 @@ namespace ClonesEngine
         public static bool PlayerBulletCollision(PlayerData Player, PointF OldProjectile, PointF NewProjectile)
         {//a + 5, b - 5;
             //c == new, d == old
-            float denominatorX = (((Player.Position.X - 5) - (Player.Position.X + 5)) * ((OldProjectile.Y) - (NewProjectile.Y))) - (((Player.Position.Y) - (Player.Position.Y)) * ((OldProjectile.X) - (NewProjectile.X)));
-            float numerator1X = (((Player.Position.Y) - (NewProjectile.Y)) * ((OldProjectile.X) - (NewProjectile.X))) - (((Player.Position.X + 5) - (NewProjectile.X)) * ((OldProjectile.Y) - (NewProjectile.Y)));
-            float numerator2X = (((Player.Position.Y) - (NewProjectile.Y)) * ((Player.Position.X - 5) - (Player.Position.X + 5))) - (((Player.Position.X + 5) - (NewProjectile.X)) * ((Player.Position.Y) - (Player.Position.Y)));
+            float denominatorX = (((Player.Position.X - Player.Size / 2) - (Player.Position.X + Player.Size / 2)) * ((OldProjectile.Y) - (NewProjectile.Y))) - (((Player.Position.Y) - (Player.Position.Y)) * ((OldProjectile.X) - (NewProjectile.X)));
+            float numerator1X = (((Player.Position.Y) - (NewProjectile.Y)) * ((OldProjectile.X) - (NewProjectile.X))) - (((Player.Position.X + Player.Size / 2) - (NewProjectile.X)) * ((OldProjectile.Y) - (NewProjectile.Y)));
+            float numerator2X = (((Player.Position.Y) - (NewProjectile.Y)) * ((Player.Position.X - Player.Size / 2) - (Player.Position.X + Player.Size / 2))) - (((Player.Position.X + Player.Size / 2) - (NewProjectile.X)) * ((Player.Position.Y) - (Player.Position.Y)));
 
             
 
             
 
-            float denominatorY = ((Player.Position.X - Player.Position.X) * ((OldProjectile.Y) - (NewProjectile.Y))) - (((Player.Position.Y - 5) - (Player.Position.Y + 5)) * ((OldProjectile.X) - (NewProjectile.X)));
-            float numerator1Y = (((Player.Position.Y + 5) - (NewProjectile.Y)) * ((OldProjectile.X) - (NewProjectile.X))) - (((Player.Position.X) - (NewProjectile.X)) * ((OldProjectile.Y) - (NewProjectile.Y)));
-            float numerator2Y = (((Player.Position.Y + 5) - (NewProjectile.Y)) * ((Player.Position.X) - (Player.Position.X))) - (((Player.Position.X) - (NewProjectile.X)) * ((Player.Position.Y - 5) - (Player.Position.Y + 5)));
+            float denominatorY = ((Player.Position.X - Player.Position.X) * ((OldProjectile.Y) - (NewProjectile.Y))) - (((Player.Position.Y - Player.Size / 2) - (Player.Position.Y + Player.Size / 2)) * ((OldProjectile.X) - (NewProjectile.X)));
+            float numerator1Y = (((Player.Position.Y + Player.Size / 2) - (NewProjectile.Y)) * ((OldProjectile.X) - (NewProjectile.X))) - (((Player.Position.X) - (NewProjectile.X)) * ((OldProjectile.Y) - (NewProjectile.Y)));
+            float numerator2Y = (((Player.Position.Y + Player.Size / 2) - (NewProjectile.Y)) * ((Player.Position.X) - (Player.Position.X))) - (((Player.Position.X) - (NewProjectile.X)) * ((Player.Position.Y - Player.Size / 2) - (Player.Position.Y + Player.Size / 2)));
 
             if (denominatorX == 0 || denominatorY == 0) return (numerator1X == 0 && numerator2X == 0) || (numerator1Y == 0 && numerator2Y == 0);
 
