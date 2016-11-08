@@ -243,7 +243,7 @@ namespace ClonesEngine
                             case (byte)PacketUse.InfoPlayerDamage:
                                 if (m_Receiver[2] == m_ID)
                                 {
-                                    m_PlayerList[m_ID].Position = new PointF(RNG.Next(1000), RNG.Next(500));
+                                    m_PlayerList[m_ID].Position = new PointF(RNG.Next(500), RNG.Next(500));
                                     Send(TramePreGen.AcknowledgeDamage(m_ID));
                                     Send(TramePreGen.InfoJoueur(m_PlayerList[ID], m_ID, m_PacketID));
                                 }

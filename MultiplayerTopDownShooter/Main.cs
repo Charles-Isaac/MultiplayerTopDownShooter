@@ -48,6 +48,7 @@ namespace MultiplayerTopDownShooter
 
                 }
                 e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 10);
+                e.Graphics.DrawString(GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 50);
                 if (Environment.TickCount - FPSTimer > 1000)
                 {
                     FPSLast = FPSCounter;

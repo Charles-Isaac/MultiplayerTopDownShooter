@@ -39,9 +39,10 @@ namespace ClonesEngine
         byte m_DeathStatus;
         [XmlElement(Order = 9)]
         byte m_Size;
-
-
         [XmlElement(Order = 10)]
+        int m_Score;
+
+        [XmlElement(Order = 11)]
         List<Projectile> m_LBullet = new List<Projectile>();
 
         public PlayerData()
@@ -56,7 +57,8 @@ namespace ClonesEngine
                 m_DeathStatus = 1;
                 m_Velocite = 10;
                 m_Couleur = Color.Black.ToArgb();
-                m_Size = 10;
+                m_Size = 20;
+                m_Score = 0;
             }
         }
         public byte DeathStatus
@@ -73,7 +75,8 @@ namespace ClonesEngine
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = IDConstructeur;
             m_Velocite = 10;
-            m_Size = 10;
+            m_Size = 20;
+            m_Score = 0;
         }
 
         public int Couleur
@@ -84,7 +87,7 @@ namespace ClonesEngine
 
         public void AjouterProjectile(PointF Direction)
         {
-            m_LBullet.Add(new Projectile(m_Position, Direction, 1, Environment.TickCount));
+            m_LBullet.Add(new Projectile(m_Position, Direction, 5, Environment.TickCount));
         }
 
         public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID)
@@ -130,6 +133,7 @@ namespace ClonesEngine
                         {
                             lock (m_BulletLock)
                             {
+                                m_Score++;
                                 m_LBullet.RemoveAt(i);
                                 BulletDamage.Add(new PlayerDamage(j, 1));
                             }
@@ -161,7 +165,12 @@ namespace ClonesEngine
             get { return m_ID; }
         }
   */
-        public  byte Size
+        public int Score
+        {
+        get { return m_Score; }
+            set { m_Score = value; }
+        }
+        public byte Size
         {
             get { return m_Size; }
             set { m_Size = value; }

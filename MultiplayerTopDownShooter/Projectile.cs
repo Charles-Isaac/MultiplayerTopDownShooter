@@ -25,15 +25,15 @@ namespace ClonesEngine
         {
             m_Position = new PointF(0, 0);
             m_DirectionDeplacement = new PointF(0, 0);
-            m_Velocite = 1;
+            m_Velocite = 5;
             //m_LastTickUpdate = LastTickCount;
         }
 
-        public Projectile(PointF Position, PointF DirectionDeplacement, byte Velocite, int LastTickCount)
+        public Projectile(PointF Position, PointF DirectionDeplacement, byte cVelocite, int LastTickCount)
         {
             m_Position = Position;
             m_DirectionDeplacement = DirectionDeplacement;
-            m_Velocite = Velocite;
+            m_Velocite = cVelocite;
             //m_LastTickUpdate = LastTickCount;
         }
 
