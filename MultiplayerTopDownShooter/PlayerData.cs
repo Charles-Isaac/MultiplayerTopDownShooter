@@ -83,11 +83,18 @@ namespace ClonesEngine
             m_LBullet.Add(new Projectile(m_Position, Direction, 1, Environment.TickCount));
         }
 
-        public void UpdateStats(int OldTime, int NewTime)
+        public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID)
         {
-            m_Position.X += (int)(m_DirectionDeplacement.X * m_Velocite * (NewTime - OldTime) / 20);
-            m_Position.Y += (int)(m_DirectionDeplacement.Y * m_Velocite * (NewTime - OldTime) / 20);
+            List<PlayerDamage> BulletDamage = new List<PlayerDamage>();
 
+            for (int i = 1; i <= PlayerCount; i++)
+            {
+                Player[i].Position = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20),
+                    Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
+                Collision.PlayerBorder(Player[i]);
+            }
+
+            
             /*
             if (System.Windows.Forms.Form.ActiveForm == null || m_Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
             {
@@ -101,9 +108,23 @@ namespace ClonesEngine
             //      Enter();
             for (int i = m_LBullet.Count - 1; i > 0; i--)
             {
-                m_LBullet[i].UpdateStatus(OldTime, NewTime);
-                
-                if ((m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0)) //Crash without the '?'
+                PointF OldPosition = m_LBullet[i].Position;
+
+                m_LBullet[i].UpdateStatus(OldTime[ID], NewTime);
+                for (byte j = 1; j <= PlayerCount; j++)
+                {
+                    if (j != ID && Collision.PlayerBulletCollision(Player[j], OldPosition, m_LBullet[i].Position))
+                    {
+                        lock (m_BulletLock)
+                        {
+                            m_LBullet.RemoveAt(i);
+                            BulletDamage.Add(new PlayerDamage(j, 1));
+                        }
+                    }
+                }                
+
+
+                if (float.IsNaN(m_LBullet[i].Position.X) || (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0)) //Crash without the '?'
                 {   
                     lock (m_BulletLock)
                     {
@@ -111,6 +132,8 @@ namespace ClonesEngine
                     }
                 }
             }
+
+            return BulletDamage;
       //      Exit();
 
             //m_LastTickUpdate = OldTime;
@@ -145,6 +168,11 @@ namespace ClonesEngine
         public List<Projectile> Bullet
         {
             get { return m_LBullet; }
+        }
+        public byte Vitesse
+        {
+            get { return m_Velocite; }
+            set { m_Velocite = value; }
         }
     }
 }

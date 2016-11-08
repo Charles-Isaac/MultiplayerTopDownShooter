@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PlayerDamage.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="GestionnaireDePacket.cs" />
     <Compile Include="GestionnaireJeu.cs" />

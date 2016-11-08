@@ -39,8 +39,8 @@ namespace ClonesEngine
 
         public void UpdateStatus(int OldTime, int NewTime)
         {
-            m_Position.X += (m_DirectionDeplacement.X * m_Velocite * (NewTime - OldTime) / 100);
-            m_Position.Y += (m_DirectionDeplacement.Y * m_Velocite * (NewTime - OldTime) / 100);
+            m_Position.X += (m_DirectionDeplacement.X * m_Velocite * (NewTime - OldTime) / 20);
+            m_Position.Y += (m_DirectionDeplacement.Y * m_Velocite * (NewTime - OldTime) / 20);
             //m_LastTickUpdate = LastTickCount;
             
         }

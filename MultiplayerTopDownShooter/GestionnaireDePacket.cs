@@ -294,10 +294,11 @@ namespace ClonesEngine
         {
             if (ID != 0)
             {   
-                int Time = m_PlayerTime[ID];
-                m_PlayerTime[ID] = Environment.TickCount;
-                m_PlayerList[ID].UpdateStats(Time, m_PlayerTime[ID]);
+               // int Time = m_PlayerTime[ID];
+               // m_PlayerTime[ID] = Environment.TickCount;
+                List<PlayerDamage> PlayerDamage = m_PlayerList[ID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID);
                 //int* test[34];
+
             }
         }
     }
