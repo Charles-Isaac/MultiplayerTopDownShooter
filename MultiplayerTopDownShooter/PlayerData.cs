@@ -87,7 +87,7 @@ namespace ClonesEngine
 
         public void AjouterProjectile(PointF Direction)
         {
-            m_LBullet.Add(new Projectile(m_Position, Direction, 10/*Vitesse de la balle*/, Environment.TickCount));
+            m_LBullet.Add(new Projectile(m_Position, Direction, 50/*Vitesse de la balle*/, Environment.TickCount));
         }
 
         public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs)
