@@ -36,6 +36,15 @@ namespace MultiplayerTopDownShooter
             {
                 for (int i = 1; i <= GP.PlayerCount; i++)
                 {
+                    //Murs
+                    if (GP.Map != null)
+                    {
+                        for (int j = GP.Map.Murs.Length - 1; j > 0; j--)
+                        {
+                            e.Graphics.DrawLine(new Pen(Color.Green, 5.0F), GP.Map.Murs[j].A, GP.Map.Murs[j].B);
+                        }
+                    }
+
                     e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
                         GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
                     lock (GP.PlayerList[i].BulletLock)

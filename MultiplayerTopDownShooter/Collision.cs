@@ -9,11 +9,11 @@ namespace ClonesEngine
 {
     static class Collision
     {
-        public static bool IsIntersecting(PointF a, PointF b, PointF c, PointF d)
+        public static bool IsIntersecting(PointF vA1, PointF vA2, PointF vB1, PointF vB2)
         {
-            float denominator = ((b.X - a.X) * (d.Y - c.Y)) - ((b.Y - a.Y) * (d.X - c.X));
-            float numerator1 = ((a.Y - c.Y) * (d.X - c.X)) - ((a.X - c.X) * (d.Y - c.Y));
-            float numerator2 = ((a.Y - c.Y) * (b.X - a.X)) - ((a.X - c.X) * (b.Y - a.Y));
+            float denominator = ((vA2.X - vA1.X) * (vB2.Y - vB1.Y)) - ((vA2.Y - vA1.Y) * (vB2.X - vB1.X));
+            float numerator1 = ((vA1.Y - vB1.Y) * (vB2.X - vB1.X)) - ((vA1.X - vB1.X) * (vB2.Y - vB1.Y));
+            float numerator2 = ((vA1.Y - vB1.Y) * (vA2.X - vA1.X)) - ((vA1.X - vB1.X) * (vA2.Y - vA1.Y));
 
             if (denominator == 0) return numerator1 == 0 && numerator2 == 0;
 

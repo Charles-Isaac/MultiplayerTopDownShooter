@@ -52,13 +52,14 @@ namespace ClonesEngine
         //byte[] m_PlayerIntList = new byte[255];
         int m_PacketID;
 
-
+        Map Murs;
+        
 
         #region Propriete
-        /*public byte[] PlayerList
+        public Map Map
         {
-            get { return m_PlayerList; }
-        }*/
+            get { return Murs; }
+        }
         public byte PlayerCount
         {
             get { return m_PlayerCount; }
@@ -143,7 +144,7 @@ namespace ClonesEngine
                 {
                     Exit();
                     TryCount++;
-                    Thread.Sleep(250);
+                    Thread.Sleep(25);
                     Send(TramePreGen.AskNumberOfPlayer);
                     //Thread.Sleep(50);
                     do
@@ -229,7 +230,7 @@ namespace ClonesEngine
 
                             case (byte)PacketUse.AnswerAutoVerif:
                                 if (m_Receiver[1] == m_ID)
-                                {
+                                {   
                                     if (AutoVerifData < BitConverter.ToInt32(m_Receiver, 2))
                                     {
                                         m_ID = 0;
@@ -260,7 +261,7 @@ namespace ClonesEngine
                                 break;
                         }//Switch
 
-                        if (LastTickCheck + 2500 < Environment.TickCount)
+                        if (LastTickCheck + 2650 < Environment.TickCount)
                         {
                             LastTickCheck = Environment.TickCount + RNG.Next(1, 500);
                             Send(TramePreGen.AskAutoVerif(m_ID));
@@ -268,10 +269,10 @@ namespace ClonesEngine
 
                     } while (m_ID != 0);//While(true)
                     Enter();
-                } while (TryCount < 10 && m_ID == 0);
-                if (TryCount == 10 && m_ID == 0)
+                } while (TryCount < 100 && m_ID == 0);
+                if (TryCount == 100 && m_ID == 0)
                 {
-                    //GenMap();
+                    Murs = new Map();
                     m_ID = 1;
                     m_PlayerCount = 1;
 
@@ -322,17 +323,18 @@ namespace ClonesEngine
                 if (Updatable)
                 {
                     Updatable = false;
-                    for (int i = BulletDamage.Count - 1; i > 0; i--)
+                    for (int i = BulletDamage.Count - 1; i >= 0; i--)
                     {
                         DamageTarget = BulletDamage[i].ID;
+                        byte SendDamageTimeout = 25;
                         ResendDamage = true;
-                        while (ResendDamage)
+                        while (ResendDamage && SendDamageTimeout > 0)
                         {
                             Send(TramePreGen.PlayerDamage(m_ID, BulletDamage[i]));
                             Thread.Sleep(10);
+                            SendDamageTimeout--;
                         }
                         BulletDamage.RemoveAt(i);
-                        i = i;
                     }
                     Updatable = true;
                 }
