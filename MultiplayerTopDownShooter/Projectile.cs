@@ -25,7 +25,7 @@ namespace ClonesEngine
         {
             m_Position = new PointF(0, 0);
             m_DirectionDeplacement = new PointF(0, 0);
-            m_Velocite = 5;
+            m_Velocite = 10;
             //m_LastTickUpdate = LastTickCount;
         }
 

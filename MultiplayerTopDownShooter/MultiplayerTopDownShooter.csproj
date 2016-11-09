@@ -67,6 +67,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shadows.cs" />
     <Compile Include="TramePreGen.cs" />
     <Compile Include="UDPConnecter.cs" />
     <EmbeddedResource Include="Main.resx">

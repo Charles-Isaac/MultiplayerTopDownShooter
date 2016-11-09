@@ -57,7 +57,7 @@ namespace ClonesEngine
                 m_DeathStatus = 1;
                 m_Velocite = 10;
                 m_Couleur = Color.Black.ToArgb();
-                m_Size = 20;
+                m_Size = 10;
                 m_Score = 0;
             }
         }
@@ -75,7 +75,7 @@ namespace ClonesEngine
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = IDConstructeur;
             m_Velocite = 10;
-            m_Size = 20;
+            m_Size = 10;
             m_Score = 0;
         }
 
@@ -87,7 +87,7 @@ namespace ClonesEngine
 
         public void AjouterProjectile(PointF Direction)
         {
-            m_LBullet.Add(new Projectile(m_Position, Direction, 5, Environment.TickCount));
+            m_LBullet.Add(new Projectile(m_Position, Direction, 10/*Vitesse de la balle*/, Environment.TickCount));
         }
 
         public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs)
@@ -100,12 +100,15 @@ namespace ClonesEngine
                 Player[i].Position = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20),
                     Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
                 Collision.PlayerBorder(Player[i]);
-                for (int j = Murs.Murs.Length - 1; j > 0 ; j--)
+                if (Murs != null)
                 {
-                    if (Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
+                    for (int j = Murs.Murs.Length - 1; j > 0; j--)
                     {
-                        Player[i].Position = TempPosi;
-                        j = 0; ////////////////////////////////////////ugh...
+                        if (Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
+                        {
+                            Player[i].Position = TempPosi;
+                            j = 0; ////////////////////////////////////////ugh...
+                        }
                     }
                 }
             }
@@ -153,7 +156,7 @@ namespace ClonesEngine
                         }
                     }
                 }
-                if (Exist)
+                if (Exist && Murs != null)
                 {
                     for (int j = Murs.Murs.Length - 1;j > 0; j--)
                     {

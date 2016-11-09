@@ -19,6 +19,12 @@ namespace MultiplayerTopDownShooter
         int FPSTimer;
         int FPSCounter = 0;
         int FPSLast = 0;
+
+        Brush Br = new SolidBrush(Color.Black);
+        Point[] ShadowPolygon = new Point[6];
+        Point[,] ShadowArray;
+
+
         public Main()
         {
             InitializeComponent();
@@ -56,8 +62,27 @@ namespace MultiplayerTopDownShooter
                     }
 
                 }
-                e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 10);
-                e.Graphics.DrawString(GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 50);
+                if (GP.Map != null)
+                {
+                    ShadowArray = Shadows.ReturnMeAnArray(GP.Map.Murs.Length, GP.Map.Murs, GP.PlayerList[GP.ID].Position, this.Width, this.Height);
+
+                    for (int i = GP.Map.Murs.Length - 1; i > 0; i--)
+                    {
+                        for (int j = 0; j < 6; j++)
+                        {
+                            ShadowPolygon[j] = ShadowArray[i, j];
+                        }
+                        try
+                        {
+                            e.Graphics.FillPolygon(Br, ShadowPolygon);
+                        }
+                        catch { MessageBox.Show("Erreur Ombre"); }
+                    }
+                }
+               
+
+                e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 10);
+                e.Graphics.DrawString(GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 50);
                 if (Environment.TickCount - FPSTimer > 1000)
                 {
                     FPSLast = FPSCounter;
@@ -65,7 +90,7 @@ namespace MultiplayerTopDownShooter
                     FPSCounter = 0;
                 }
                 FPSCounter++;
-                e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 16), new SolidBrush(Color.Black), 10, 30);
+                e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 30);
                 GP.UpdatePlayer(GP.ID);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
                 /*if (MouseButtons == MouseButtons.Left)

@@ -23,7 +23,7 @@ namespace ClonesEngine
             for (int i = 0; i < NombreDeMurs; i++)
             {
                 // Murs[i].A = new PointF(RNG.Next(Settings.DefaultResolution.X);
-                m_TMurs[i] = new Mur(new Point(RNG.Next(5, 500 - 5), RNG.Next(5, 500 - 5)), new Point(RNG.Next(5, 500 - 5), RNG.Next(5, 500 - 5)));
+                m_TMurs[i] = new Mur(new Point(RNG.Next(5, 768 - 5), RNG.Next(5, 768 - 5)), new Point(RNG.Next(5, 768 - 5), RNG.Next(5, 768 - 5)));
               
                 j = 0;
                 while (!Collision.IsIntersecting(m_TMurs[i].A, m_TMurs[i].B, m_TMurs[j].A, m_TMurs[j].B) && j < i)
