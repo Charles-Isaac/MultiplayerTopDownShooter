@@ -90,15 +90,24 @@ namespace ClonesEngine
             m_LBullet.Add(new Projectile(m_Position, Direction, 5, Environment.TickCount));
         }
 
-        public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID)
+        public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs)
         {
             List<PlayerDamage> BulletDamage = new List<PlayerDamage>();
 
             for (int i = 1; i <= PlayerCount; i++)
             {
+                PointF TempPosi = Player[i].Position;
                 Player[i].Position = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20),
                     Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
                 Collision.PlayerBorder(Player[i]);
+                for (int j = Murs.Murs.Length - 1; j > 0 ; j--)
+                {
+                    if (Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
+                    {
+                        Player[i].Position = TempPosi;
+                        j = 0; ////////////////////////////////////////ugh...
+                    }
+                }
             }
 
             
@@ -116,13 +125,16 @@ namespace ClonesEngine
             for (int i = m_LBullet.Count - 1; i > 0; i--)
             {
                 PointF OldPosition = m_LBullet[i].Position;
+                bool Exist = true;
 
                 m_LBullet[i].UpdateStatus(OldTime[ID], NewTime);
+                
                 if (float.IsNaN(m_LBullet[i].Position.X) || (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0)) //Crash without the '?'
                 {
                     lock (m_BulletLock)
                     {
                         m_LBullet.RemoveAt(i);
+                        Exist = false;
                     }
                 }
                 else
@@ -135,14 +147,26 @@ namespace ClonesEngine
                             {
                                 m_Score++;
                                 m_LBullet.RemoveAt(i);
+                                Exist = false;
                                 BulletDamage.Add(new PlayerDamage(j, 1));
                             }
                         }
                     }
                 }
-
-                
+                if (Exist)
+                {
+                    for (int j = Murs.Murs.Length - 1;j > 0; j--)
+                    {
+                        if (Collision.IsIntersecting(OldPosition, m_LBullet[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
+                        {
+                            m_LBullet.RemoveAt(i);
+                            j = 0;/////////////////////////////////////////////////////////////////////////ugh...
+                        }
+                    }
+                }
             }
+
+            
 
             return BulletDamage;
       //      Exit();

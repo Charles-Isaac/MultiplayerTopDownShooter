@@ -329,7 +329,7 @@ namespace ClonesEngine
             {
                 // int Time = m_PlayerTime[ID];
                 // m_PlayerTime[ID] = Environment.TickCount;
-                List<PlayerDamage> BulletDamageBuffer = m_PlayerList[ID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID);
+                List<PlayerDamage> BulletDamageBuffer = m_PlayerList[ID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID, Murs);
                 //int* test[34];
                 BulletDamage = BulletDamage.Concat(BulletDamageBuffer).ToList();
 

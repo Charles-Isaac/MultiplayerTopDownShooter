@@ -30,9 +30,6 @@ namespace ClonesEngine
             float numerator1X = (((Player.Position.Y) - (NewProjectile.Y)) * ((OldProjectile.X) - (NewProjectile.X))) - (((Player.Position.X + Player.Size / 2) - (NewProjectile.X)) * ((OldProjectile.Y) - (NewProjectile.Y)));
             float numerator2X = (((Player.Position.Y) - (NewProjectile.Y)) * ((Player.Position.X - Player.Size / 2) - (Player.Position.X + Player.Size / 2))) - (((Player.Position.X + Player.Size / 2) - (NewProjectile.X)) * ((Player.Position.Y) - (Player.Position.Y)));
 
-            
-
-            
 
             float denominatorY = ((Player.Position.X - Player.Position.X) * ((OldProjectile.Y) - (NewProjectile.Y))) - (((Player.Position.Y - Player.Size / 2) - (Player.Position.Y + Player.Size / 2)) * ((OldProjectile.X) - (NewProjectile.X)));
             float numerator1Y = (((Player.Position.Y + Player.Size / 2) - (NewProjectile.Y)) * ((OldProjectile.X) - (NewProjectile.X))) - (((Player.Position.X) - (NewProjectile.X)) * ((OldProjectile.Y) - (NewProjectile.Y)));
@@ -47,7 +44,6 @@ namespace ClonesEngine
             float sY = numerator2Y / denominatorY;
 
             return (rX >= 0 && rX <= 1) && (sX >= 0 && sX <= 1) || (rY >= 0 && rY <= 1) && (sY >= 0 && sY <= 1);
-
             
         }
 
@@ -75,6 +71,15 @@ namespace ClonesEngine
                     Player.Position = new PointF(Player.Position.X, (float)System.Windows.Forms.Form.ActiveForm?.Height);
                 }
             }
+        }
+        public static bool BulletWallsCollision(Map Murs, PointF OldPosition, PointF NewPosition)
+        {
+            return true;
+        }
+        public static PointF PlayerWallsCollision(Map Murs, PointF OldPosition, PointF NewPosition)
+        {
+            
+            return NewPosition;
         }
     }
 }
