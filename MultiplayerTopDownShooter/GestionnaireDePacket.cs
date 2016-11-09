@@ -29,7 +29,7 @@ namespace ClonesEngine
     }
     class GestionnaireDePacket
     {
-        Stopwatch TickCounter;
+    //    Stopwatch TickCounter;
         UDPConnecter ConnectionUDP;
         Thread ThreadReception;
         //public TramePreGen PreGen;
@@ -53,6 +53,7 @@ namespace ClonesEngine
         int m_PacketID;
 
         Map Murs;
+        int MapSeed;
         
 
         #region Propriete
@@ -115,8 +116,9 @@ namespace ClonesEngine
             ThreadReception = new Thread(start);
             ThreadReception.IsBackground = true;
             ThreadReception.Start();
-            TickCounter = new Stopwatch();
+        /*    TickCounter = new Stopwatch();
             TickCounter.Start();
+        */
             //GetPlayerCount();
         }
         public bool DemarrerLaConnection()
@@ -138,8 +140,6 @@ namespace ClonesEngine
             int TryCount = 0;
             while (true)
             {
-
-
                 do
                 {
                     Exit();
@@ -168,7 +168,7 @@ namespace ClonesEngine
 
                                     for (; m_PlayerCount < m_Receiver[2]; m_PlayerCount++)
                                     {
-                                        m_PlayerList[m_PlayerCount] = new PlayerData(m_PlayerCount, TickCounter.ElapsedTicks);
+                                        m_PlayerList[m_PlayerCount] = new PlayerData(m_PlayerCount, Environment.TickCount/*TickCounter.ElapsedTicks*/);
                                         m_PlayerTime[m_PlayerCount] = Environment.TickCount;
                                     }
                                     if (m_ID == 0)
@@ -176,11 +176,12 @@ namespace ClonesEngine
                                         m_ID = m_Receiver[2];
                                         m_ID++;
                                         m_PlayerCount++;
-                                        m_PlayerList[m_ID] = new PlayerData(m_ID, TickCounter.ElapsedTicks);
+                                        m_PlayerList[m_ID] = new PlayerData(m_ID, Environment.TickCount/*TickCounter.ElapsedTicks*/);
                                         m_PlayerTime[m_ID] = Environment.TickCount;
 
                                         Send(TramePreGen.AnswerListeJoueur(m_PlayerCount, m_ID));
                                         Send(TramePreGen.AskAutoVerif(ID));
+                                        Send(TramePreGen.AskMapSeed());
                                     }
                                 }
                                 Exit();
@@ -191,9 +192,21 @@ namespace ClonesEngine
                                 {
                                     m_PlayerList[m_Receiver[1]] = TramePreGen.ReceiverInfoJoueur(m_Receiver);
                                     m_PlayerTime[m_Receiver[1]] = Environment.TickCount;
-
                                 }
-
+                                break;
+                            case (byte)PacketUse.AskMap:
+                                if (m_ID == 1)
+                                {
+                                    Send(TramePreGen.AnswerMapSeed(m_ID, MapSeed));
+                                }
+                                break;
+                            case (byte)PacketUse.AnswerMap:
+                                if (MapSeed != BitConverter.ToInt32(m_Receiver, 2))
+                                {
+                                    MapSeed = BitConverter.ToInt32(m_Receiver, 2);
+                                    Murs = new Map(MapSeed);
+                                }
+                                    
                                 break;
                             case (byte)PacketUse.ResetAllID:
                                 if (m_Receiver[1] == m_ID)
@@ -265,6 +278,10 @@ namespace ClonesEngine
                         {
                             LastTickCheck = Environment.TickCount + RNG.Next(1, 500);
                             Send(TramePreGen.AskAutoVerif(m_ID));
+                            if (MapSeed == 0 && m_ID != 0)
+                            {
+                                Send(TramePreGen.AnswerMapSeed(m_ID, MapSeed));
+                            }
                         }
 
                     } while (m_ID != 0);//While(true)
@@ -272,7 +289,8 @@ namespace ClonesEngine
                 } while (TryCount < 100 && m_ID == 0);
                 if (TryCount == 100 && m_ID == 0)
                 {
-                    Murs = new Map();
+                    MapSeed = RNG.Next() + 1;
+                    Murs = new Map(MapSeed);
                     m_ID = 1;
                     m_PlayerCount = 1;
 
@@ -303,11 +321,6 @@ namespace ClonesEngine
         {
             ConnectionUDP.Send(data);
             m_PacketID++;
-        }
-
-        public void Send(string sdata)
-        {
-
         }
 
         public void UpdatePlayer(byte ID)

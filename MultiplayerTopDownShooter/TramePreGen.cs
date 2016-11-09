@@ -109,5 +109,21 @@ namespace ClonesEngine
             Trame[1] = ID;
             return Trame;
         }
+        public static byte[] AnswerMapSeed(byte ID, int Seed)
+        {
+            byte[] Trame = new byte[6];
+            byte[] ByteSeed = BitConverter.GetBytes(Seed);
+            Trame[0] = (byte)PacketUse.AnswerMap;
+            Trame[1] = ID;
+            for (int i = 0; i < 4; i++)
+            {
+                Trame[i + 2] = ByteSeed[i];
+            }
+            return Trame;
+        }
+        public static byte[] AskMapSeed()
+        {
+            return new byte[] { (byte)PacketUse.AskMap };
+        }
     }
 }

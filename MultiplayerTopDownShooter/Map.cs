@@ -15,10 +15,10 @@ namespace ClonesEngine
         int NombreDeMurs = 20;
         Mur[] m_TMurs;
 
-        public Map()
+        public Map(int Seed)
         {
             m_TMurs = new Mur[NombreDeMurs];
-            Random RNG = new Random();
+            Random RNG = new Random(Seed);
             int j;
             for (int i = 0; i < NombreDeMurs; i++)
             {
