@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmLobbyPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLobbyPrompt.Designer.cs">
+      <DependentUpon>frmLobbyPrompt.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerDamage.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="GestionnaireDePacket.cs" />
@@ -70,6 +76,9 @@
     <Compile Include="Shadows.cs" />
     <Compile Include="TramePreGen.cs" />
     <Compile Include="UDPConnecter.cs" />
+    <EmbeddedResource Include="frmLobbyPrompt.resx">
+      <DependentUpon>frmLobbyPrompt.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>

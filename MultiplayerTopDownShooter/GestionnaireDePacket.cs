@@ -54,7 +54,8 @@ namespace ClonesEngine
 
         Map Murs;
         int MapSeed;
-        
+
+        int m_LobbyPort = 54545;
 
         #region Propriete
         public Map Map
@@ -92,7 +93,7 @@ namespace ClonesEngine
         #endregion
 
 
-        public GestionnaireDePacket()
+        public GestionnaireDePacket(int Lobby)
         {
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Point), true);
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Point)].Add(1, "X").Add(2, "Y");
@@ -101,6 +102,8 @@ namespace ClonesEngine
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Projectile), true);
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Projectile)].Add(1, "Position").Add(2, "Direction").Add(3, "Velocite");
 
+
+            m_LobbyPort = Lobby;
             for (int i = 0; i < 255; i++)
             {
                 m_PlayerList[i] = new PlayerData();
@@ -125,7 +128,7 @@ namespace ClonesEngine
         {
             try
             {
-                ConnectionUDP = new UDPConnecter();
+                ConnectionUDP = new UDPConnecter(m_LobbyPort);
                 return true;
             }
             catch (Exception e)

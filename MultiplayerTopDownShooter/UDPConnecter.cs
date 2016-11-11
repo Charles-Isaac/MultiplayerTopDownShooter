@@ -7,9 +7,11 @@ namespace ClonesEngine
     class UDPConnecter
     {
         IPEndPoint endPoint;
-        public UDPConnecter()
+        public UDPConnecter(int LobbyPort)
         {
+            port = LobbyPort;
             InitializeSender();
+            
             //InitializeReceiver();
             receivingClient = new UdpClient();
             receivingClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
@@ -28,7 +30,7 @@ namespace ClonesEngine
 
         //string userName;
        
-        const int port = 54545;
+        int port = 54545;
         const string broadcastAddress = "255.255.255.255";//"127.0.0.1";
 
         UdpClient receivingClient;

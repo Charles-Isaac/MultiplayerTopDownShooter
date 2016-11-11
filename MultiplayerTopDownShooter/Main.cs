@@ -19,6 +19,7 @@ namespace MultiplayerTopDownShooter
         int FPSTimer;
         int FPSCounter = 0;
         int FPSLast = 0;
+        int m_Lobby = 54545;
 
         Brush Br = new SolidBrush(Color.Black);
         Point[] ShadowPolygon = new Point[6];
@@ -28,9 +29,14 @@ namespace MultiplayerTopDownShooter
         public Main()
         {
             InitializeComponent();
-
+            frmLobbyPrompt frmLobby = new frmLobbyPrompt();
+            frmLobby.ShowDialog();
+            if (frmLobby.DialogResult == DialogResult.OK)
+            {
+                m_Lobby = frmLobby.Lobby;
+            }
             RNG = new Random();
-            GP = new GestionnaireDePacket();
+            GP = new GestionnaireDePacket(m_Lobby);
             this.DoubleBuffered = true;
 
             FPSTimer = Environment.TickCount;
@@ -43,13 +49,7 @@ namespace MultiplayerTopDownShooter
                 for (int i = 1; i <= GP.PlayerCount; i++)
                 {
                     //Murs
-                    if (GP.Map != null)
-                    {
-                        for (int j = GP.Map.Murs.Length - 1; j > 0; j--)
-                        {
-                            e.Graphics.DrawLine(new Pen(Color.Green, 5.0F), GP.Map.Murs[j].A, GP.Map.Murs[j].B);
-                        }
-                    }
+                    
 
                     e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
                         GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
@@ -79,8 +79,14 @@ namespace MultiplayerTopDownShooter
                         catch { MessageBox.Show("Erreur Ombre"); }
                     }
                 }
-               
 
+                if (GP.Map != null)
+                {
+                    for (int j = GP.Map.Murs.Length - 1; j > 0; j--)
+                    {
+                        e.Graphics.DrawLine(new Pen(Color.Green, 5.0F), GP.Map.Murs[j].A, GP.Map.Murs[j].B);
+                    }
+                }
                 e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 10);
                 e.Graphics.DrawString(GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 50);
                 if (Environment.TickCount - FPSTimer > 1000)

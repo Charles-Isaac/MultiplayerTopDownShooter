@@ -113,7 +113,7 @@ namespace ClonesEngine
                 }
             }
 
-            
+
             /*
             if (System.Windows.Forms.Form.ActiveForm == null || m_Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
             {
@@ -125,45 +125,48 @@ namespace ClonesEngine
               }
               */
             //      Enter();
-            for (int i = m_LBullet.Count - 1; i > 0; i--)
+            lock (m_BulletLock)
             {
-                PointF OldPosition = m_LBullet[i].Position;
-                bool Exist = true;
-
-                m_LBullet[i].UpdateStatus(OldTime[ID], NewTime);
-                
-                if (float.IsNaN(m_LBullet[i].Position.X) || (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0)) //Crash without the '?'
+                for (int i = m_LBullet.Count - 1; i > 0; i--)
                 {
-                    lock (m_BulletLock)
+                    PointF OldPosition = m_LBullet[i].Position;
+                    bool Exist = true;
+
+                    m_LBullet[i].UpdateStatus(OldTime[ID], NewTime);
+
+                    if (float.IsNaN(m_LBullet[i].Position.X) || (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0)) //Crash without the '?'
                     {
+                        //lock (m_BulletLock)
+                        //  {
                         m_LBullet.RemoveAt(i);
                         Exist = false;
+                        //  }
                     }
-                }
-                else
-                {
-                    for (byte j = 1; j <= PlayerCount; j++)
+                    else
                     {
-                        if (j != ID && Collision.PlayerBulletCollision(Player[j], OldPosition, m_LBullet[i].Position))
+                        for (byte j = 1; j <= PlayerCount; j++)
                         {
-                            lock (m_BulletLock)
+                            if (Exist && j != ID && Collision.PlayerBulletCollision(Player[j], OldPosition, m_LBullet[i].Position))
                             {
+                                //lock (m_BulletLock)
+                                // {
                                 m_Score++;
                                 m_LBullet.RemoveAt(i);
                                 Exist = false;
                                 BulletDamage.Add(new PlayerDamage(j, 1));
+                                //  }
                             }
                         }
                     }
-                }
-                if (Exist && Murs != null)
-                {
-                    for (int j = Murs.Murs.Length - 1;j > 0; j--)
+                    if (Exist && Murs != null)
                     {
-                        if (Collision.IsIntersecting(OldPosition, m_LBullet[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
+                        for (int j = Murs.Murs.Length - 1; j > 0; j--)
                         {
-                            m_LBullet.RemoveAt(i);
-                            j = 0;/////////////////////////////////////////////////////////////////////////ugh...
+                            if (Collision.IsIntersecting(OldPosition, m_LBullet[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
+                            {
+                                m_LBullet.RemoveAt(i);
+                                j = 0;/////////////////////////////////////////////////////////////////////////ugh...
+                            }
                         }
                     }
                 }
