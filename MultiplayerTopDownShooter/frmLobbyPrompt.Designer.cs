@@ -38,6 +38,7 @@
             this.txtLobbyName.Name = "txtLobbyName";
             this.txtLobbyName.Size = new System.Drawing.Size(100, 20);
             this.txtLobbyName.TabIndex = 0;
+            this.txtLobbyName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtLobbyName_KeyUp);
             // 
             // btnOK
             // 

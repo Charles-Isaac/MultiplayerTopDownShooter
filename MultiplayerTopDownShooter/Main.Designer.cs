@@ -39,6 +39,7 @@
             this.Text = "Form1";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Main_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Main_MouseDown);
+            this.Resize += new System.EventHandler(this.Main_Resize);
             this.ResumeLayout(false);
 
         }

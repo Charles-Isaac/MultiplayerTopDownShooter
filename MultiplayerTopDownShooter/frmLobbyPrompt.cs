@@ -28,5 +28,16 @@ namespace ClonesEngine
         {
             get { return m_Lobby; }
         }
+
+        private void txtLobbyName_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Return)
+            {
+                m_Lobby = (Math.Abs(txtLobbyName.Text.GetHashCode()) % 16383) + 49152;
+                DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            
+        }
     }
 }

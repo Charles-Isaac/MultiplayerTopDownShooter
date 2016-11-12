@@ -50,12 +50,12 @@ namespace ClonesEngine
             lock (m_BulletLock)
             {
                 //m_LastTickUpdate = 0;
-                m_Position = new PointF(0, 0);
+                m_Position = new PointF(1, 1);
                 m_DirectionRegard = new PointF(0, 0);
                 m_DirectionDeplacement = new PointF(0, 0);
                 m_ID = 0;
                 m_DeathStatus = 1;
-                m_Velocite = 10;
+                m_Velocite = Settings.DefaultPlayerSpeed;
                 m_Couleur = Color.Black.ToArgb();
                 m_Size = 10;
                 m_Score = 0;
@@ -74,7 +74,7 @@ namespace ClonesEngine
             m_DirectionRegard = new PointF(0, 0);
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = IDConstructeur;
-            m_Velocite = 10;
+            m_Velocite = Settings.DefaultPlayerSpeed;
             m_Size = 10;
             m_Score = 0;
         }
@@ -87,7 +87,7 @@ namespace ClonesEngine
 
         public void AjouterProjectile(PointF Direction)
         {
-            m_LBullet.Add(new Projectile(m_Position, Direction, 50/*Vitesse de la balle*/, Environment.TickCount));
+            m_LBullet.Add(new Projectile(m_Position, Direction, Settings.DefaultBulletSpeed, Environment.TickCount));
         }
 
         public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs)
@@ -99,7 +99,7 @@ namespace ClonesEngine
                 PointF TempPosi = Player[i].Position;
                 Player[i].Position = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20),
                     Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
-                Collision.PlayerBorder(Player[i]);
+                //Collision.PlayerBorder(Player[i]);
                 if (Murs != null)
                 {
                     for (int j = Murs.Murs.Length - 1; j > 0; j--)
@@ -134,30 +134,21 @@ namespace ClonesEngine
 
                     m_LBullet[i].UpdateStatus(OldTime[ID], NewTime);
 
-                    if (float.IsNaN(m_LBullet[i].Position.X) || (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0)) //Crash without the '?'
+
+                    for (byte j = 1; j <= PlayerCount; j++)
                     {
-                        //lock (m_BulletLock)
-                        //  {
-                        m_LBullet.RemoveAt(i);
-                        Exist = false;
-                        //  }
-                    }
-                    else
-                    {
-                        for (byte j = 1; j <= PlayerCount; j++)
+                        if (Exist && j != ID && Collision.PlayerBulletCollision(Player[j], OldPosition, m_LBullet[i].Position))
                         {
-                            if (Exist && j != ID && Collision.PlayerBulletCollision(Player[j], OldPosition, m_LBullet[i].Position))
-                            {
-                                //lock (m_BulletLock)
-                                // {
-                                m_Score++;
-                                m_LBullet.RemoveAt(i);
-                                Exist = false;
-                                BulletDamage.Add(new PlayerDamage(j, 1));
-                                //  }
-                            }
+                            //lock (m_BulletLock)
+                            // {
+                            m_Score++;
+                            m_LBullet.RemoveAt(i);
+                            Exist = false;
+                            BulletDamage.Add(new PlayerDamage(j, 1));
+                            //  }
                         }
                     }
+
                     if (Exist && Murs != null)
                     {
                         for (int j = Murs.Murs.Length - 1; j > 0; j--)
@@ -169,6 +160,14 @@ namespace ClonesEngine
                             }
                         }
                     }
+                    /*if (Exist && (float.IsNaN(m_LBullet[i].Position.X) || (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0))) //Crash without the '?'
+                    {
+                        //lock (m_BulletLock)
+                        //  {
+                        m_LBullet.RemoveAt(i);
+
+                        //  }
+                    }*/
                 }
             }
 

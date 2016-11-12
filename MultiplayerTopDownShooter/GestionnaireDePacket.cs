@@ -34,7 +34,7 @@ namespace ClonesEngine
         Thread ThreadReception;
         //public TramePreGen PreGen;
         PlayerData[] m_PlayerList = new PlayerData[255];
-        int[] m_PlayerTime = new int[256];
+        int[] m_PlayerTime = new int[255];
         byte m_ID;
         int AutoVerifData = 0;
         Random RNG = new Random();
@@ -107,6 +107,7 @@ namespace ClonesEngine
             for (int i = 0; i < 255; i++)
             {
                 m_PlayerList[i] = new PlayerData();
+                m_PlayerList[i].Vitesse = Settings.DefaultPlayerSpeed;
                 m_PlayerTime[i] = Environment.TickCount;
             }
             m_ID = 0;

@@ -21,6 +21,8 @@ namespace MultiplayerTopDownShooter
         int FPSLast = 0;
         int m_Lobby = 54545;
 
+        SizeF Format = new SizeF(1, 1);
+
         Brush Br = new SolidBrush(Color.Black);
         Point[] ShadowPolygon = new Point[6];
         Point[,] ShadowArray;
@@ -35,6 +37,7 @@ namespace MultiplayerTopDownShooter
             {
                 m_Lobby = frmLobby.Lobby;
             }
+            this.WindowState = FormWindowState.Maximized;
             RNG = new Random();
             GP = new GestionnaireDePacket(m_Lobby);
             this.DoubleBuffered = true;
@@ -46,6 +49,8 @@ namespace MultiplayerTopDownShooter
         {
             Invoke(new Action(() =>
             {
+                e.Graphics.ScaleTransform((float)this.ClientSize.Height / Settings.GameSize.Width, (float)this.ClientSize.Height/Settings.GameSize.Width, System.Drawing.Drawing2D.MatrixOrder.Append);
+
                 for (int i = 1; i <= GP.PlayerCount; i++)
                 {
                     //Murs
@@ -64,7 +69,7 @@ namespace MultiplayerTopDownShooter
                 }
                 if (GP.Map != null)
                 {
-                    ShadowArray = Shadows.ReturnMeAnArray(GP.Map.Murs.Length, GP.Map.Murs, GP.PlayerList[GP.ID].Position, this.Width, this.Height);
+                    ShadowArray = Shadows.ReturnMeAnArray(GP.Map.Murs.Length, GP.Map.Murs, GP.PlayerList[GP.ID].Position, Settings.GameSize.Width , Settings.GameSize.Height);
 
                     for (int i = GP.Map.Murs.Length - 1; i > 0; i--)
                     {
@@ -72,11 +77,11 @@ namespace MultiplayerTopDownShooter
                         {
                             ShadowPolygon[j] = ShadowArray[i, j];
                         }
-                        try
+                        //try
                         {
                             e.Graphics.FillPolygon(Br, ShadowPolygon);
                         }
-                        catch { MessageBox.Show("Erreur Ombre"); }
+                        //catch { MessageBox.Show("Erreur Ombre"); }
                     }
                 }
 
@@ -97,6 +102,10 @@ namespace MultiplayerTopDownShooter
                 }
                 FPSCounter++;
                 e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 30);
+                Point MousePosition = this.PointToClient(Cursor.Position);
+                MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
+                MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
+                e.Graphics.DrawLine(new Pen(Color.Red), GP.PlayerList[GP.ID].Position, MousePosition);
                 GP.UpdatePlayer(GP.ID);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
                 /*if (MouseButtons == MouseButtons.Left)
@@ -104,19 +113,22 @@ namespace MultiplayerTopDownShooter
                     Main_MouseDown(sender, new MouseEventArgs(MouseButtons.Left,1,10,10,1));
                 }*/
                 //Thread.Sleep(RNG.Next(100)); //random ping generator ;)
-                this.Invalidate();
+
+
+                //Invalidate();
+                this.Invalidate(new Rectangle(new Point(0,0), new Size(this.ClientSize.Height, this.ClientSize.Height)));
             }));
 
         }
 
         private void Main_MouseDown(object sender, MouseEventArgs e)
         {
-            int X, Y; 
-            X = PointToClient(Cursor.Position).X;
-            Y = PointToClient(Cursor.Position).Y;
-            
-            GP.PlayerList[GP.ID].AjouterProjectile(new PointF(((X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((X - GP.PlayerList[GP.ID].Position.X) * (X - GP.PlayerList[GP.ID].Position.X) + (Y - GP.PlayerList[GP.ID].Position.Y) * (Y - GP.PlayerList[GP.ID].Position.Y))),
-                ((Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((X - GP.PlayerList[GP.ID].Position.X) * (X - GP.PlayerList[GP.ID].Position.X) + (Y - GP.PlayerList[GP.ID].Position.Y) * (Y - GP.PlayerList[GP.ID].Position.Y)))));
+            Point MousePosition = this.PointToClient(Cursor.Position);
+            MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
+            MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
+
+            GP.PlayerList[GP.ID].AjouterProjectile(new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
+                ((MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y)))));
             
             //GP.PlayerList[GP.ID].PlayerBullet.RemoveAt(j);
         }
@@ -147,6 +159,8 @@ namespace MultiplayerTopDownShooter
                 case Keys.Space:
                     ChangeArrowsState(ArrowsPressed.Space, true);
                     Point Light = this.PointToClient(Cursor.Position);
+                    Light.X = (int)(Light.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
+                    Light.Y = (int)(Light.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
                     GP.PlayerList[GP.ID].Position = Light;
                     break;
                 case Keys.Return:
@@ -248,6 +262,17 @@ namespace MultiplayerTopDownShooter
             {
                 arrowsPressed &= ArrowsPressed.All ^ changed;
             }
+        }
+
+        private void Main_Resize(object sender, EventArgs e)
+        {
+            if (this.ClientSize.Width < this.ClientSize.Height + 10)
+            {
+                this.ClientSize = new Size(this.ClientSize.Height + 10,this.ClientSize.Height);
+            }
+          //  this.ClientSize.Width
+            Format.Width = (float)(this.ClientSize.Width - (this.ClientSize.Width - this.ClientSize.Height)) / Settings.GameSize.Width;
+            Format.Height = (float)this.ClientSize.Height / Settings.GameSize.Height;
         }
     }
 }
