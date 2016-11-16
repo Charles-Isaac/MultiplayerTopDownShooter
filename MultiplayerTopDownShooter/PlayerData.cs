@@ -56,7 +56,10 @@ namespace ClonesEngine
                 m_ID = 0;
                 m_DeathStatus = 1;
                 m_Velocite = Settings.DefaultPlayerSpeed;
-                m_Couleur = Color.Black.ToArgb();
+                //m_Couleur = Color.Black.ToArgb();
+               
+                Random rng = new Random();
+                m_Couleur = Color.FromArgb(rng.Next(256), rng.Next(256), rng.Next(256)).ToArgb();
                 m_Size = 10;
                 m_Score = 0;
             }
@@ -77,6 +80,8 @@ namespace ClonesEngine
             m_Velocite = Settings.DefaultPlayerSpeed;
             m_Size = 10;
             m_Score = 0;
+            Random rng = new Random();
+            m_Couleur = Color.FromArgb(rng.Next(256), rng.Next(256), rng.Next(256)).ToArgb();
         }
 
         public int Couleur
@@ -96,23 +101,55 @@ namespace ClonesEngine
 
             for (int i = 1; i <= PlayerCount; i++)
             {
-                PointF TempPosi = Player[i].Position;
-                Player[i].Position = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20),
-                    Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
+               
+                   // Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
                 //Collision.PlayerBorder(Player[i]);
                 if (Murs != null)
                 {
-                    for (int j = Murs.Murs.Length - 1; j > 0; j--)
+                    PointF TempPosi;// = Player[i].Position;
+
+
+                    /*Player[i].Position*/
+                    TempPosi = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20), Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
+
+                    int j = Murs.Murs.Length - 1;
+                    for (; j > 0 && !Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B); j--)
                     {
-                        if (Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
+                        
+                    }
+                    if (j <= 0)
+                    {
+                        
+                        Player[i].Position = TempPosi;
+                    }
+                    else
+                    {
+                        PointF VectMur = new PointF(Murs.Murs[j].A.X - Murs.Murs[j].B.X, Murs.Murs[j].A.Y - Murs.Murs[j].B.Y);
+                        PointF VectPlayer = new PointF(TempPosi.X - Player[i].Position.X, TempPosi.Y - Player[i].Position.Y);
+                        float dp = VectPlayer.X * VectMur.X + VectPlayer.Y * VectMur.Y;
+                        PointF proj = new PointF();
+                        proj.X = (dp / (VectMur.X * VectMur.X + VectMur.Y * VectMur.Y)) * VectMur.X;
+                        proj.Y = (dp / (VectMur.X * VectMur.X + VectMur.Y * VectMur.Y)) * VectMur.Y;
+
+                        Player[i].Position = new PointF(Player[i].Position.X + proj.X, Player[i].Position.Y + proj.Y);
+                        if (float.IsNaN(Player[i].Position.X))
                         {
-                            Player[i].Position = TempPosi;
-                            j = 0; ////////////////////////////////////////ugh...
+                            System.Windows.Forms.MessageBox.Show("The application is broken");
                         }
                     }
+                   /* TempPosi = new PointF(Player[i].Position.X, Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
+                    j = Murs.Murs.Length - 1;
+                    for (; j > 0 && !Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B); j--)
+                    {
+
+                    }
+                    if (j <= 0)
+                    {
+                        Player[i].Position = TempPosi;
+                    }*/
                 }
             }
-            Player[ID].m_DirectionRegard = (int)-((Math.Atan2(MousePosition.X - Player[ID].Position.X, MousePosition.Y - Player[ID].Position.Y)*173.5/Math.PI)-173.5);
+            Player[ID].m_DirectionRegard = (int)(-((Math.Atan2(MousePosition.X - Player[ID].Position.X, MousePosition.Y - Player[ID].Position.Y) * 180 / Math.PI) - 180)+7.5)%360;//*173.5/Math.PI)-173.5);
 
 
             /*

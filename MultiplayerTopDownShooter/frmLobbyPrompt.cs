@@ -19,10 +19,10 @@ namespace ClonesEngine
         private int m_Lobby;
         private void btnOK_Click(object sender, EventArgs e)
         {
-            m_Lobby = (Math.Abs(txtLobbyName.Text.GetHashCode()) % 16383) + 49152;
+            m_Lobby = (Math.Abs(txtLobbyName.Text.GetHashCode()) % 0x3FFF/*16383*/) + 0xC000 /*49152*/;
             DialogResult = DialogResult.OK;
             this.Close();
-        }
+        } 
 
         public int Lobby
         {

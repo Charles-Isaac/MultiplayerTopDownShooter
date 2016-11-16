@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,9 @@ namespace MultiplayerTopDownShooter
         Point[] ShadowPolygon = new Point[6];
         Point[,] ShadowArray;
 
+        Bitmap[] PlayersImage;
+        Bitmap[] TerrainImage;
+
 
         public Main()
         {
@@ -43,6 +47,23 @@ namespace MultiplayerTopDownShooter
             this.DoubleBuffered = true;
 
             FPSTimer = Environment.TickCount;
+
+            PlayersImage = new Bitmap[24];
+            TerrainImage = new Bitmap[1];
+            for (int i = 0; i < 24; i++)
+            {
+                using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("Player" + (i*15).ToString().PadLeft(3, '0'), Properties.Resources.Culture)))
+                    PlayersImage[i] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
+            }
+
+            for (int i = 0; i < 1; i++)
+            {
+                using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("GroundTexture2", Properties.Resources.Culture)))
+                    TerrainImage[i] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
+            }
+
+
+            this.BackgroundImage = TerrainImage[0];//Properties.Resources.GroundTexture2;
        }
 
         private void Main_Paint(object sender, PaintEventArgs e)
@@ -50,21 +71,23 @@ namespace MultiplayerTopDownShooter
             Invoke(new Action(() =>
             {
             e.Graphics.ScaleTransform((float)this.ClientSize.Height / Settings.GameSize.Width, (float)this.ClientSize.Height / Settings.GameSize.Width, System.Drawing.Drawing2D.MatrixOrder.Append);
-
+               // e.Graphics.DrawImage(Properties.Resources.GroundTexture1,0,0,Settings.GameSize.Width,Settings.GameSize.Height);
             for (int i = 1; i <= GP.PlayerCount; i++)
             {
                     //Murs
-                    e.Graphics.DrawImage((Image)Properties.Resources.ResourceManager.GetObject("Player" + ((int)((GP.PlayerList[i].DirectionRegard + 7.5) / 15) * 15).ToString().PadLeft(3,'0'), Properties.Resources.Culture), GP.PlayerList[i].Position.X - 45, GP.PlayerList[i].Position.Y - 45);
+                    // e.Graphics.DrawImage((Image)Properties.Resources.ResourceManager.GetObject("Player" + ((int)((GP.PlayerList[i].DirectionRegard + 7.5) / 15) * 15).ToString().PadLeft(3,'0'), Properties.Resources.Culture), GP.PlayerList[i].Position.X - 45, GP.PlayerList[i].Position.Y - 45);
+                    e.Graphics.DrawImage(PlayersImage[GP.PlayerList[i].DirectionRegard/15], GP.PlayerList[i].Position.X - 45, GP.PlayerList[i].Position.Y - 45);
 
 
-                   // e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
-                  //      GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
+                    // e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
+                    //      GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
                     lock (GP.PlayerList[i].BulletLock)
                     {
                             for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
                             {
-                                e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)), GP.PlayerList[i].Bullet[j].Position.X - 2, GP.PlayerList[i].Bullet[j].Position.Y - 2, 4, 4);
-                            }
+                            e.Graphics.FillEllipse(new SolidBrush(Color.Yellow/*FromArgb(GP.PlayerList[i].Couleur)*/), GP.PlayerList[i].Bullet[j].Position.X - 4, GP.PlayerList[i].Bullet[j].Position.Y - 4, 8, 8);
+                            e.Graphics.DrawEllipse(new Pen(Color.Black/*FromArgb(GP.PlayerList[i].Couleur)*/,1), GP.PlayerList[i].Bullet[j].Position.X - 4, GP.PlayerList[i].Bullet[j].Position.Y - 4, 8, 8);
+                        }
                     }
 
                 }
