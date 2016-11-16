@@ -327,13 +327,13 @@ namespace ClonesEngine
             m_PacketID++;
         }
 
-        public void UpdatePlayer(byte ID)
+        public void UpdatePlayer(byte ID, Point MousePosition)
         {
             if (ID != 0)
             {
                 // int Time = m_PlayerTime[ID];
                 // m_PlayerTime[ID] = Environment.TickCount;
-                List<PlayerDamage> BulletDamageBuffer = m_PlayerList[ID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID, Murs);
+                List<PlayerDamage> BulletDamageBuffer = m_PlayerList[ID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID, Murs, MousePosition);
                 //int* test[34];
                 BulletDamage = BulletDamage.Concat(BulletDamageBuffer).ToList();
 

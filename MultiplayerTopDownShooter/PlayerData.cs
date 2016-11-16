@@ -26,7 +26,7 @@ namespace ClonesEngine
         [XmlElement(Order = 2)]
         PointF m_Position;
         [XmlElement(Order = 3)]
-        PointF m_DirectionRegard;
+        private int m_DirectionRegard;
         [XmlElement(Order = 4)]
         PointF m_DirectionDeplacement;
        // [XmlElement(Order = 5)]
@@ -51,7 +51,7 @@ namespace ClonesEngine
             {
                 //m_LastTickUpdate = 0;
                 m_Position = new PointF(1, 1);
-                m_DirectionRegard = new PointF(0, 0);
+                m_DirectionRegard = 0;
                 m_DirectionDeplacement = new PointF(0, 0);
                 m_ID = 0;
                 m_DeathStatus = 1;
@@ -71,7 +71,7 @@ namespace ClonesEngine
         {
             //m_LastTickUpdate = TickCount;
             m_Position = new PointF(0, 0);
-            m_DirectionRegard = new PointF(0, 0);
+            m_DirectionRegard = 0;
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = IDConstructeur;
             m_Velocite = Settings.DefaultPlayerSpeed;
@@ -90,7 +90,7 @@ namespace ClonesEngine
             m_LBullet.Add(new Projectile(m_Position, Direction, Settings.DefaultBulletSpeed, Environment.TickCount));
         }
 
-        public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs)
+        public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs, Point MousePosition)
         {
             List<PlayerDamage> BulletDamage = new List<PlayerDamage>();
 
@@ -112,6 +112,7 @@ namespace ClonesEngine
                     }
                 }
             }
+            Player[ID].m_DirectionRegard = (int)-((Math.Atan2(MousePosition.X - Player[ID].Position.X, MousePosition.Y - Player[ID].Position.Y)*173.5/Math.PI)-173.5);
 
 
             /*
@@ -209,7 +210,11 @@ namespace ClonesEngine
             get { return m_Position; }
             set { m_Position = value; }
         }
-
+        public int DirectionRegard
+        {
+            get { return m_DirectionRegard; }
+            set { m_DirectionRegard = value; }
+        }
         public PointF Velocite
         {
             get { return m_DirectionDeplacement; }

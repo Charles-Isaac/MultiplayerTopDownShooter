@@ -77,6 +77,7 @@
     <Compile Include="Shadows.cs" />
     <Compile Include="TramePreGen.cs" />
     <Compile Include="UDPConnecter.cs" />
+    <Compile Include="Weapons.cs" />
     <EmbeddedResource Include="frmLobbyPrompt.resx">
       <DependentUpon>frmLobbyPrompt.cs</DependentUpon>
     </EmbeddedResource>
@@ -91,6 +92,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -105,6 +107,78 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player000.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player015.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player030.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player045.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player060.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player075.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player090.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player105.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player120.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player135.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player150.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player165.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player180.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player195.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player210.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player225.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player240.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player255.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player270.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player285.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player300.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player315.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player330.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Player345.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

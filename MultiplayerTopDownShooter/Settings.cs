@@ -12,7 +12,7 @@ namespace ClonesEngine
 
 
         const byte _DefaultPlayerSpeed = 5;
-        const byte _DeFaultBulletSpeed = 5;
+        const byte _DeFaultBulletSpeed = 6;
 
         const int _GameSizeX = 1000;
         const int _GameSizeY = 1000;

@@ -49,15 +49,16 @@ namespace MultiplayerTopDownShooter
         {
             Invoke(new Action(() =>
             {
-                e.Graphics.ScaleTransform((float)this.ClientSize.Height / Settings.GameSize.Width, (float)this.ClientSize.Height/Settings.GameSize.Width, System.Drawing.Drawing2D.MatrixOrder.Append);
+            e.Graphics.ScaleTransform((float)this.ClientSize.Height / Settings.GameSize.Width, (float)this.ClientSize.Height / Settings.GameSize.Width, System.Drawing.Drawing2D.MatrixOrder.Append);
 
-                for (int i = 1; i <= GP.PlayerCount; i++)
-                {
+            for (int i = 1; i <= GP.PlayerCount; i++)
+            {
                     //Murs
-                    
+                    e.Graphics.DrawImage((Image)Properties.Resources.ResourceManager.GetObject("Player" + ((int)((GP.PlayerList[i].DirectionRegard + 7.5) / 15) * 15).ToString().PadLeft(3,'0'), Properties.Resources.Culture), GP.PlayerList[i].Position.X - 45, GP.PlayerList[i].Position.Y - 45);
 
-                    e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
-                        GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
+
+                   // e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(GP.PlayerList[i].Couleur)),
+                  //      GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
                     lock (GP.PlayerList[i].BulletLock)
                     {
                             for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
@@ -94,6 +95,7 @@ namespace MultiplayerTopDownShooter
                 }
                 e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 10);
                 e.Graphics.DrawString(GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 50);
+                e.Graphics.DrawString(((int)((GP.PlayerList[GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 70);
                 if (Environment.TickCount - FPSTimer > 1000)
                 {
                     FPSLast = FPSCounter;
@@ -106,7 +108,7 @@ namespace MultiplayerTopDownShooter
                 MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
                 MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
                 e.Graphics.DrawLine(new Pen(Color.Red), GP.PlayerList[GP.ID].Position, MousePosition);
-                GP.UpdatePlayer(GP.ID);
+                GP.UpdatePlayer(GP.ID, MousePosition);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
                 /*if (MouseButtons == MouseButtons.Left)
                 {
@@ -270,9 +272,10 @@ namespace MultiplayerTopDownShooter
             {
                 this.ClientSize = new Size(this.ClientSize.Height + 10,this.ClientSize.Height);
             }
-          //  this.ClientSize.Width
+
             Format.Width = (float)(this.ClientSize.Width - (this.ClientSize.Width - this.ClientSize.Height)) / Settings.GameSize.Width;
             Format.Height = (float)this.ClientSize.Height / Settings.GameSize.Height;
+          //  this.Invalidate();
         }
     }
 }
