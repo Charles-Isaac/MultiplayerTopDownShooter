@@ -60,7 +60,7 @@ namespace ClonesEngine
                
                 Random rng = new Random();
                 m_Couleur = Color.FromArgb(rng.Next(256), rng.Next(256), rng.Next(256)).ToArgb();
-                m_Size = 10;
+                m_Size = Settings.DefaultPlayerSize;
                 m_Score = 0;
             }
         }
@@ -78,7 +78,7 @@ namespace ClonesEngine
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = IDConstructeur;
             m_Velocite = Settings.DefaultPlayerSpeed;
-            m_Size = 10;
+            m_Size = Settings.DefaultPlayerSize;
             m_Score = 0;
             Random rng = new Random();
             m_Couleur = Color.FromArgb(rng.Next(256), rng.Next(256), rng.Next(256)).ToArgb();
@@ -90,9 +90,9 @@ namespace ClonesEngine
             set { m_Couleur = value; }
         }
 
-        public void AjouterProjectile(PointF Direction)
+        public void AjouterProjectile(Projectile bullet)
         {
-            m_LBullet.Add(new Projectile(m_Position, Direction, Settings.DefaultBulletSpeed, Environment.TickCount));
+            m_LBullet.Add(bullet);
         }
 
         public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs, Point MousePosition)
@@ -101,52 +101,60 @@ namespace ClonesEngine
 
             for (int i = 1; i <= PlayerCount; i++)
             {
-               
-                   // Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
+
+                // Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
                 //Collision.PlayerBorder(Player[i]);
-                if (Murs != null)
+                if (Player[i].Velocite.X != 0 || Player[i].Velocite.Y != 0)
                 {
-                    PointF TempPosi;// = Player[i].Position;
-
-
-                    /*Player[i].Position*/
-                    TempPosi = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20), Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
-
-                    int j = Murs.Murs.Length - 1;
-                    for (; j > 0 && !Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B); j--)
+                    if (Murs != null)
                     {
-                        
-                    }
-                    if (j <= 0)
-                    {
-                        
-                        Player[i].Position = TempPosi;
-                    }
-                    else
-                    {
-                        PointF VectMur = new PointF(Murs.Murs[j].A.X - Murs.Murs[j].B.X, Murs.Murs[j].A.Y - Murs.Murs[j].B.Y);
-                        PointF VectPlayer = new PointF(TempPosi.X - Player[i].Position.X, TempPosi.Y - Player[i].Position.Y);
-                        float dp = VectPlayer.X * VectMur.X + VectPlayer.Y * VectMur.Y;
-                        PointF proj = new PointF();
-                        proj.X = (dp / (VectMur.X * VectMur.X + VectMur.Y * VectMur.Y)) * VectMur.X;
-                        proj.Y = (dp / (VectMur.X * VectMur.X + VectMur.Y * VectMur.Y)) * VectMur.Y;
+                        PointF TempPosi;// = Player[i].Position;
 
-                        Player[i].Position = new PointF(Player[i].Position.X + proj.X, Player[i].Position.Y + proj.Y);
-                        if (float.IsNaN(Player[i].Position.X))
+
+                        /*Player[i].Position*/
+                        TempPosi = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20), Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
+
+                        int j = Murs.Murs.Length - 1;
+                        for (; j > 0; j--)
                         {
-                            System.Windows.Forms.MessageBox.Show("The application is broken");
-                        }
-                    }
-                   /* TempPosi = new PointF(Player[i].Position.X, Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
-                    j = Murs.Murs.Length - 1;
-                    for (; j > 0 && !Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B); j--)
-                    {
+                            if (Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
+                            {
 
-                    }
-                    if (j <= 0)
-                    {
+                                PointF VectMur = new PointF(Murs.Murs[j].A.X - Murs.Murs[j].B.X, Murs.Murs[j].A.Y - Murs.Murs[j].B.Y);
+                                PointF VectPlayer = new PointF(TempPosi.X - Player[i].Position.X, TempPosi.Y - Player[i].Position.Y);
+                                float dp = VectPlayer.X * VectMur.X + VectPlayer.Y * VectMur.Y;
+                                PointF proj = new PointF();
+                                proj.X = (dp / (VectMur.X * VectMur.X + VectMur.Y * VectMur.Y)) * VectMur.X;
+                                proj.Y = (dp / (VectMur.X * VectMur.X + VectMur.Y * VectMur.Y)) * VectMur.Y;
+                                if (Player[i].Position.Y <= 0)
+                                {
+                                    Player[i].Position = new PointF(Player[i].Position.X, 1);
+                                }
+                                if (Player[i].Position.Y >= Settings.GameSize.Height)
+                                {
+                                    Player[i].Position = new PointF(Player[i].Position.X, Settings.GameSize.Height - 1);
+                                }
+                                if (Player[i].Position.X <= 0)
+                                {
+                                    Player[i].Position = new PointF(1, Player[i].Position.Y);
+                                }
+                                if (Player[i].Position.X >= Settings.GameSize.Width)
+                                {
+                                    Player[i].Position = new PointF(Settings.GameSize.Width - 1, Player[i].Position.Y);
+                                }
+
+                                TempPosi = new PointF(Player[i].Position.X + proj.X, Player[i].Position.Y + proj.Y);
+                                if (float.IsNaN(Player[i].Position.X))
+                                {
+                                    System.Windows.Forms.MessageBox.Show("The application is broken");
+                                }
+
+                            }
+
+                        }
+
                         Player[i].Position = TempPosi;
-                    }*/
+                    }   
                 }
             }
             Player[ID].m_DirectionRegard = (int)(-((Math.Atan2(MousePosition.X - Player[ID].Position.X, MousePosition.Y - Player[ID].Position.Y) * 180 / Math.PI) - 180)+7.5)%360;//*173.5/Math.PI)-173.5);
@@ -198,40 +206,13 @@ namespace ClonesEngine
                             }
                         }
                     }
-                    /*if (Exist && (float.IsNaN(m_LBullet[i].Position.X) || (m_LBullet[i].Position.X > System.Windows.Forms.Form.ActiveForm?.Width || m_LBullet[i].Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm?.Height || m_LBullet[i].Position.Y < 0))) //Crash without the '?'
-                    {
-                        //lock (m_BulletLock)
-                        //  {
-                        m_LBullet.RemoveAt(i);
-
-                        //  }
-                    }*/
                 }
             }
 
             
 
             return BulletDamage;
-      //      Exit();
-
-            //m_LastTickUpdate = OldTime;
         }
-  /*      private bool Locked = false;
-        public void Enter()
-        {
-            // Yield until acquired is false
-            while (Locked) { Thread.Sleep(1); }
-            Locked = true;
-        }
-        public void Exit()
-        {
-            Locked = false;
-        }
-        public byte ID
-        {
-            get { return m_ID; }
-        }
-  */
         public int Score
         {
         get { return m_Score; }

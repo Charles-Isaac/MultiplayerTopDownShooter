@@ -21,6 +21,7 @@ namespace ClonesEngine
         {
             
         }
+        /*
         public Projectile(int LastTickCount)
         {
             m_Position = new PointF(0, 0);
@@ -28,8 +29,9 @@ namespace ClonesEngine
             m_Velocite = 10;
             //m_LastTickUpdate = LastTickCount;
         }
+        */
 
-        public Projectile(PointF Position, PointF DirectionDeplacement, byte cVelocite, int LastTickCount)
+        public Projectile(PointF Position, PointF DirectionDeplacement, byte cVelocite)
         {
             m_Position = Position;
             m_DirectionDeplacement = DirectionDeplacement;

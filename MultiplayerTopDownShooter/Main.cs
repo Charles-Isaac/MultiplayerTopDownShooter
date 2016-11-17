@@ -13,6 +13,7 @@ using ClonesEngine;
 
 namespace MultiplayerTopDownShooter
 {
+    
     public partial class Main : Form
     {
         Random RNG;
@@ -30,11 +31,15 @@ namespace MultiplayerTopDownShooter
 
         Bitmap[] PlayersImage;
         Bitmap[] TerrainImage;
-
-
+   //     System.Threading.Timer WeaponTimer;
         public Main()
         {
             InitializeComponent();
+
+
+            
+            
+
             frmLobbyPrompt frmLobby = new frmLobbyPrompt();
             frmLobby.ShowDialog();
             if (frmLobby.DialogResult == DialogResult.OK)
@@ -61,11 +66,31 @@ namespace MultiplayerTopDownShooter
                 using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("GroundTexture2", Properties.Resources.Culture)))
                     TerrainImage[i] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
             }
+            
+/*
+
+            var autoEvent = new AutoResetEvent(false);
+            GP.StatusChecker(10);
+
+            // Create a timer that invokes CheckStatus after one second, 
+            // and every 1/4 second thereafter.
+            
+            WeaponTimer = new System.Threading.Timer(GP.CheckStatus,
+                                       autoEvent, 1000, 250);
+            WeaponTimer.*/
+            //   WeaponTimer = new System.Threading.Timer(autoEvent);
+
+
+
+
 
 
             this.BackgroundImage = TerrainImage[0];//Properties.Resources.GroundTexture2;
        }
-
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+        }
         private void Main_Paint(object sender, PaintEventArgs e)
         {
             Invoke(new Action(() =>
@@ -83,10 +108,10 @@ namespace MultiplayerTopDownShooter
                     //      GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
                     lock (GP.PlayerList[i].BulletLock)
                     {
-                            for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
-                            {
-                            e.Graphics.FillEllipse(new SolidBrush(Color.Yellow/*FromArgb(GP.PlayerList[i].Couleur)*/), GP.PlayerList[i].Bullet[j].Position.X - 4, GP.PlayerList[i].Bullet[j].Position.Y - 4, 8, 8);
-                            e.Graphics.DrawEllipse(new Pen(Color.Black/*FromArgb(GP.PlayerList[i].Couleur)*/,1), GP.PlayerList[i].Bullet[j].Position.X - 4, GP.PlayerList[i].Bullet[j].Position.Y - 4, 8, 8);
+                        for (int j = GP.PlayerList[i].Bullet.Count - 1; j > 0; j--)
+                        {
+                            e.Graphics.FillEllipse(new SolidBrush(Color.Yellow/*FromArgb(GP.PlayerList[i].Couleur)*/), GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize/2, GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize/2, Settings.DefaultBulletSize, Settings.DefaultBulletSize);
+                            e.Graphics.DrawEllipse(new Pen(Color.Black/*FromArgb(GP.PlayerList[i].Couleur)*/, Settings.DefaultBulletSize/4), GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize/2, GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize/2, Settings.DefaultBulletSize, Settings.DefaultBulletSize);
                         }
                     }
 
@@ -131,6 +156,7 @@ namespace MultiplayerTopDownShooter
                 MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
                 MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
                 e.Graphics.DrawLine(new Pen(Color.Red), GP.PlayerList[GP.ID].Position, MousePosition);
+               // Thread.Sleep(250); //Lag gen
                 GP.UpdatePlayer(GP.ID, MousePosition);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
                 /*if (MouseButtons == MouseButtons.Left)
@@ -139,7 +165,7 @@ namespace MultiplayerTopDownShooter
                 }*/
                 //Thread.Sleep(RNG.Next(100)); //random ping generator ;)
 
-
+                e.Graphics.DrawImage(Properties.Resources.Glock17, Settings.GameSize.Width+10, 0);
                 //Invalidate();
                 this.Invalidate(new Rectangle(new Point(0,0), new Size(this.ClientSize.Height, this.ClientSize.Height)));
             }));
@@ -151,13 +177,21 @@ namespace MultiplayerTopDownShooter
             Point MousePosition = this.PointToClient(Cursor.Position);
             MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
             MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
-
-            GP.PlayerList[GP.ID].AjouterProjectile(new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
+            GP.WeaponList[0].MouseDown(new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
                 ((MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y)))));
+
+       //     GP.PlayerList[GP.ID].AjouterProjectile(new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
+             //   ((MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y)))));
             
             //GP.PlayerList[GP.ID].PlayerBullet.RemoveAt(j);
         }
+        private void Main_MouseUp(object sender, MouseEventArgs e)
+        {
 
+
+
+
+        }
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -300,5 +334,7 @@ namespace MultiplayerTopDownShooter
             Format.Height = (float)this.ClientSize.Height / Settings.GameSize.Height;
           //  this.Invalidate();
         }
+
+        
     }
 }

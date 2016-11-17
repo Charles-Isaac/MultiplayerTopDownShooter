@@ -12,10 +12,17 @@ namespace ClonesEngine
 
 
         const byte _DefaultPlayerSpeed = 5;
-        const byte _DeFaultBulletSpeed = 6;
+        const byte _DeFaultBulletSpeed = 15;
+        const byte _DefaltBulletSize = 12;
+        const byte _PlayerSize = 80;
 
-        const int _GameSizeX = 1000;
-        const int _GameSizeY = 1000;
+        const int _GameSizeX = 2000;
+        const int _GameSizeY = 2000;
+
+        public static byte DefaultBulletSize
+        {
+            get { return _DefaltBulletSize; }
+        }
 
         public static Size GameSize
         {
@@ -24,6 +31,10 @@ namespace ClonesEngine
         public static byte DefaultPlayerSpeed
         {
             get { return _DefaultPlayerSpeed; }
+        }
+        public static byte DefaultPlayerSize
+        {
+            get { return _PlayerSize; }
         }
         public static byte DefaultBulletSpeed
         {

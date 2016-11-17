@@ -29,11 +29,13 @@ namespace ClonesEngine
     }
     class GestionnaireDePacket
     {
-    //    Stopwatch TickCounter;
+        //    Stopwatch TickCounter;
+        object PlayerLock = new object();
         UDPConnecter ConnectionUDP;
         Thread ThreadReception;
         //public TramePreGen PreGen;
         PlayerData[] m_PlayerList = new PlayerData[255];
+        
         int[] m_PlayerTime = new int[255];
         byte m_ID;
         int AutoVerifData = 0;
@@ -51,6 +53,7 @@ namespace ClonesEngine
         byte[] m_Receiver;
         //byte[] m_PlayerIntList = new byte[255];
         int m_PacketID;
+        public Weapons[] WeaponList;
 
         Map Murs;
         int MapSeed;
@@ -101,7 +104,8 @@ namespace ClonesEngine
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(PointF)].Add(1, "X").Add(2, "Y");
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Projectile), true);
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Projectile)].Add(1, "Position").Add(2, "Direction").Add(3, "Velocite");
-
+            WeaponList = new Weapons[(byte)WeaponType.NumberOfWeapons];
+            AssignWeapons();
 
             m_LobbyPort = Lobby;
             for (int i = 0; i < 255; i++)
@@ -146,7 +150,7 @@ namespace ClonesEngine
             {
                 do
                 {
-                    Exit();
+                    //Exit();
                     TryCount++;
                     Thread.Sleep(25);
                     Send(TramePreGen.AskNumberOfPlayer);
@@ -165,30 +169,35 @@ namespace ClonesEngine
 
                             case (byte)PacketUse.AnswerNumberOfPlayer:
 
-                                Enter();
-                                if (m_Receiver[2] > m_PlayerCount || m_ID == 0)
+                                lock (PlayerLock)
                                 {
-                                    //this may reset the last player
-
-                                    for (; m_PlayerCount < m_Receiver[2]; m_PlayerCount++)
+                                    if (m_Receiver[2] > m_PlayerCount || m_ID == 0)
                                     {
-                                        m_PlayerList[m_PlayerCount] = new PlayerData(m_PlayerCount, Environment.TickCount/*TickCounter.ElapsedTicks*/);
-                                        m_PlayerTime[m_PlayerCount] = Environment.TickCount;
-                                    }
-                                    if (m_ID == 0)
-                                    {
-                                        m_ID = m_Receiver[2];
-                                        m_ID++;
-                                        m_PlayerCount++;
-                                        m_PlayerList[m_ID] = new PlayerData(m_ID, Environment.TickCount/*TickCounter.ElapsedTicks*/);
-                                        m_PlayerTime[m_ID] = Environment.TickCount;
+                                        //this may reset the last player
 
-                                        Send(TramePreGen.AnswerListeJoueur(m_PlayerCount, m_ID));
-                                        Send(TramePreGen.AskAutoVerif(ID));
-                                        Send(TramePreGen.AskMapSeed());
+                                        for (; m_PlayerCount < m_Receiver[2]; m_PlayerCount++)
+                                        {
+                                            m_PlayerList[m_PlayerCount] = new PlayerData(m_PlayerCount, Environment.TickCount/*TickCounter.ElapsedTicks*/);
+                                            m_PlayerTime[m_PlayerCount] = Environment.TickCount;
+                                        }
+                                        if (m_ID == 0)
+                                        {
+                                            m_ID = m_Receiver[2];
+                                            m_ID++;
+                                            m_PlayerCount++;
+                                            m_PlayerList[m_ID] = new PlayerData(m_ID, Environment.TickCount/*TickCounter.ElapsedTicks*/);
+                                            m_PlayerTime[m_ID] = Environment.TickCount;
+
+
+                                            AssignWeapons();
+
+
+                                            Send(TramePreGen.AnswerListeJoueur(m_PlayerCount, m_ID));
+                                            Send(TramePreGen.AskAutoVerif(ID));
+                                            Send(TramePreGen.AskMapSeed());
+                                        }
                                     }
                                 }
-                                Exit();
 
                                 break;
                             case (byte)PacketUse.InfoJoueur:
@@ -217,6 +226,7 @@ namespace ClonesEngine
                                 {
                                     m_ID = 1;
                                     m_PlayerCount = 1;
+                                    AssignWeapons();
                                     Thread.Sleep(RNG.Next(0, 50));
                                     //GenMap();
                                 }
@@ -289,7 +299,10 @@ namespace ClonesEngine
                         }
 
                     } while (m_ID != 0);//While(true)
-                    Enter();
+                    lock (PlayerLock)
+                    {
+
+                    }
                 } while (TryCount < 100 && m_ID == 0);
                 if (TryCount == 100 && m_ID == 0)
                 {
@@ -297,6 +310,9 @@ namespace ClonesEngine
                     Murs = new Map(MapSeed);
                     m_ID = 1;
                     m_PlayerCount = 1;
+
+                    AssignWeapons();
+                    
 
                     //Send(TramePreGen.AnswerMap)
                 }
@@ -306,9 +322,14 @@ namespace ClonesEngine
             }
         }
 
+        private void AssignWeapons()
+        {
 
 
+            WeaponList[0] = new Pistol(ref m_ID, m_PlayerList);
 
+        }
+        /*
         private bool Locked = false;
         public void Enter()
         {
@@ -316,11 +337,12 @@ namespace ClonesEngine
             while (Locked) { Thread.Sleep(1); }
             Locked = true;
         }
-        public void Exit()
+        public
+         void Exit()
         {
             Locked = false;
         }
-
+        */
         public void Send(byte[] data)
         {
             ConnectionUDP.Send(data);
@@ -356,6 +378,11 @@ namespace ClonesEngine
                     Updatable = true;
                 }
             }
+        }
+       
+        public void UpdateMousePosition(Point MousePosition)
+        {
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
     }
 }
