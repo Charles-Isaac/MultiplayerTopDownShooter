@@ -271,7 +271,7 @@ namespace ClonesEngine
                             case (byte)PacketUse.InfoPlayerDamage:
                                 if (m_Receiver[2] == m_ID)
                                 {
-                                    m_PlayerList[m_ID].Position = new PointF(RNG.Next(500), RNG.Next(500));
+                                    m_PlayerList[m_ID].Position = new PointF(RNG.Next(Settings.GameSize.Width), RNG.Next(Settings.GameSize.Height));
                                     Send(TramePreGen.AcknowledgeDamage(m_ID));
                                     Send(TramePreGen.InfoJoueur(m_PlayerList[ID], m_ID, m_PacketID));
                                 }
@@ -326,8 +326,8 @@ namespace ClonesEngine
         {
 
 
-            WeaponList[0] = new Pistol(ref m_ID, m_PlayerList);
-
+            WeaponList[(byte)WeaponType.Pistol] = new Pistol(ref m_ID, m_PlayerList);
+            WeaponList[(byte)WeaponType.Shotgun] = new Shotgun(ref m_ID, m_PlayerList);
         }
         /*
         private bool Locked = false;

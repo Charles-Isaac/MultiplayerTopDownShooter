@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using ClonesEngine;
+using System.Drawing.Drawing2D;
 
 namespace MultiplayerTopDownShooter
 {
@@ -25,7 +26,7 @@ namespace MultiplayerTopDownShooter
 
         SizeF Format = new SizeF(1, 1);
 
-        Brush Br = new SolidBrush(Color.Black);
+        SolidBrush Br;
         Point[] ShadowPolygon = new Point[6];
         Point[,] ShadowArray;
 
@@ -35,10 +36,7 @@ namespace MultiplayerTopDownShooter
         public Main()
         {
             InitializeComponent();
-
-
-            
-            
+            //TransparencyKey = Color.Black;
 
             frmLobbyPrompt frmLobby = new frmLobbyPrompt();
             frmLobby.ShowDialog();
@@ -66,18 +64,18 @@ namespace MultiplayerTopDownShooter
                 using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("GroundTexture2", Properties.Resources.Culture)))
                     TerrainImage[i] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
             }
-            
-/*
+            Br = new SolidBrush(Color.Black);// new TextureBrush(Properties.Resources.ShadowTexture, new Rectangle(0, 0, 250, 250));
+            /*
 
-            var autoEvent = new AutoResetEvent(false);
-            GP.StatusChecker(10);
+                        var autoEvent = new AutoResetEvent(false);
+                        GP.StatusChecker(10);
 
-            // Create a timer that invokes CheckStatus after one second, 
-            // and every 1/4 second thereafter.
-            
-            WeaponTimer = new System.Threading.Timer(GP.CheckStatus,
-                                       autoEvent, 1000, 250);
-            WeaponTimer.*/
+                        // Create a timer that invokes CheckStatus after one second, 
+                        // and every 1/4 second thereafter.
+
+                        WeaponTimer = new System.Threading.Timer(GP.CheckStatus,
+                                                   autoEvent, 1000, 250);
+                        WeaponTimer.*/
             //   WeaponTimer = new System.Threading.Timer(autoEvent);
 
 
@@ -85,7 +83,7 @@ namespace MultiplayerTopDownShooter
 
 
 
-            this.BackgroundImage = TerrainImage[0];//Properties.Resources.GroundTexture2;
+          //  this.BackgroundImage = TerrainImage[0];//Properties.Resources.GroundTexture2;
        }
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -95,8 +93,10 @@ namespace MultiplayerTopDownShooter
         {
             Invoke(new Action(() =>
             {
+
             e.Graphics.ScaleTransform((float)this.ClientSize.Height / Settings.GameSize.Width, (float)this.ClientSize.Height / Settings.GameSize.Width, System.Drawing.Drawing2D.MatrixOrder.Append);
-               // e.Graphics.DrawImage(Properties.Resources.GroundTexture1,0,0,Settings.GameSize.Width,Settings.GameSize.Height);
+                // e.Graphics.DrawImage(Properties.Resources.GroundTexture1,0,0,Settings.GameSize.Width,Settings.GameSize.Height);
+                e.Graphics.DrawImage(TerrainImage[0], new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0,0,250,250), GraphicsUnit.Pixel);
             for (int i = 1; i <= GP.PlayerCount; i++)
             {
                     //Murs
@@ -141,9 +141,15 @@ namespace MultiplayerTopDownShooter
                         e.Graphics.DrawLine(new Pen(Color.Green, 5.0F), GP.Map.Murs[j].A, GP.Map.Murs[j].B);
                     }
                 }
-                e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 10);
-                e.Graphics.DrawString(GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 50);
-                e.Graphics.DrawString(((int)((GP.PlayerList[GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 70);
+
+               
+
+                
+                e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 10);
+                e.Graphics.DrawString(GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 60);
+                e.Graphics.DrawString(((int)((GP.PlayerList[GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 110);
+                
+
                 if (Environment.TickCount - FPSTimer > 1000)
                 {
                     FPSLast = FPSCounter;
@@ -151,7 +157,8 @@ namespace MultiplayerTopDownShooter
                     FPSCounter = 0;
                 }
                 FPSCounter++;
-                e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 16), new SolidBrush(Color.Yellow), 10, 30);
+                e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black
+                    ), Settings.GameSize.Width + 70, 160);
                 Point MousePosition = this.PointToClient(Cursor.Position);
                 MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
                 MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
@@ -165,9 +172,9 @@ namespace MultiplayerTopDownShooter
                 }*/
                 //Thread.Sleep(RNG.Next(100)); //random ping generator ;)
 
-                e.Graphics.DrawImage(Properties.Resources.Glock17, Settings.GameSize.Width+10, 0);
+   //             e.Graphics.DrawImage(Properties.Resources.Glock17, Settings.GameSize.Width+10, 0);
                 //Invalidate();
-                this.Invalidate(new Rectangle(new Point(0,0), new Size(this.ClientSize.Height, this.ClientSize.Height)));
+                this.Invalidate(new Rectangle(new Point(0,0), new Size(this.ClientSize.Height+100, this.ClientSize.Height)));
             }));
 
         }
@@ -177,7 +184,7 @@ namespace MultiplayerTopDownShooter
             Point MousePosition = this.PointToClient(Cursor.Position);
             MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
             MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
-            GP.WeaponList[0].MouseDown(new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
+            GP.WeaponList[1].MouseDown(new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
                 ((MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y)))));
 
        //     GP.PlayerList[GP.ID].AjouterProjectile(new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
