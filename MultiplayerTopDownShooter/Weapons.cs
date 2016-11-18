@@ -10,9 +10,10 @@ namespace ClonesEngine
 {
     enum WeaponType : byte
     {
-        NumberOfWeapons = 2,
+        NumberOfWeapons = 3,
         Pistol = 0,
         Shotgun = 1,
+        MachineGun = 2,
 
     }
     abstract class Weapons
@@ -21,6 +22,7 @@ namespace ClonesEngine
         public abstract void MouseUp();
         public abstract int NBulletLeft { get; set; }
         public abstract int NBulletInCharger { get; set; }
+        public abstract PointF MouseDir { set; }
 
 
     }
@@ -38,17 +40,19 @@ namespace ClonesEngine
         PlayerData[] _PlayerList;
 
         const string WeaponName = "Wannabe a Glock17";
-        const float Precision = 0.9F;
         const byte BulletSpeed = 25;
         const int ReloadingTime = 2000;
         const int ClipSize = 17;
+        const int Firerate = 100;
+        const int SpreadAngle = 2;
+        Random RNG = new Random();
         bool CanShoot = true;
         bool Reloading = false;
         System.Timers.Timer Tim;
 
 
         PointF _MouseDir = new PointF();
-        public PointF MouseDir
+        public override PointF MouseDir
         {
             set { _MouseDir = value; }
         }
@@ -60,7 +64,7 @@ namespace ClonesEngine
             _Wielder = ID;
             _PlayerList = PlayerList;
             LastTickShot = Environment.TickCount;
-            Tim = new System.Timers.Timer(100);
+            Tim = new System.Timers.Timer(Firerate);
             Tim.AutoReset = false;
             Tim.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
 
@@ -74,7 +78,13 @@ namespace ClonesEngine
                 Tim.Start();
                 _MouseDir = MouseDir;
                  NBulletInCharger--;
-                _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
+
+                double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
+                MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
+                _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
+            
+
+           //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
             }
         }
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -85,7 +95,7 @@ namespace ClonesEngine
                 if (NBulletLeft <= 0)
                 {
                     Tim.Stop();
-                    Tim.Interval = 2000;
+                    Tim.Interval = ReloadingTime;
                     Tim.Start();
                 }
                 else
@@ -101,7 +111,7 @@ namespace ClonesEngine
                         NBulletInCharger = ClipSize;
                     }
                     Tim.Stop();
-                    Tim.Interval = 100;
+                    Tim.Interval = Firerate;
                     Reloading = false;
                     CanShoot = true;
                 }
@@ -115,7 +125,7 @@ namespace ClonesEngine
                     CanShoot = false;
                     Reloading = true;
                     Tim.Stop();
-                    Tim.Interval = 2000;
+                    Tim.Interval = ReloadingTime;
                     Tim.Start();
                     
                 }
@@ -135,27 +145,29 @@ namespace ClonesEngine
 
 
     }
-    /*class MachineGun : Weapons
+    class MachineGun : Weapons
     {
-        /*
-        int NBulletLeft;
-        int NBulletInCharger;
+        public override int NBulletLeft { get; set; }
+        public override int NBulletInCharger { get; set; }
         int LastTickShot;
         byte _Wielder;
         PlayerData[] _PlayerList;
 
         const string WeaponName = "Wannabe a Glock17";
-        const float Precision = 0.9F;
-        const byte BulletSpeed = 15;
+        const byte BulletSpeed = 25;
         const int ReloadingTime = 2000;
-        const int ClipSize = 17;
+        const int ClipSize = 30;
+        const int Firerate = 100;
+        const int SpreadAngle = 4;
+        Random RNG = new Random();
+
         bool CanShoot = true;
         bool Reloading = false;
         System.Timers.Timer Tim;
 
 
         PointF _MouseDir = new PointF();
-        public PointF MouseDir
+        public override PointF MouseDir
         {
             set { _MouseDir = value; }
         }
@@ -163,12 +175,12 @@ namespace ClonesEngine
         public MachineGun(ref byte ID, PlayerData[] PlayerList)
         {
             NBulletLeft = int.MaxValue;
-            NBulletInCharger = 17;
+            NBulletInCharger = ClipSize;
             _Wielder = ID;
             _PlayerList = PlayerList;
             LastTickShot = Environment.TickCount;
-            Tim = new System.Timers.Timer(100);
-            Tim.AutoReset = false;
+            Tim = new System.Timers.Timer(Firerate);
+            Tim.AutoReset = true;
             Tim.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
 
 
@@ -177,24 +189,79 @@ namespace ClonesEngine
         {
             if (CanShoot)
             {
+                CanShoot = false;
+                NBulletInCharger--;
+
                 Tim.Start();
                 _MouseDir = MouseDir;
-
-                _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
+                
+                double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
+                MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
+                _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
             }
         }
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
-            System.Windows.Forms.MessageBox.Show("Test");
+
+            if (Reloading)
+            {
+
+                if (NBulletLeft <= 0)
+                {
+                    Tim.Stop();
+                    Tim.AutoReset = false;
+                    Tim.Interval = ReloadingTime;
+                    Tim.Start();
+                }
+                else
+                {
+                    if (NBulletLeft <= ClipSize)
+                    {
+                        NBulletInCharger = NBulletLeft;
+                        NBulletLeft = 0;
+                    }
+                    else
+                    {
+                        NBulletLeft -= ClipSize;
+                        NBulletInCharger = ClipSize;
+                    }
+                    Tim.Stop();
+                    Tim.AutoReset = true;
+                    Tim.Interval = Firerate;
+                    Reloading = false;
+                    CanShoot = true;
+                }
+
+            }
+            else
+            {
+
+                if (NBulletInCharger <= 0)
+                {
+                    CanShoot = false;
+                    Reloading = true;
+                    Tim.Stop();
+                    Tim.AutoReset = false;
+                    Tim.Interval = ReloadingTime;
+                    Tim.Start();
+
+                }
+                else
+                {
+                    NBulletInCharger--;
+                    CanShoot = true;
+                    double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
+                    PointF MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
+                    _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
+                }
+            }
 
         }
         public override void MouseUp()
         {
             Tim.Stop();
         }
-      
-    }*/
+    }
     class Sniper
     {
 
@@ -209,19 +276,19 @@ namespace ClonesEngine
         Random RNG;
 
         const string WeaponName = "Wannabe a Glock17";
-        const float Precision = 0.9F;
         const byte BulletSpeed = 15;
         const int ReloadingTime = 4000;
         const int SpreadAngle = 30;
         const int NumberOfBuckshot = 10;
         const int ClipSize = 8;
+        const int Firerate = 500;
         bool CanShoot = true;
         bool Reloading = false;
         System.Timers.Timer Tim;
 
 
         PointF _MouseDir = new PointF();
-        public PointF MouseDir
+        public override PointF MouseDir
         {
             set { _MouseDir = value; }
         }
@@ -234,7 +301,7 @@ namespace ClonesEngine
             _Wielder = ID;
             _PlayerList = PlayerList;
             LastTickShot = Environment.TickCount;
-            Tim = new System.Timers.Timer(100);
+            Tim = new System.Timers.Timer(Firerate);
             Tim.AutoReset = false;
             Tim.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
 
@@ -252,7 +319,7 @@ namespace ClonesEngine
 
                 for (int i = 0; i < NumberOfBuckshot; i++)
                 {
-                    radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + RNG.Next(-SpreadAngle / 2, SpreadAngle / 2) * (Math.PI / 180.0);
+                    radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                     MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                     _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
                 }
@@ -267,7 +334,7 @@ namespace ClonesEngine
                 if (NBulletLeft <= 0)
                 {
                     Tim.Stop();
-                    Tim.Interval = 2000;
+                    Tim.Interval = ReloadingTime;
                     Tim.Start();
                 }
                 else
@@ -283,7 +350,7 @@ namespace ClonesEngine
                         NBulletInCharger = ClipSize;
                     }
                     Tim.Stop();
-                    Tim.Interval = 100;
+                    Tim.Interval = Firerate;
                     Reloading = false;
                     CanShoot = true;
                 }
@@ -297,7 +364,7 @@ namespace ClonesEngine
                     CanShoot = false;
                     Reloading = true;
                     Tim.Stop();
-                    Tim.Interval = 2000;
+                    Tim.Interval = ReloadingTime;
                     Tim.Start();
 
                 }
