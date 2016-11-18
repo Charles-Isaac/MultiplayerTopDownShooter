@@ -19,7 +19,8 @@ namespace ClonesEngine
     {
         public abstract void MouseDown(PointF MouseDir);
         public abstract void MouseUp();
-
+        public abstract int NBulletLeft { get; set; }
+        public abstract int NBulletInCharger { get; set; }
 
 
     }
@@ -30,15 +31,15 @@ namespace ClonesEngine
     }
     class Pistol : Weapons
     {
-        int NBulletLeft;
-        int NBulletInCharger;
+        public override int NBulletLeft { get; set; }
+        public override int NBulletInCharger { get; set; }
         int LastTickShot;
         byte _Wielder;
         PlayerData[] _PlayerList;
 
         const string WeaponName = "Wannabe a Glock17";
         const float Precision = 0.9F;
-        const byte BulletSpeed = 50;
+        const byte BulletSpeed = 25;
         const int ReloadingTime = 2000;
         const int ClipSize = 17;
         bool CanShoot = true;
@@ -69,6 +70,7 @@ namespace ClonesEngine
         {
             if (CanShoot)
             {
+                CanShoot = false;
                 Tim.Start();
                 _MouseDir = MouseDir;
                  NBulletInCharger--;
@@ -199,8 +201,8 @@ namespace ClonesEngine
     }
     class Shotgun : Weapons
     {
-        int NBulletLeft;
-        int NBulletInCharger;
+        public override int NBulletLeft { get; set; }
+        public override int NBulletInCharger { get; set; }
         int LastTickShot;
         byte _Wielder;
         PlayerData[] _PlayerList;
@@ -208,7 +210,7 @@ namespace ClonesEngine
 
         const string WeaponName = "Wannabe a Glock17";
         const float Precision = 0.9F;
-        const byte BulletSpeed = 50;
+        const byte BulletSpeed = 15;
         const int ReloadingTime = 4000;
         const int SpreadAngle = 30;
         const int NumberOfBuckshot = 10;
@@ -242,6 +244,7 @@ namespace ClonesEngine
         {
             if (CanShoot)
             {
+                CanShoot = false;
                 Tim.Start();
                 _MouseDir = MouseDir;
                 NBulletInCharger--;

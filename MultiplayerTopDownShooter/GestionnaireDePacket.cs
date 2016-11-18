@@ -54,6 +54,7 @@ namespace ClonesEngine
         //byte[] m_PlayerIntList = new byte[255];
         int m_PacketID;
         public Weapons[] WeaponList;
+        public byte SelectedWeapon = 0;
 
         Map Murs;
         int MapSeed;
