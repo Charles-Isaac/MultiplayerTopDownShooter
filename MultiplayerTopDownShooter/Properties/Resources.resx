@@ -121,11 +121,17 @@
   <data name="Glock17" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Glock17.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Glock17Sound" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Glock 17 (1).wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="GroundTexture1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GroundTexture1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="GroundTexture2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GroundTexture2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MachineGunSound" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MachineGunSound (2).wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Player000" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Player000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -201,5 +207,11 @@
   </data>
   <data name="ShadowTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ShadowTexture.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ShotgunSound" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ie_shot_gun-luminalace-770179786.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SniperSound" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SniperSound.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

@@ -198,6 +198,27 @@
   <ItemGroup>
     <None Include="Resources\ShadowTexture.jpeg" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Glock 17.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Glock 17 %281%29.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ie_shot_gun-luminalace-770179786.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SniperSound.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MachineGunSound.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MachineGunSound %281%29.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MachineGunSound %282%29.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -10,10 +10,11 @@ namespace ClonesEngine
 {
     enum WeaponType : byte
     {
-        NumberOfWeapons = 3,
+        NumberOfWeapons = 4,
         Pistol = 0,
         Shotgun = 1,
         MachineGun = 2,
+        Sniper = 3,
 
     }
     abstract class Weapons
@@ -23,13 +24,7 @@ namespace ClonesEngine
         public abstract int NBulletLeft { get; set; }
         public abstract int NBulletInCharger { get; set; }
         public abstract PointF MouseDir { set; }
-
-
-    }
-    abstract class WeaponTemplate
-    {
-        public abstract void MouseDown();
-        public abstract void MouseUp();
+        public abstract string WeaponName { get; }
     }
     class Pistol : Weapons
     {
@@ -38,8 +33,9 @@ namespace ClonesEngine
         int LastTickShot;
         byte _Wielder;
         PlayerData[] _PlayerList;
+        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.Glock17Sound);
 
-        const string WeaponName = "Wannabe a Glock17";
+        public override string WeaponName { get { return "Wannabe a Glock17"; } } 
         const byte BulletSpeed = 25;
         const int ReloadingTime = 2000;
         const int ClipSize = 17;
@@ -67,7 +63,7 @@ namespace ClonesEngine
             Tim = new System.Timers.Timer(Firerate);
             Tim.AutoReset = false;
             Tim.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
-
+           
 
         }
         public override void MouseDown(PointF MouseDir)
@@ -82,14 +78,15 @@ namespace ClonesEngine
                 double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                 MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                 _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
-            
+
+                FireSound.Play();
 
            //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
             }
         }
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            
+
             if (Reloading)
             {
                 if (NBulletLeft <= 0)
@@ -115,11 +112,11 @@ namespace ClonesEngine
                     Reloading = false;
                     CanShoot = true;
                 }
-                
+
             }
             else
             {
-               
+
                 if (NBulletInCharger <= 0)
                 {
                     CanShoot = false;
@@ -127,7 +124,7 @@ namespace ClonesEngine
                     Tim.Stop();
                     Tim.Interval = ReloadingTime;
                     Tim.Start();
-                    
+
                 }
                 else
                 {
@@ -152,15 +149,16 @@ namespace ClonesEngine
         int LastTickShot;
         byte _Wielder;
         PlayerData[] _PlayerList;
+        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.MachineGunSound);
 
-        const string WeaponName = "Wannabe a Glock17";
+        public override string WeaponName { get { return "Machine Gun"; } }
         const byte BulletSpeed = 25;
         const int ReloadingTime = 2000;
         const int ClipSize = 30;
-        const int Firerate = 100;
-        const int SpreadAngle = 4;
+        const int Firerate = 105;
+        const int SpreadAngle = 6;
         Random RNG = new Random();
-
+        object WeaponLock = new object();
         bool CanShoot = true;
         bool Reloading = false;
         System.Timers.Timer Tim;
@@ -180,8 +178,8 @@ namespace ClonesEngine
             _PlayerList = PlayerList;
             LastTickShot = Environment.TickCount;
             Tim = new System.Timers.Timer(Firerate);
-            Tim.AutoReset = true;
-            Tim.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
+            Tim.AutoReset = false;
+            Tim.Elapsed += _timer_Elapsed;
 
 
         }
@@ -191,13 +189,159 @@ namespace ClonesEngine
             {
                 CanShoot = false;
                 NBulletInCharger--;
-
-                Tim.Start();
+                lock (WeaponLock)
+                {
+                    Tim.Start();
+                }
                 _MouseDir = MouseDir;
                 
                 double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                 MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                 _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
+
+                FireSound.Play();
+
+            }
+        }
+        void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            lock (WeaponLock)
+            {
+
+
+
+                if (Reloading)
+                {
+                    if (NBulletLeft <= 0)
+                    {
+                        Tim.Stop();
+                        Tim.Interval = ReloadingTime;
+                        Tim.Start();
+                    }
+                    else
+                    {
+                        if (NBulletLeft <= ClipSize)
+                        {
+                            NBulletInCharger = NBulletLeft;
+                            NBulletLeft = 0;
+                        }
+                        else
+                        {
+                            NBulletLeft -= ClipSize;
+                            NBulletInCharger = ClipSize;
+                        }
+                        Tim.Stop();
+                        Tim.Interval = Firerate;
+                        Reloading = false;
+                        CanShoot = true;
+                    }
+
+                }
+                else
+                {
+
+                    if (NBulletInCharger <= 0)
+                    {
+                        CanShoot = false;
+                        Reloading = true;
+                        Tim.Stop();
+                        Tim.Interval = ReloadingTime;
+                        Tim.Start();
+
+                    }
+                    else
+                    {
+                        
+                        CanShoot = true;
+                        
+                        if (System.Windows.Forms.Control.MouseButtons == System.Windows.Forms.MouseButtons.Left)
+                        {
+                            NBulletInCharger--;
+                            double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
+                            PointF MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
+                            _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
+                            Tim.Start();
+                            FireSound.Play();
+                        }
+                    }
+                }
+            }
+
+
+            /*NBulletInCharger--;
+                    CanShoot = true;
+                    double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
+                    PointF MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
+                    _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
+                    if (System.Windows.Forms.Control.MouseButtons == System.Windows.Forms.MouseButtons.Left)
+                    {
+                        Tim.Start();
+                    }
+                    */
+
+        }
+        public override void MouseUp()
+        {
+            
+
+        }
+    }
+    class Sniper : Weapons
+    {
+        public override int NBulletLeft { get; set; }
+        public override int NBulletInCharger { get; set; }
+        int LastTickShot;
+        byte _Wielder;
+        PlayerData[] _PlayerList;
+        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.SniperSound);
+
+        public override string WeaponName { get { return "Some HUGE Sniper Rifle"; } }
+        const byte BulletSpeed = 200;
+        const int ReloadingTime = 5000;
+        const int ClipSize = 5;
+        const int Firerate = 600;
+        const int SpreadAngle = 0;
+        Random RNG = new Random();
+        bool CanShoot = true;
+        bool Reloading = false;
+        System.Timers.Timer Tim;
+
+
+        PointF _MouseDir = new PointF();
+        public override PointF MouseDir
+        {
+            set { _MouseDir = value; }
+        }
+
+        public Sniper(ref byte ID, PlayerData[] PlayerList)
+        {
+            NBulletLeft = int.MaxValue;
+            NBulletInCharger = ClipSize;
+            _Wielder = ID;
+            _PlayerList = PlayerList;
+            LastTickShot = Environment.TickCount;
+            Tim = new System.Timers.Timer(Firerate);
+            Tim.AutoReset = false;
+            Tim.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
+
+
+        }
+        public override void MouseDown(PointF MouseDir)
+        {
+            if (CanShoot)
+            {
+                CanShoot = false;
+                Tim.Start();
+                _MouseDir = MouseDir;
+                NBulletInCharger--;
+
+                double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
+                MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
+                _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
+
+                FireSound.Play();
+
+                //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
             }
         }
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -205,11 +349,9 @@ namespace ClonesEngine
 
             if (Reloading)
             {
-
                 if (NBulletLeft <= 0)
                 {
                     Tim.Stop();
-                    Tim.AutoReset = false;
                     Tim.Interval = ReloadingTime;
                     Tim.Start();
                 }
@@ -226,7 +368,6 @@ namespace ClonesEngine
                         NBulletInCharger = ClipSize;
                     }
                     Tim.Stop();
-                    Tim.AutoReset = true;
                     Tim.Interval = Firerate;
                     Reloading = false;
                     CanShoot = true;
@@ -241,29 +382,24 @@ namespace ClonesEngine
                     CanShoot = false;
                     Reloading = true;
                     Tim.Stop();
-                    Tim.AutoReset = false;
                     Tim.Interval = ReloadingTime;
                     Tim.Start();
 
                 }
                 else
                 {
-                    NBulletInCharger--;
                     CanShoot = true;
-                    double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
-                    PointF MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
-                    _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
                 }
             }
 
         }
         public override void MouseUp()
         {
-            Tim.Stop();
+            //Do nothing in this case
         }
-    }
-    class Sniper
-    {
+
+
+
 
     }
     class Shotgun : Weapons
@@ -274,14 +410,15 @@ namespace ClonesEngine
         byte _Wielder;
         PlayerData[] _PlayerList;
         Random RNG;
+        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.ShotgunSound);
 
-        const string WeaponName = "Wannabe a Glock17";
+        public override string WeaponName { get { return "Shotgun"; } }
         const byte BulletSpeed = 15;
-        const int ReloadingTime = 4000;
+        const int ReloadingTime = 5000;
         const int SpreadAngle = 30;
         const int NumberOfBuckshot = 10;
         const int ClipSize = 8;
-        const int Firerate = 500;
+        const int Firerate = 600;
         bool CanShoot = true;
         bool Reloading = false;
         System.Timers.Timer Tim;
@@ -323,7 +460,7 @@ namespace ClonesEngine
                     MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                     _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDir, BulletSpeed));
                 }
-                
+                FireSound.Play();
             }
         }
         void _timer_Elapsed(object sender, ElapsedEventArgs e)

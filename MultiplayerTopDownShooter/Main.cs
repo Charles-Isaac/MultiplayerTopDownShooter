@@ -168,12 +168,13 @@ namespace MultiplayerTopDownShooter
                     FPSCounter = 0;
                 }
                 FPSCounter++;
-                e.Graphics.DrawString(FPSLast.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 160);
-                e.Graphics.DrawString(GP.ID.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 10);
-                e.Graphics.DrawString(GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 60);
-                e.Graphics.DrawString(((int)((GP.PlayerList[GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 110);
+                e.Graphics.DrawString("FPS: " + FPSLast.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 160);
+                e.Graphics.DrawString("Your game ID: " + GP.ID.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 10);
+                e.Graphics.DrawString("Your score: " + GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 60);
+                e.Graphics.DrawString("Where you are looking: " + ((int)((GP.PlayerList[GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 110);
 
 
+                e.Graphics.DrawString(GP.WeaponList[GP.SelectedWeapon].WeaponName, new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 310);
                 e.Graphics.DrawString(GP.WeaponList[GP.SelectedWeapon].NBulletInCharger.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 210);
                 if (GP.WeaponList[GP.SelectedWeapon].NBulletLeft < 1000)
                 {
@@ -187,11 +188,16 @@ namespace MultiplayerTopDownShooter
                 Point MousePosition = this.PointToClient(Cursor.Position);
                 MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
                 MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
-                e.Graphics.DrawLine(new Pen(Color.Red), GP.PlayerList[GP.ID].Position, MousePosition);
+
+                
                 // Thread.Sleep(250); //Lag gen
-                GP.WeaponList[GP.SelectedWeapon].MouseDir = MousePosition;
+                GP.WeaponList[GP.SelectedWeapon].MouseDir = new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
+               ((MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))));
+                e.Graphics.DrawLine(new Pen(Color.Red), GP.PlayerList[GP.ID].Position, MousePosition);
+
                 GP.UpdatePlayer(GP.ID, MousePosition);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
+
                 /*if (MouseButtons == MouseButtons.Left)
                 {
                     Main_MouseDown(sender, new MouseEventArgs(MouseButtons.Left,1,10,10,1));
@@ -200,7 +206,7 @@ namespace MultiplayerTopDownShooter
 
    //             e.Graphics.DrawImage(Properties.Resources.Glock17, Settings.GameSize.Width+10, 0);
                 //Invalidate();
-                this.Invalidate(new Rectangle(new Point(0,0), new Size(this.ClientSize.Height+100, this.ClientSize.Height)));
+                this.Invalidate(new Rectangle(new Point(0,0), new Size(this.ClientSize.Width, this.ClientSize.Height)));
             }));
 
         }

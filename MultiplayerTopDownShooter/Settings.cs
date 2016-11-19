@@ -16,8 +16,8 @@ namespace ClonesEngine
         const byte _DefaltBulletSize = 12;
         const byte _PlayerSize = 80;
 
-        const int _GameSizeX = 2000;
-        const int _GameSizeY = 2000;
+        const int _GameSizeX = 1500;
+        const int _GameSizeY = 1500;
 
         public static byte DefaultBulletSize
         {

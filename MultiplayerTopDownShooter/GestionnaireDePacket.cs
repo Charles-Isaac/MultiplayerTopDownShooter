@@ -330,6 +330,7 @@ namespace ClonesEngine
             WeaponList[(byte)WeaponType.Pistol] = new Pistol(ref m_ID, m_PlayerList);
             WeaponList[(byte)WeaponType.Shotgun] = new Shotgun(ref m_ID, m_PlayerList);
             WeaponList[(byte)WeaponType.MachineGun] = new MachineGun(ref m_ID, m_PlayerList);
+            WeaponList[(byte)WeaponType.Sniper] = new Sniper(ref m_ID, m_PlayerList);
         }
         /*
         private bool Locked = false;

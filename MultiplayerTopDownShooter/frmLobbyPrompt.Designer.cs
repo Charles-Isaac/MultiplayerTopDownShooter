@@ -30,11 +30,12 @@
         {
             this.txtLobbyName = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtLobbyName
             // 
-            this.txtLobbyName.Location = new System.Drawing.Point(73, 68);
+            this.txtLobbyName.Location = new System.Drawing.Point(102, 66);
             this.txtLobbyName.Name = "txtLobbyName";
             this.txtLobbyName.Size = new System.Drawing.Size(100, 20);
             this.txtLobbyName.TabIndex = 0;
@@ -50,11 +51,21 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(32, 69);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(64, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Game room:";
+            // 
             // frmLobbyPrompt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.txtLobbyName);
             this.Name = "frmLobbyPrompt";
@@ -68,5 +79,6 @@
 
         private System.Windows.Forms.TextBox txtLobbyName;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Label label1;
     }
 }

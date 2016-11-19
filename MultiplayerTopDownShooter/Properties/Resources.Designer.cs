@@ -71,6 +71,15 @@ namespace MultiplayerTopDownShooter.Properties {
         }
         
         /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream Glock17Sound {
+            get {
+                return ResourceManager.GetStream("Glock17Sound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap GroundTexture1 {
@@ -87,6 +96,15 @@ namespace MultiplayerTopDownShooter.Properties {
             get {
                 object obj = ResourceManager.GetObject("GroundTexture2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream MachineGunSound {
+            get {
+                return ResourceManager.GetStream("MachineGunSound", resourceCulture);
             }
         }
         
@@ -337,6 +355,24 @@ namespace MultiplayerTopDownShooter.Properties {
             get {
                 object obj = ResourceManager.GetObject("ShadowTexture", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream ShotgunSound {
+            get {
+                return ResourceManager.GetStream("ShotgunSound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream SniperSound {
+            get {
+                return ResourceManager.GetStream("SniperSound", resourceCulture);
             }
         }
     }
