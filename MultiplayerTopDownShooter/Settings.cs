@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace ClonesEngine
 {
@@ -13,8 +8,9 @@ namespace ClonesEngine
 
         const byte _DefaultPlayerSpeed = 5;
         const byte _DeFaultBulletSpeed = 15;
-        const byte _DefaltBulletSize = 12;
+        const byte _DefaltBulletSize = 12;//12
         const byte _PlayerSize = 80;
+        const byte _NumberOfWalls = 10;
 
         const int _GameSizeX = 1500;
         const int _GameSizeY = 1500;
@@ -31,6 +27,10 @@ namespace ClonesEngine
         public static byte DefaultPlayerSpeed
         {
             get { return _DefaultPlayerSpeed; }
+        }
+        public static byte NumberOfWalls
+        {
+            get { return _NumberOfWalls; }
         }
         public static byte DefaultPlayerSize
         {

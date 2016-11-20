@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Xml;
+﻿using System.Drawing;
 using System.Xml.Serialization;
-using ProtoBuf;
 
 namespace ClonesEngine
 {
@@ -16,10 +9,11 @@ namespace ClonesEngine
         private PointF m_Position;
         private PointF m_DirectionDeplacement;
         byte m_Velocite;
+        byte m_TypeOfProjectile;
        // int m_LastTickUpdate;
         public Projectile()
         {
-            
+            //it may not looks like it but this methode is useful, do not erase
         }
         /*
         public Projectile(int LastTickCount)
@@ -31,8 +25,9 @@ namespace ClonesEngine
         }
         */
 
-        public Projectile(PointF Position, PointF DirectionDeplacement, byte cVelocite)
+        public Projectile(PointF Position, PointF DirectionDeplacement, byte cVelocite, byte TypeOfProjectile)
         {
+            m_TypeOfProjectile = TypeOfProjectile;
             m_Position = Position;
             m_DirectionDeplacement = DirectionDeplacement;
             m_Velocite = cVelocite;
@@ -48,7 +43,11 @@ namespace ClonesEngine
         }
 
         #region Propriete
-
+        public byte TypeOfProjectile
+        {
+            get { return m_TypeOfProjectile; }
+            set { m_TypeOfProjectile = value; }
+        }
         public PointF Position
         {
             get { return m_Position; }

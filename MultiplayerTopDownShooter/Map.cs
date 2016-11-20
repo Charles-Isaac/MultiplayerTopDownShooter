@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace ClonesEngine
 {
-   // [XmlType]
+    // [XmlType]
     class Map
     {
-        int NombreDeMurs = 20;
+        int NombreDeMurs = Settings.NumberOfWalls;
         Mur[] m_TMurs;
 
         public Map(int Seed)

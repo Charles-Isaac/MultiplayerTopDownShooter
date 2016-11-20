@@ -61,6 +61,15 @@ namespace MultiplayerTopDownShooter.Properties {
         }
         
         /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream Explosion {
+            get {
+                return ResourceManager.GetStream("Explosion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap Glock17 {
@@ -345,6 +354,15 @@ namespace MultiplayerTopDownShooter.Properties {
             get {
                 object obj = ResourceManager.GetObject("Player345", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream RocketLauncherSound {
+            get {
+                return ResourceManager.GetStream("RocketLauncherSound", resourceCulture);
             }
         }
         

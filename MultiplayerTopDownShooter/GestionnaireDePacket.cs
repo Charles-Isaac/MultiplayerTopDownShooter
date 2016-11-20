@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
+using System.Threading;
 
 namespace ClonesEngine
 {
@@ -53,7 +51,7 @@ namespace ClonesEngine
         byte[] m_Receiver;
         //byte[] m_PlayerIntList = new byte[255];
         int m_PacketID;
-        public Weapons[] WeaponList;
+   //     public Weapons[] WeaponList;
         public byte SelectedWeapon = 0;
 
         Map Murs;
@@ -104,15 +102,18 @@ namespace ClonesEngine
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(PointF), true);
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(PointF)].Add(1, "X").Add(2, "Y");
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Projectile), true);
-            ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Projectile)].Add(1, "Position").Add(2, "Direction").Add(3, "Velocite");
-            WeaponList = new Weapons[(byte)WeaponType.NumberOfWeapons];
-            AssignWeapons();
+            ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Projectile)].Add(1, "Position").Add(2, "Direction").Add(3, "Velocite").Add("TypeOfProjectile");
+            ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Weapons)].Add(1, "NBulletLeft").Add(2, "NBulletInCharger");           
+            //      WeaponList = new Weapons[(byte)WeaponType.NumberOfWeapons];
+            //       AssignWeapons();
 
             m_LobbyPort = Lobby;
             for (int i = 0; i < 255; i++)
             {
                 m_PlayerList[i] = new PlayerData();
                 m_PlayerList[i].Vitesse = Settings.DefaultPlayerSpeed;
+
+                m_PlayerList[i].CallWeaponConstructor();
                 m_PlayerTime[i] = Environment.TickCount;
             }
             m_ID = 0;
@@ -190,7 +191,7 @@ namespace ClonesEngine
                                             m_PlayerTime[m_ID] = Environment.TickCount;
 
 
-                                            AssignWeapons();
+                          //                  AssignWeapons();
 
 
                                             Send(TramePreGen.AnswerListeJoueur(m_PlayerCount, m_ID));
@@ -204,7 +205,34 @@ namespace ClonesEngine
                             case (byte)PacketUse.InfoJoueur:
                                 lock (m_PlayerList[m_Receiver[1]].BulletLock)
                                 {
-                                    m_PlayerList[m_Receiver[1]] = TramePreGen.ReceiverInfoJoueur(m_Receiver);
+                                   
+                                    PlayerData p = TramePreGen.ReceiverInfoJoueur(m_Receiver);
+                                   /* if (m_PlayerList[m_Receiver[1]].WeaponList != null)
+                                    {
+                                        p.WeaponList = m_PlayerList[m_Receiver[1]].WeaponList;
+                                    }
+                                    else
+                                    {
+                                        p.CallWeaponConstructor();
+                                    }
+                                    */
+                                    if (m_Receiver[1] == m_ID)
+                                    {
+                                        p.WeaponList = m_PlayerList[m_Receiver[1]].WeaponList;
+                                        if (p.WeaponList != null)
+                                        {
+                                            p.UpdateWeaponWielder();
+                                        }
+                                        else
+                                        {
+                                            p.CallWeaponConstructor();
+                                        }
+                                    }
+                                    // Thread.Sleep(15);
+                                                             
+                                    //   p.Bullet = m_PlayerList[m_Receiver[1]].Bullet;
+                                    m_PlayerList[m_Receiver[1]] = p;
+                                    
                                     m_PlayerTime[m_Receiver[1]] = Environment.TickCount;
                                 }
                                 break;
@@ -227,7 +255,7 @@ namespace ClonesEngine
                                 {
                                     m_ID = 1;
                                     m_PlayerCount = 1;
-                                    AssignWeapons();
+               //                     AssignWeapons();
                                     Thread.Sleep(RNG.Next(0, 50));
                                     //GenMap();
                                 }
@@ -312,7 +340,7 @@ namespace ClonesEngine
                     m_ID = 1;
                     m_PlayerCount = 1;
 
-                    AssignWeapons();
+          //          AssignWeapons();
                     
 
                     //Send(TramePreGen.AnswerMap)
@@ -322,7 +350,7 @@ namespace ClonesEngine
                 Send(TramePreGen.AskAutoVerif(ID));
             }
         }
-
+        /*
         private void AssignWeapons()
         {
 
@@ -331,7 +359,8 @@ namespace ClonesEngine
             WeaponList[(byte)WeaponType.Shotgun] = new Shotgun(ref m_ID, m_PlayerList);
             WeaponList[(byte)WeaponType.MachineGun] = new MachineGun(ref m_ID, m_PlayerList);
             WeaponList[(byte)WeaponType.Sniper] = new Sniper(ref m_ID, m_PlayerList);
-        }
+            WeaponList[(byte)WeaponType.RocketLauncher] = new RocketLauncher(ref m_ID, m_PlayerList);
+        }*/
         /*
         private bool Locked = false;
         public void Enter()
@@ -385,7 +414,7 @@ namespace ClonesEngine
        
         public void UpdateMousePosition(Point MousePosition)
         {
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //useless////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
     }
 }

@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.Xml;
 using System.Xml.Serialization;
-using ProtoBuf;
-using System.Threading;
 
 namespace ClonesEngine
 {
@@ -31,24 +26,29 @@ namespace ClonesEngine
         PointF m_DirectionDeplacement;
        // [XmlElement(Order = 5)]
        // long m_LastTickUpdate;
-        [XmlElement(Order = 6)]
+        [XmlElement(Order = 5)]
         byte m_Velocite;
-        [XmlElement(Order = 7)]
+        [XmlElement(Order = 6)]
         int m_Couleur;
-        [XmlElement(Order = 8)]
+        [XmlElement(Order = 7)]
         byte m_DeathStatus;
-        [XmlElement(Order = 9)]
+        [XmlElement(Order = 8)]
         byte m_Size;
-        [XmlElement(Order = 10)]
+        [XmlElement(Order = 9)]
         int m_Score;
 
-        [XmlElement(Order = 11)]
+       // [XmlElement(Order = 10)]
+        public Weapons[] WeaponList;
+
+
+        [XmlElement(Order = 10)]
         List<Projectile> m_LBullet = new List<Projectile>();
 
         public PlayerData()
         {
             lock (m_BulletLock)
             {
+                CallWeaponConstructor();
                 //m_LastTickUpdate = 0;
                 m_Position = new PointF(1, 1);
                 m_DirectionRegard = 0;
@@ -64,6 +64,28 @@ namespace ClonesEngine
                 m_Score = 0;
             }
         }
+
+        public void CallWeaponConstructor()
+        {
+
+            WeaponList = new Weapons[(byte)WeaponType.NumberOfWeapons];
+            WeaponList[(byte)WeaponType.Pistol] = new Pistol(this);
+            WeaponList[(byte)WeaponType.Shotgun] = new Shotgun(this);
+            WeaponList[(byte)WeaponType.MachineGun] = new MachineGun(this);
+            WeaponList[(byte)WeaponType.Sniper] = new Sniper(this);
+            WeaponList[(byte)WeaponType.RocketLauncher] = new RocketLauncher(this);
+        }
+
+        public void UpdateWeaponWielder()
+        {
+            
+            WeaponList[(byte)WeaponType.Pistol].User = this;
+            WeaponList[(byte)WeaponType.Shotgun].User = this;
+            WeaponList[(byte)WeaponType.MachineGun].User = this;
+            WeaponList[(byte)WeaponType.Sniper].User = this;
+            WeaponList[(byte)WeaponType.RocketLauncher].User = this;
+        }
+
         public byte DeathStatus
         {
             get { return m_DeathStatus; }
@@ -73,6 +95,9 @@ namespace ClonesEngine
         public PlayerData(byte IDConstructeur, long TickCount)
         {
             //m_LastTickUpdate = TickCount;
+            //    CallWeaponConstructor();
+
+          //  UpdateWeaponWielder();
             m_Position = new PointF(0, 0);
             m_DirectionRegard = 0;
             m_DirectionDeplacement = new PointF(0, 0);
@@ -97,6 +122,7 @@ namespace ClonesEngine
 
         public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs, Point MousePosition)
         {
+
             List<PlayerDamage> BulletDamage = new List<PlayerDamage>();
 
             for (int i = 1; i <= PlayerCount; i++)
@@ -115,7 +141,7 @@ namespace ClonesEngine
                         TempPosi = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20), Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
 
                         int j = Murs.Murs.Length - 1;
-                        for (; j > 0; j--)
+                        for (; j >= 0; j--)
                         {
                             if (Collision.IsIntersecting(TempPosi, Player[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
                             {
@@ -173,7 +199,7 @@ namespace ClonesEngine
             //      Enter();
             lock (m_BulletLock)
             {
-                for (int i = m_LBullet.Count - 1; i > 0; i--)
+                for (int i = m_LBullet.Count - 1; i >= 0; i--)
                 {
                     PointF OldPosition = m_LBullet[i].Position;
                     bool Exist = true;
@@ -188,7 +214,16 @@ namespace ClonesEngine
                             //lock (m_BulletLock)
                             // {
                             m_Score++;
-                            m_LBullet.RemoveAt(i);
+                            if (m_LBullet[i].TypeOfProjectile == (byte)ProjectileType.Rocket)
+                            {
+                                ((RocketLauncher)WeaponList[(byte)WeaponType.RocketLauncher]).BringTheHavoc();
+                            }
+                            else
+                            {
+                               m_LBullet.RemoveAt(i);
+                            }
+
+                         
                             Exist = false;
                             BulletDamage.Add(new PlayerDamage(j, 1));
                             //  }
@@ -197,11 +232,19 @@ namespace ClonesEngine
 
                     if (Exist && Murs != null)
                     {
-                        for (int j = Murs.Murs.Length - 1; j > 0; j--)
+                        for (int j = Murs.Murs.Length - 1; j >= 0; j--)
                         {
                             if (Collision.IsIntersecting(OldPosition, m_LBullet[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
                             {
-                                m_LBullet.RemoveAt(i);
+                                if (m_LBullet[i].TypeOfProjectile == (byte)ProjectileType.Rocket)
+                                {
+                                    m_LBullet[i].Position = OldPosition;
+                                    ((RocketLauncher)WeaponList[(byte)WeaponType.RocketLauncher]).BringTheHavoc();
+                                }
+                                else
+                                {
+                                    m_LBullet.RemoveAt(i);
+                                }
                                 j = 0;/////////////////////////////////////////////////////////////////////////ugh...
                             }
                         }
@@ -241,6 +284,7 @@ namespace ClonesEngine
         public List<Projectile> Bullet
         {
             get { return m_LBullet; }
+            set { m_LBullet = value; }
         }
         public byte Vitesse
         {

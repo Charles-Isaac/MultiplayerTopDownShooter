@@ -219,6 +219,12 @@
   <ItemGroup>
     <None Include="Resources\MachineGunSound %282%29.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CODMW3 RPG for Insurgency RPG7.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Flash Bang sound HQ!.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
