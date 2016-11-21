@@ -35,7 +35,16 @@ namespace ClonesEngine
         Grenade = 2,
 
     }
-  
+    public class PlaySoundEventArgs : EventArgs
+    {
+        byte m_SoundID = 0;
+
+        public byte SoundID
+        {
+            get { return m_SoundID; }
+            set { m_SoundID = value; }
+        }
+    }
     abstract class Weapons
     {
         public abstract void MouseDown(PointF MouseDir);
@@ -100,7 +109,7 @@ namespace ClonesEngine
         }
         private void Sound()
         {
-            OnShot(this, (byte)WeaponSound.Pistol);
+            
             using (WaveStream blockAlignedStream = new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.PistolSound))
             {
                 using (WaveOut waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
@@ -166,7 +175,7 @@ namespace ClonesEngine
                 double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                 MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                 _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
-
+                OnShot(this, (byte)WeaponSound.Pistol);
                 PlayShootingSound();
 
            //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
@@ -330,7 +339,7 @@ namespace ClonesEngine
                 double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                 MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                 _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
-
+                OnShot(this, (byte)WeaponSound.MachineGun);
                 PlayShootingSound();
 
                 //FireSound.Play();
@@ -395,6 +404,7 @@ namespace ClonesEngine
                             PointF MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                             _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
                             Tim.Start();
+                            OnShot(this, (byte)WeaponSound.Pistol);
                             PlayShootingSound();
                             //FireSound.Play();
                         }
@@ -519,7 +529,7 @@ namespace ClonesEngine
                 double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                 MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                 _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
-
+                OnShot(this, (byte)WeaponSound.Sniper);
                 PlayShootingSound();
 
                 //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
@@ -689,6 +699,7 @@ namespace ClonesEngine
                     MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                     _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
                 }
+                OnShot(this, (byte)WeaponSound.Shotgun);
                 PlayShootingSound();
             }
         }
@@ -863,15 +874,10 @@ namespace ClonesEngine
             HasExploded = true;
 
 
+            OnShot(this, (byte)WeaponSound.Explosion);
+            PlayExplosionSound();
 
 
-            Thread ThreadExplosion;
-            ThreadStart start = new ThreadStart(Explosion);
-            ThreadExplosion = new Thread(start);
-            ThreadExplosion.IsBackground = true;
-            ThreadExplosion.Start();
-
-           
 
 
             double radians;
@@ -937,6 +943,7 @@ namespace ClonesEngine
                 if (IsAiming)
                 {
                     NBulletInCharger--;
+                    OnShot(this, (byte)WeaponSound.RocketLauncher);
                     PlayShootingSound();
                     double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                     MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
