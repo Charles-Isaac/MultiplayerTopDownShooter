@@ -207,9 +207,12 @@ namespace MultiplayerTopDownShooter
                 e.Graphics.DrawString("Your score: " + GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 60);
                 e.Graphics.DrawString("Where you are looking: " + ((int)((GP.PlayerList[GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 110);
 
-                Point MousePosition = this.PointToClient(Cursor.Position);
-                MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
-                MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
+
+
+                Point PositionSourie = this.PointToClient(Cursor.Position);
+                PositionSourie.X = (int)(PositionSourie.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
+                PositionSourie.Y = (int)(PositionSourie.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
+
 
                 if (GP.PlayerList[GP.ID].WeaponList != null)
                 {
@@ -226,17 +229,16 @@ namespace MultiplayerTopDownShooter
 
 
 
-
-
                     // Thread.Sleep(250); //Lag gen
-                    GP.PlayerList[GP.ID].WeaponList[GP.SelectedWeapon].MouseDir = new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
-                   ((MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))));
-                    e.Graphics.DrawLine(new Pen(Color.Red), GP.PlayerList[GP.ID].Position, MousePosition);
+                    GP.PlayerList[GP.ID].WeaponList[GP.SelectedWeapon].MouseDir = new PointF(((PositionSourie.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((PositionSourie.X - GP.PlayerList[GP.ID].Position.X) * (PositionSourie.X - GP.PlayerList[GP.ID].Position.X) + (PositionSourie.Y - GP.PlayerList[GP.ID].Position.Y) * (PositionSourie.Y - GP.PlayerList[GP.ID].Position.Y))),
+                   ((PositionSourie.Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((PositionSourie.X - GP.PlayerList[GP.ID].Position.X) * (PositionSourie.X - GP.PlayerList[GP.ID].Position.X) + (PositionSourie.Y - GP.PlayerList[GP.ID].Position.Y) * (PositionSourie.Y - GP.PlayerList[GP.ID].Position.Y))));
+                    e.Graphics.DrawLine(new Pen(Color.Red), GP.PlayerList[GP.ID].Position, PositionSourie);
 
                     e.Graphics.DrawImage(WeaponsImage[GP.SelectedWeapon], Settings.GameSize.Width + 70, 400);
 
                 }
-                GP.UpdatePlayer(GP.ID, MousePosition);
+
+                GP.UpdatePlayer(GP.ID, PositionSourie);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
 
                 /*if (MouseButtons == MouseButtons.Left)

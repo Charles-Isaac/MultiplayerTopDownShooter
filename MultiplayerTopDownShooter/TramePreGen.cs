@@ -54,7 +54,10 @@ namespace ClonesEngine
         {
             using (var ms = new MemoryStream())
             {
-                ProtoBuf.Serializer.Serialize(ms, tData);
+                lock (tData.BulletLock)
+                {
+                    ProtoBuf.Serializer.Serialize(ms, tData);
+                }
                 return ms.ToArray();
             }
         }

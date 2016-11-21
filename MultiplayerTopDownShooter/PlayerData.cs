@@ -117,7 +117,10 @@ namespace ClonesEngine
 
         public void AjouterProjectile(Projectile bullet)
         {
-            m_LBullet.Add(bullet);
+            lock (m_BulletLock)
+            {
+                m_LBullet.Add(bullet);
+            }
         }
 
         public List<PlayerDamage> UpdateStats(int[] OldTime, int NewTime, PlayerData[] Player, int PlayerCount, int ID, Map Murs, Point MousePosition)
