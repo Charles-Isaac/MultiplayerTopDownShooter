@@ -133,8 +133,14 @@
   <data name="GroundTexture2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GroundTexture2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="MachineGun" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MachineGun.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="MachineGunSound" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MachineGunSound (2).wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Pistol" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pistol.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Player000" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Player000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -208,14 +214,23 @@
   <data name="Player345" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Player345.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="RocketLauncher" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RocketLauncher.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="RocketLauncherSound" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CODMW3 RPG for Insurgency RPG7.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ShadowTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ShadowTexture.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Shotgun" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Shotgun.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ShotgunSound" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ie_shot_gun-luminalace-770179786.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Sniper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Sniper.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SniperSound" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SniperSound.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

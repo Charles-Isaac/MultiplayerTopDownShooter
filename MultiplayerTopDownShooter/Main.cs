@@ -24,7 +24,9 @@ namespace MultiplayerTopDownShooter
 
         Bitmap[] PlayersImage;
         Bitmap[] TerrainImage;
-   //     System.Threading.Timer WeaponTimer;
+        Bitmap[] WeaponsImage;
+
+        //     System.Threading.Timer WeaponTimer;
         public Main()
         {
             InitializeComponent();
@@ -46,6 +48,7 @@ namespace MultiplayerTopDownShooter
 
             PlayersImage = new Bitmap[24];
             TerrainImage = new Bitmap[1];
+            WeaponsImage = new Bitmap[(byte)WeaponType.NumberOfWeapons];
             for (int i = 0; i < 24; i++)
             {
                 using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("Player" + (i*15).ToString().PadLeft(3, '0'), Properties.Resources.Culture)))
@@ -57,6 +60,26 @@ namespace MultiplayerTopDownShooter
                 using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("GroundTexture2", Properties.Resources.Culture)))
                     TerrainImage[i] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
             }
+
+
+
+            using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("Pistol", Properties.Resources.Culture)))
+                WeaponsImage[(byte)WeaponType.Pistol] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
+
+            using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("MachineGun", Properties.Resources.Culture)))
+                WeaponsImage[(byte)WeaponType.MachineGun] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
+
+            using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("Shotgun", Properties.Resources.Culture)))
+                WeaponsImage[(byte)WeaponType.Shotgun] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
+
+            using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("Sniper", Properties.Resources.Culture)))
+                WeaponsImage[(byte)WeaponType.Sniper] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
+
+            using (Bitmap bitmap = new Bitmap((Image)Properties.Resources.ResourceManager.GetObject("RocketLauncher", Properties.Resources.Culture)))
+                WeaponsImage[(byte)WeaponType.RocketLauncher] = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
+
+
+
             Br = new SolidBrush(Color.Black);// new TextureBrush(Properties.Resources.ShadowTexture, new Rectangle(0, 0, 250, 250));
             /*
 
@@ -100,14 +123,17 @@ namespace MultiplayerTopDownShooter
             Invoke(new Action(() =>
             {
 
-            e.Graphics.ScaleTransform((float)this.ClientSize.Height / Settings.GameSize.Width, (float)this.ClientSize.Height / Settings.GameSize.Width, System.Drawing.Drawing2D.MatrixOrder.Append);
+                e.Graphics.ScaleTransform((float)this.ClientSize.Height / Settings.GameSize.Width, (float)this.ClientSize.Height / Settings.GameSize.Width, System.Drawing.Drawing2D.MatrixOrder.Append);
                 // e.Graphics.DrawImage(Properties.Resources.GroundTexture1,0,0,Settings.GameSize.Width,Settings.GameSize.Height);
-                e.Graphics.DrawImage(TerrainImage[0], new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0,0,250,250), GraphicsUnit.Pixel);
-            for (int i = 1; i <= GP.PlayerCount; i++)
-            {
+                e.Graphics.DrawImage(TerrainImage[0], new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0, 0, 250, 250), GraphicsUnit.Pixel);
+
+
+
+                for (int i = 1; i <= GP.PlayerCount; i++)
+                {
                     //Murs
                     // e.Graphics.DrawImage((Image)Properties.Resources.ResourceManager.GetObject("Player" + ((int)((GP.PlayerList[i].DirectionRegard + 7.5) / 15) * 15).ToString().PadLeft(3,'0'), Properties.Resources.Culture), GP.PlayerList[i].Position.X - 45, GP.PlayerList[i].Position.Y - 45);
-                    e.Graphics.DrawImage(PlayersImage[GP.PlayerList[i].DirectionRegard/15], GP.PlayerList[i].Position.X - 45, GP.PlayerList[i].Position.Y - 45);
+                    e.Graphics.DrawImage(PlayersImage[GP.PlayerList[i].DirectionRegard / 15], GP.PlayerList[i].Position.X - 45, GP.PlayerList[i].Position.Y - 45);
 
 
 
@@ -115,11 +141,11 @@ namespace MultiplayerTopDownShooter
                     //      GP.PlayerList[i].Position.X - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Position.Y - GP.PlayerList[i].Size / 2, GP.PlayerList[i].Size, GP.PlayerList[i].Size);
                     lock (GP.PlayerList[i].BulletLock)
                     {
-                      /*  Point MousePosition1 = this.PointToClient(Cursor.Position);
-                        MousePosition1.X = (int)(MousePosition1.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
-                        MousePosition1.Y = (int)(MousePosition1.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
+                        /*  Point MousePosition1 = this.PointToClient(Cursor.Position);
+                          MousePosition1.X = (int)(MousePosition1.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
+                          MousePosition1.Y = (int)(MousePosition1.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
 
-                        GP.PlayerList[GP.ID].WeaponList[GP.SelectedWeapon].MouseDown(MousePosition1);*/
+                          GP.PlayerList[GP.ID].WeaponList[GP.SelectedWeapon].MouseDown(MousePosition1);*/
                         for (int j = GP.PlayerList[i].Bullet.Count - 1; j >= 0; j--)
                         {
                             if (GP.PlayerList[i].Bullet[j].TypeOfProjectile == (byte)ProjectileType.Rocket)
@@ -132,15 +158,15 @@ namespace MultiplayerTopDownShooter
                             }
 
 
-                            
-                            e.Graphics.DrawEllipse(new Pen(Color.Black/*FromArgb(GP.PlayerList[i].Couleur)*/, Settings.DefaultBulletSize/4), GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize/2, GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize/2, Settings.DefaultBulletSize, Settings.DefaultBulletSize);
+
+                            e.Graphics.DrawEllipse(new Pen(Color.Black/*FromArgb(GP.PlayerList[i].Couleur)*/, Settings.DefaultBulletSize / 4), GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize / 2, GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize / 2, Settings.DefaultBulletSize, Settings.DefaultBulletSize);
                         }
                     }
 
                 }
                 if (GP.Map != null)
                 {
-                    ShadowArray = Shadows.ReturnMeAnArray(GP.Map.Murs.Length, GP.Map.Murs, GP.PlayerList[GP.ID].Position, Settings.GameSize.Width , Settings.GameSize.Height);
+                    ShadowArray = Shadows.ReturnMeAnArray(GP.Map.Murs.Length, GP.Map.Murs, GP.PlayerList[GP.ID].Position, Settings.GameSize.Width, Settings.GameSize.Height);
 
                     for (int i = GP.Map.Murs.Length - 1; i >= 0; i--)
                     {
@@ -164,10 +190,10 @@ namespace MultiplayerTopDownShooter
                     }
                 }
 
-               
 
-                
-                
+
+
+
 
                 if (Environment.TickCount - FPSTimer > 1000)
                 {
@@ -205,6 +231,9 @@ namespace MultiplayerTopDownShooter
                     GP.PlayerList[GP.ID].WeaponList[GP.SelectedWeapon].MouseDir = new PointF(((MousePosition.X - GP.PlayerList[GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))),
                    ((MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) / (float)Math.Sqrt((MousePosition.X - GP.PlayerList[GP.ID].Position.X) * (MousePosition.X - GP.PlayerList[GP.ID].Position.X) + (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y) * (MousePosition.Y - GP.PlayerList[GP.ID].Position.Y))));
                     e.Graphics.DrawLine(new Pen(Color.Red), GP.PlayerList[GP.ID].Position, MousePosition);
+
+                    e.Graphics.DrawImage(WeaponsImage[GP.SelectedWeapon], Settings.GameSize.Width + 70, 400);
+
                 }
                 GP.UpdatePlayer(GP.ID, MousePosition);
                 GP.Send(TramePreGen.InfoJoueur(GP.PlayerList[GP.ID], GP.ID, GP.PacketID));
@@ -215,9 +244,9 @@ namespace MultiplayerTopDownShooter
                 }*/
                 //Thread.Sleep(RNG.Next(100)); //random ping generator ;)
 
-   //             e.Graphics.DrawImage(Properties.Resources.Glock17, Settings.GameSize.Width+10, 0);
+                //             e.Graphics.DrawImage(Properties.Resources.Glock17, Settings.GameSize.Width+10, 0);
                 //Invalidate();
-                this.Invalidate(new Rectangle(new Point(0,0), new Size(this.ClientSize.Width, this.ClientSize.Height)));
+                this.Invalidate(new Rectangle(new Point(0, 0), new Size(this.ClientSize.Width, this.ClientSize.Height)));
             }));
 
         }
@@ -403,5 +432,7 @@ namespace MultiplayerTopDownShooter
         {
 
         }
+
+        
     }
 }

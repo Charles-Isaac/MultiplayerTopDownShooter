@@ -746,7 +746,8 @@ namespace ClonesEngine
                 {
                     NBulletInCharger = ClipSize;
                     NBulletLeft -= ClipSize;
-
+                    Tim.Stop();
+                    Tim.Interval = Firerate;
                     Reloading = false;
                     CanShoot = true;
                 }

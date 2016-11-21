@@ -109,11 +109,31 @@ namespace MultiplayerTopDownShooter.Properties {
         }
         
         /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap MachineGun {
+            get {
+                object obj = ResourceManager.GetObject("MachineGun", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
         /// </summary>
         public static System.IO.UnmanagedMemoryStream MachineGunSound {
             get {
                 return ResourceManager.GetStream("MachineGunSound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Pistol {
+            get {
+                object obj = ResourceManager.GetObject("Pistol", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -358,6 +378,16 @@ namespace MultiplayerTopDownShooter.Properties {
         }
         
         /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap RocketLauncher {
+            get {
+                object obj = ResourceManager.GetObject("RocketLauncher", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
         /// </summary>
         public static System.IO.UnmanagedMemoryStream RocketLauncherSound {
@@ -377,11 +407,31 @@ namespace MultiplayerTopDownShooter.Properties {
         }
         
         /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Shotgun {
+            get {
+                object obj = ResourceManager.GetObject("Shotgun", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
         /// </summary>
         public static System.IO.UnmanagedMemoryStream ShotgunSound {
             get {
                 return ResourceManager.GetStream("ShotgunSound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Sniper {
+            get {
+                object obj = ResourceManager.GetObject("Sniper", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

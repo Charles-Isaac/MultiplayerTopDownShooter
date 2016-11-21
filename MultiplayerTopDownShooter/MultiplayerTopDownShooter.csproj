@@ -225,6 +225,21 @@
   <ItemGroup>
     <None Include="Resources\Flash Bang sound HQ!.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MachineGun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Pistol.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RocketLauncher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shotgun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Sniper.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
