@@ -63,9 +63,9 @@ namespace MultiplayerTopDownShooter.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
         /// </summary>
-        public static System.IO.UnmanagedMemoryStream Explosion {
+        public static System.IO.UnmanagedMemoryStream ExplosionSound {
             get {
-                return ResourceManager.GetStream("Explosion", resourceCulture);
+                return ResourceManager.GetStream("ExplosionSound", resourceCulture);
             }
         }
         
@@ -76,15 +76,6 @@ namespace MultiplayerTopDownShooter.Properties {
             get {
                 object obj = ResourceManager.GetObject("Glock17", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
-        /// </summary>
-        public static System.IO.UnmanagedMemoryStream Glock17Sound {
-            get {
-                return ResourceManager.GetStream("Glock17Sound", resourceCulture);
             }
         }
         
@@ -134,6 +125,15 @@ namespace MultiplayerTopDownShooter.Properties {
             get {
                 object obj = ResourceManager.GetObject("Pistol", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream PistolSound {
+            get {
+                return ResourceManager.GetStream("PistolSound", resourceCulture);
             }
         }
         

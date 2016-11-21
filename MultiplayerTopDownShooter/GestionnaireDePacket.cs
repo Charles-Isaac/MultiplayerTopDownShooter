@@ -22,6 +22,7 @@ namespace ClonesEngine
         AnswerAutoVerif = 11, //{PacketUse,ID,RandomData}
         InfoPlayerDamage = 12, //{PacketUse,ID,TagetID, Damage}
         AcknowledgeDamage = 13, //{PacketUse,ID}
+        PlaySound = 14, //{PacketUse,ID,SoundToPlay}
 
 
     }
@@ -222,10 +223,18 @@ namespace ClonesEngine
                                         if (p.WeaponList != null)
                                         {
                                             p.UpdateWeaponWielder();
+                                            p.WeaponList[0].Shot -= OnSendSound;
+                                            p.WeaponList[0].Shot += OnSendSound;
                                         }
                                         else
                                         {
                                             p.CallWeaponConstructor();
+
+
+                                            p.WeaponList[0].Shot += OnSendSound;
+
+
+
                                         }
                                     }
                                     // Thread.Sleep(15);
@@ -311,6 +320,27 @@ namespace ClonesEngine
                                     ResendDamage = false;
                                 }
                                 break;
+
+                            case (byte)PacketUse.PlaySound:
+                                if (m_Receiver[1] != m_ID)
+                                {
+                                    if (m_PlayerList[0].WeaponList != null)
+                                    {
+                                        if (m_Receiver[2] == (byte)WeaponSound.Explosion)
+                                        {
+                                            ((RocketLauncher)m_PlayerList[0].WeaponList[(byte)WeaponType.RocketLauncher]).PlayExplosionSound();
+                                        }
+                                        else
+                                        {
+                                            m_PlayerList[0].WeaponList[m_Receiver[2]].PlayShootingSound();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        System.Windows.Forms.MessageBox.Show("Debug");
+                                    }
+                                }
+                                break;
                             default:
                                 System.Windows.Forms.MessageBox.Show("Unknown package format");
                                 //Thread.Sleep(5);
@@ -350,34 +380,16 @@ namespace ClonesEngine
                 Send(TramePreGen.AskAutoVerif(ID));
             }
         }
-        /*
-        private void AssignWeapons()
-        {
-
-
-            WeaponList[(byte)WeaponType.Pistol] = new Pistol(ref m_ID, m_PlayerList);
-            WeaponList[(byte)WeaponType.Shotgun] = new Shotgun(ref m_ID, m_PlayerList);
-            WeaponList[(byte)WeaponType.MachineGun] = new MachineGun(ref m_ID, m_PlayerList);
-            WeaponList[(byte)WeaponType.Sniper] = new Sniper(ref m_ID, m_PlayerList);
-            WeaponList[(byte)WeaponType.RocketLauncher] = new RocketLauncher(ref m_ID, m_PlayerList);
-        }*/
-        /*
-        private bool Locked = false;
-        public void Enter()
-        {
-            // Yield until acquired is false
-            while (Locked) { Thread.Sleep(1); }
-            Locked = true;
-        }
-        public
-         void Exit()
-        {
-            Locked = false;
-        }
-        */
+      
         public void Send(byte[] data)
         {
             ConnectionUDP.Send(data);
+            m_PacketID++;
+        }
+
+        public void OnSendSound(object w, byte e)
+        {
+            ConnectionUDP.Send(TramePreGen.PlaySound(m_ID, e));//////////////////////////
             m_PacketID++;
         }
 

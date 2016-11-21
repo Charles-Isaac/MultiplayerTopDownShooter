@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Timers;
+using System.Threading;
+using System.Threading.Tasks;
+using NAudio;
+using NAudio.Wave;
 
 namespace ClonesEngine
 {
@@ -14,6 +18,16 @@ namespace ClonesEngine
         RocketLauncher = 4,
 
     }
+    enum WeaponSound : byte
+    {
+        Pistol = 0,
+        Shotgun = 1,
+        MachineGun = 2,
+        Sniper = 3,
+        RocketLauncher = 4,
+        Explosion = 5,
+
+    }
     enum ProjectileType : byte
     {
         Bullet = 0,
@@ -21,6 +35,7 @@ namespace ClonesEngine
         Grenade = 2,
 
     }
+  
     abstract class Weapons
     {
         public abstract void MouseDown(PointF MouseDir);
@@ -32,6 +47,27 @@ namespace ClonesEngine
         public abstract PointF MouseDir { set; }
         public abstract string WeaponName { get; }
         public abstract PlayerData User { set; }
+        public abstract void PlayShootingSound();
+
+
+
+        public EventHandler<byte> Shot;
+   //     public delegate void PlaySoundEventArgs(Weapons w, EventHandler e);
+
+        public virtual void OnShot(Weapons w, byte e)
+        {
+            if (Shot != null)
+            {
+                Shot(w, e);
+            }
+          
+        }
+
+        
+        /*
+        public abstract event EventHandler Shot;
+        public abstract EventArgs e = null;
+        public abstract delegate void TickHandler(Weapons w, EventArgs e);*/
     }
 
     class Pistol : Weapons
@@ -40,7 +76,7 @@ namespace ClonesEngine
         public override int NBulletLeft { get; set; }
         public override int NBulletInCharger { get; set; }
 
-        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.Glock17Sound);
+      //  System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.Glock17Sound);
 
         public override string WeaponName { get { return "Wannabe a Glock17"; } } 
         const byte BulletSpeed = 25;
@@ -56,6 +92,27 @@ namespace ClonesEngine
 
 
 
+        volatile bool ShootingSound = false;
+        public override void PlayShootingSound()
+        {
+            ShootingSound = false;
+            new Task(Sound).Start();
+        }
+        private void Sound()
+        {
+            OnShot(this, (byte)WeaponSound.Pistol);
+            using (WaveStream blockAlignedStream = new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.PistolSound))
+            {
+                using (WaveOut waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
+                {
+                    waveOut.Init(blockAlignedStream);
+                    waveOut.Play();
+                    ShootingSound = true;
+                    while (waveOut.PlaybackState == PlaybackState.Playing && ShootingSound)
+                        Thread.Sleep(15);
+                }
+            }
+        }
 
 
 
@@ -66,6 +123,7 @@ namespace ClonesEngine
                 _Player = value;
             }
         }
+
 
         public override void Reload()
         {
@@ -109,7 +167,7 @@ namespace ClonesEngine
                 MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                 _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
 
-                FireSound.Play();
+                PlayShootingSound();
 
            //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
             }
@@ -178,13 +236,13 @@ namespace ClonesEngine
         public override int NBulletLeft { get; set; }
         public override int NBulletInCharger { get; set; }
 
-        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.MachineGunSound);
+  //      System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.MachineGunSound);
 
         public override string WeaponName { get { return "Machine Gun"; } }
         const byte BulletSpeed = 25;
         const int ReloadingTime = 2000;
         const int ClipSize = 30;
-        const int Firerate = 105;
+        const int Firerate = 115;//105
         const int SpreadAngle = 6;
         Random RNG = new Random();
         object WeaponLock = new object();
@@ -193,7 +251,6 @@ namespace ClonesEngine
         System.Timers.Timer Tim;
 
         PlayerData _Player;
-
 
         public override PlayerData User
         {
@@ -204,8 +261,27 @@ namespace ClonesEngine
         }
 
 
-
-
+        volatile bool ShootingSound = false;
+        public override void PlayShootingSound()
+        {
+            ShootingSound = false;
+            new Task(Sound).Start();
+        }
+        private void Sound()
+        {
+            
+            using (WaveStream blockAlignedStream = new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.MachineGunSound))
+            {
+                using (WaveOut waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
+                {
+                    waveOut.Init(blockAlignedStream);
+                    waveOut.Play();
+                    ShootingSound = true;
+                    while (waveOut.PlaybackState == PlaybackState.Playing && ShootingSound)
+                        Thread.Sleep(15);
+                }
+            }
+        }
 
         public override void Reload()
         {
@@ -234,6 +310,8 @@ namespace ClonesEngine
             Tim = new System.Timers.Timer(Firerate);
             Tim.AutoReset = false;
             Tim.Elapsed += _timer_Elapsed;
+           
+           // ThreadExplosion.Start();
 
 
         }
@@ -253,7 +331,9 @@ namespace ClonesEngine
                 MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                 _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
 
-                FireSound.Play();
+                PlayShootingSound();
+
+                //FireSound.Play();
 
             }
         }
@@ -315,7 +395,8 @@ namespace ClonesEngine
                             PointF MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                             _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
                             Tim.Start();
-                            FireSound.Play();
+                            PlayShootingSound();
+                            //FireSound.Play();
                         }
                     }
                 }
@@ -333,8 +414,8 @@ namespace ClonesEngine
                     }
                     */
 
-        }
-        public override void MouseUp()
+    }
+    public override void MouseUp()
         {
             
 
@@ -345,7 +426,7 @@ namespace ClonesEngine
         public override int NBulletLeft { get; set; }
         public override int NBulletInCharger { get; set; }
 
-        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.SniperSound);
+   //     System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.SniperSound);
 
         public override string WeaponName { get { return "Some HUGE Sniper Rifle"; } }
         const byte BulletSpeed = 200;
@@ -361,6 +442,27 @@ namespace ClonesEngine
 
         PlayerData _Player;
 
+        volatile bool ShootingSound = false;
+        public override void PlayShootingSound()
+        {
+            ShootingSound = false;
+            new Task(Sound).Start();
+        }
+        private void Sound()
+        {
+
+            using (WaveStream blockAlignedStream = new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.SniperSound))
+            {
+                using (WaveOut waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
+                {
+                    waveOut.Init(blockAlignedStream);
+                    waveOut.Play();
+                    ShootingSound = true;
+                    while (waveOut.PlaybackState == PlaybackState.Playing && ShootingSound)
+                        Thread.Sleep(15);
+                }
+            }
+        }
 
 
         public override PlayerData User
@@ -418,7 +520,7 @@ namespace ClonesEngine
                 MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                 _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
 
-                FireSound.Play();
+                PlayShootingSound();
 
                 //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
             }
@@ -487,7 +589,7 @@ namespace ClonesEngine
         public override int NBulletInCharger { get; set; }
        
         Random RNG;
-        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.ShotgunSound);
+    //    System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.ShotgunSound);
 
         public override string WeaponName { get { return "Shotgun"; } }
         const byte BulletSpeed = 15;
@@ -503,6 +605,27 @@ namespace ClonesEngine
 
         PlayerData _Player;
 
+        volatile bool ShootingSound = false;
+        public override void PlayShootingSound()
+        {
+            ShootingSound = false;
+            new Task(Sound).Start();
+        }
+        private void Sound()
+        {
+
+            using (WaveStream blockAlignedStream = new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.ShotgunSound))
+            {
+                using (WaveOut waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
+                {
+                    waveOut.Init(blockAlignedStream);
+                    waveOut.Play();
+                    ShootingSound = true;
+                    while (waveOut.PlaybackState == PlaybackState.Playing && ShootingSound)
+                        Thread.Sleep(15);
+                }
+            }
+        }
 
         public override PlayerData User
         {
@@ -566,7 +689,7 @@ namespace ClonesEngine
                     MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                     _Player.AjouterProjectile(new Projectile(_Player.Position, MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
                 }
-                FireSound.Play();
+                PlayShootingSound();
             }
         }
         void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -629,8 +752,8 @@ namespace ClonesEngine
         public override int NBulletLeft { get; set; }
         public override int NBulletInCharger { get; set; }
         
-        System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.RocketLauncherSound);
-        System.Media.SoundPlayer ExplosionSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.Explosion);
+      //  System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.RocketLauncherSound);
+     //   System.Media.SoundPlayer ExplosionSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.Explosion);
 
         public override string WeaponName { get { return "Some huge ass rocket launcher"; } }
         const byte BulletSpeed = 10;
@@ -646,6 +769,27 @@ namespace ClonesEngine
         bool HasExploded;
 
         PlayerData _Player;
+        volatile bool ShootingSound = false;
+        public override void PlayShootingSound()
+        {
+            ShootingSound = false;
+            new Task(Sound).Start();
+        }
+        private void Sound()
+        {
+
+            using (WaveStream blockAlignedStream = new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.RocketLauncherSound))
+            {
+                using (WaveOut waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
+                {
+                    waveOut.Init(blockAlignedStream);
+                    waveOut.Play();
+                    ShootingSound = true;
+                    while (waveOut.PlaybackState == PlaybackState.Playing && ShootingSound)
+                        Thread.Sleep(15);
+                }
+            }
+        }
 
         public override PlayerData User
         {
@@ -690,10 +834,46 @@ namespace ClonesEngine
 
         }
 
+
+        volatile bool ExplosionSound = false;
+        public void PlayExplosionSound()
+        {
+            ExplosionSound = false;
+            new Task(Explosion).Start();
+        }
+        private void Explosion()
+        {
+            
+            using (WaveStream blockAlignedStream = new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.ExplosionSound))
+            {
+                using (WaveOut waveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
+                {
+                    waveOut.Init(blockAlignedStream);
+                    waveOut.Play();
+                    ExplosionSound = true;
+                    while (waveOut.PlaybackState == PlaybackState.Playing && ExplosionSound)
+                        Thread.Sleep(15);
+                }
+            }
+        }
+
+
         public void BringTheHavoc()//make it go boom
         {
             HasExploded = true;
-            ExplosionSound.Play();
+
+
+
+
+            Thread ThreadExplosion;
+            ThreadStart start = new ThreadStart(Explosion);
+            ThreadExplosion = new Thread(start);
+            ThreadExplosion.IsBackground = true;
+            ThreadExplosion.Start();
+
+           
+
+
             double radians;
             lock (_Player.BulletLock)
             {
@@ -757,7 +937,7 @@ namespace ClonesEngine
                 if (IsAiming)
                 {
                     NBulletInCharger--;
-                    FireSound.Play();
+                    PlayShootingSound();
                     double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                     MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
                     _Player.AjouterProjectile(new Projectile(_Player.Position, _MouseDir, BulletSpeed, (byte)ProjectileType.Rocket));
@@ -770,64 +950,6 @@ namespace ClonesEngine
                 }
             }
         
-
-
-
-            /*
-            if (Reloading)
-            {
-                if (NBulletLeft <= 0)
-                {
-                    Tim.Stop();
-                    Tim.Interval = ReloadingTime;
-                    Tim.Start();
-                }
-                else
-                {
-                    if (NBulletLeft <= ClipSize)
-                    {
-                        NBulletInCharger = NBulletLeft;
-                        NBulletLeft = 0;
-                    }
-                    else
-                    {
-                        NBulletLeft -= ClipSize;
-                        NBulletInCharger = ClipSize;
-                    }
-                    Tim.Stop();
-                    Tim.Interval = Firerate;
-                    Reloading = false;
-                    CanShoot = true;
-                }
-
-            }
-            else
-            {
-
-                if (NBulletInCharger <= 0)
-                {
-                    CanShoot = false;
-                    Reloading = true;
-                    Tim.Stop();
-                    Tim.Interval = ReloadingTime;
-                    Tim.Start();
-
-                }
-                else
-                {
-                    if (IsAiming)
-                    {
-                        NBulletInCharger--;
-                        FireSound.Play();
-                        double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
-                        MouseDir = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
-                        _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed, (byte)ProjectileType.Bullet));
-
-                        CanShoot = true;
-                    }
-                }
-            }*/
-
         }
         public override void MouseUp()
         {

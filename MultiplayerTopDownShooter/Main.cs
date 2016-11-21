@@ -206,7 +206,10 @@ namespace MultiplayerTopDownShooter
                 e.Graphics.DrawString("Your game ID: " + GP.ID.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 10);
                 e.Graphics.DrawString("Your score: " + GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 60);
                 e.Graphics.DrawString("Where you are looking: " + ((int)((GP.PlayerList[GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 110);
-
+                for (int i = 1; i < GP.PlayerCount + 1; i++)
+                {
+                    e.Graphics.DrawString("Player " + i.ToString() + " score: " + GP.PlayerList[i].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 700 + 50 * i);
+                }
 
 
                 Point PositionSourie = this.PointToClient(Cursor.Position);

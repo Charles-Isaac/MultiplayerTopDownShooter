@@ -50,6 +50,9 @@ namespace ClonesEngine
             }
             return Packet;
         }
+
+        
+
         public static byte[] Serialize(PlayerData tData)
         {
             using (var ms = new MemoryStream())
@@ -123,6 +126,18 @@ namespace ClonesEngine
         public static byte[] AskMapSeed()
         {
             return new byte[] { (byte)PacketUse.AskMap };
+        }
+
+        public static byte[] PlaySound(byte ID, byte SoundID)
+        {
+            byte[] Trame = new byte[3];
+
+            Trame[0] = (byte)PacketUse.PlaySound;
+            Trame[1] = ID;
+            Trame[2] = SoundID;
+
+
+            return Trame;
         }
     }
 }
