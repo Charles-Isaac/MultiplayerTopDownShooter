@@ -207,6 +207,10 @@ namespace MultiplayerTopDownShooter
                 e.Graphics.DrawString("Your score: " + GP.PlayerList[GP.ID].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 60);
                 e.Graphics.DrawString("Where you are looking: " + ((int)((GP.PlayerList[GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 110);
 
+                Point MousePosition = this.PointToClient(Cursor.Position);
+                MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
+                MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
+
                 if (GP.PlayerList[GP.ID].WeaponList != null)
                 {
                     e.Graphics.DrawString(GP.PlayerList[GP.ID].WeaponList[GP.SelectedWeapon].WeaponName, new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 310);
@@ -222,9 +226,6 @@ namespace MultiplayerTopDownShooter
 
 
 
-                    Point MousePosition = this.PointToClient(Cursor.Position);
-                    MousePosition.X = (int)(MousePosition.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
-                    MousePosition.Y = (int)(MousePosition.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
 
 
                     // Thread.Sleep(250); //Lag gen
