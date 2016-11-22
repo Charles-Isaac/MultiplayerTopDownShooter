@@ -5,19 +5,19 @@ namespace ClonesEngine
 {
     class UDPConnecter
     {
-        IPEndPoint endPoint;
+        private IPEndPoint m_EndPoint;
         public UDPConnecter(int LobbyPort)
         {
-            port = LobbyPort;
+            m_Port = LobbyPort;
             InitializeSender();
             
             //InitializeReceiver();
-            receivingClient = new UdpClient();
-            receivingClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            receivingClient.Client.Bind(new IPEndPoint(IPAddress.Any, port));
+            m_ReceivingClient = new UdpClient();
+            m_ReceivingClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            m_ReceivingClient.Client.Bind(new IPEndPoint(IPAddress.Any, m_Port));
             /*
                         receivingClient = new UdpClient(port);*/
-            endPoint = new IPEndPoint(IPAddress.Any, port);
+            m_EndPoint = new IPEndPoint(IPAddress.Any, m_Port);
         }
 
 
@@ -29,30 +29,29 @@ namespace ClonesEngine
 
         //string userName;
        
-        int port = 54545;
-        const string broadcastAddress = "255.255.255.255";//"127.0.0.1";
+        private readonly int m_Port;// = 54545;
+        private const string m_BroadcastAddress = "255.255.255.255";//"127.0.0.1";
 
-        UdpClient receivingClient;
-        UdpClient sendingClient;
+        private readonly UdpClient m_ReceivingClient;
+        private UdpClient m_SendingClient;
 
         //public Thread receivingThread;
         private void InitializeSender()
         {
-            sendingClient = new UdpClient(broadcastAddress, port);
-            sendingClient.EnableBroadcast = true;
-            
+            m_SendingClient = new UdpClient(m_BroadcastAddress, m_Port) {EnableBroadcast = true};
+
         }
         
         public byte[] Receiver()
         {
-                return receivingClient.Receive(ref endPoint);
+                return m_ReceivingClient.Receive(ref m_EndPoint);
         }
 
         public void Send(byte[] DataToSend)
         {
             if (DataToSend != null)
             {
-                sendingClient.Send(DataToSend, DataToSend.Length);
+                m_SendingClient.Send(DataToSend, DataToSend.Length);
             }
         }
     }

@@ -8,8 +8,8 @@ namespace ClonesEngine
     {
         private PointF m_Position;
         private PointF m_DirectionDeplacement;
-        byte m_Velocite;
-        byte m_TypeOfProjectile;
+        private byte m_Velocite;
+        private byte m_TypeOfProjectile;
        // int m_LastTickUpdate;
         public Projectile()
         {
@@ -25,12 +25,12 @@ namespace ClonesEngine
         }
         */
 
-        public Projectile(PointF Position, PointF DirectionDeplacement, byte cVelocite, byte TypeOfProjectile)
+        public Projectile(PointF Position, PointF DirectionDeplacement, byte Velocite, byte TypeOfProjectile)
         {
             m_TypeOfProjectile = TypeOfProjectile;
             m_Position = Position;
             m_DirectionDeplacement = DirectionDeplacement;
-            m_Velocite = cVelocite;
+            m_Velocite = Velocite;
             //m_LastTickUpdate = LastTickCount;
         }
 

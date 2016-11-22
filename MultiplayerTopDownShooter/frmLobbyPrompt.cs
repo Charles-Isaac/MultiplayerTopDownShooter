@@ -14,7 +14,7 @@ namespace ClonesEngine
         {
             m_Lobby = (Math.Abs(txtLobbyName.Text.GetHashCode()) % 0x3FFF/*16383*/) + 0xC000 /*49152*/;
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         } 
 
         public int Lobby
@@ -28,7 +28,7 @@ namespace ClonesEngine
             {
                 m_Lobby = (Math.Abs(txtLobbyName.Text.GetHashCode()) % 16383) + 49152;
                 DialogResult = DialogResult.OK;
-                this.Close();
+                Close();
             }
             
         }

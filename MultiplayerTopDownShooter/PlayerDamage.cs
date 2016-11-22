@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
-using ProtoBuf;
+﻿using System.Xml.Serialization;
 
 namespace ClonesEngine
 {
     [XmlType]
     class PlayerDamage
     {
-        byte m_ID;
-        byte m_Damage;
+        private byte m_ID;
+        private byte m_Damage;  
 
         public PlayerDamage()
         {

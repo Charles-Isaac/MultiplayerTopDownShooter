@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace ClonesEngine
@@ -10,39 +9,39 @@ namespace ClonesEngine
     class PlayerData
     {
 
-        private static object m_BulletLock = new object();
+        private readonly object m_BulletLock = new object();
         public object BulletLock
         {
             get { return m_BulletLock; }
         }
 
         [XmlElement(Order = 1)]
-        byte m_ID;
+        private byte m_ID;
         [XmlElement(Order = 2)]
-        PointF m_Position;
+        private PointF m_Position;
         [XmlElement(Order = 3)]
         private int m_DirectionRegard;
         [XmlElement(Order = 4)]
-        PointF m_DirectionDeplacement;
+        private PointF m_DirectionDeplacement;
        // [XmlElement(Order = 5)]
        // long m_LastTickUpdate;
         [XmlElement(Order = 5)]
-        byte m_Velocite;
+        private byte m_Velocite;
         [XmlElement(Order = 6)]
-        int m_Couleur;
+        private int m_Couleur;
         [XmlElement(Order = 7)]
-        byte m_DeathStatus;
+        private byte m_DeathStatus;
         [XmlElement(Order = 8)]
-        byte m_Size;
+        private byte m_Size;
         [XmlElement(Order = 9)]
-        int m_Score;
+        private int m_Score;
 
        // [XmlElement(Order = 10)]
         public Weapons[] WeaponList;
 
 
         [XmlElement(Order = 10)]
-        List<Projectile> m_LBullet = new List<Projectile>();
+        private List<Projectile> m_LBullet = new List<Projectile>();
 
         public PlayerData()
         {
@@ -58,8 +57,8 @@ namespace ClonesEngine
                 m_Velocite = Settings.DefaultPlayerSpeed;
                 //m_Couleur = Color.Black.ToArgb();
                
-                Random rng = new Random();
-                m_Couleur = Color.FromArgb(rng.Next(256), rng.Next(256), rng.Next(256)).ToArgb();
+                Random RNG = new Random();
+                m_Couleur = Color.FromArgb(RNG.Next(256), RNG.Next(256), RNG.Next(256)).ToArgb();
                 m_Size = Settings.DefaultPlayerSize;
                 m_Score = 0;
             }
@@ -92,7 +91,7 @@ namespace ClonesEngine
             set { m_DeathStatus = value; }
         }
 
-        public PlayerData(byte IDConstructeur, long TickCount)
+        public PlayerData(byte IDConstructeur)
         {
             //m_LastTickUpdate = TickCount;
             //    CallWeaponConstructor();
@@ -105,8 +104,8 @@ namespace ClonesEngine
             m_Velocite = Settings.DefaultPlayerSpeed;
             m_Size = Settings.DefaultPlayerSize;
             m_Score = 0;
-            Random rng = new Random();
-            m_Couleur = Color.FromArgb(rng.Next(256), rng.Next(256), rng.Next(256)).ToArgb();
+            Random RNG = new Random();
+            m_Couleur = Color.FromArgb(RNG.Next(256), RNG.Next(256), RNG.Next(256)).ToArgb();
         }
 
         public int Couleur
@@ -137,11 +136,7 @@ namespace ClonesEngine
                 {
                     if (Murs != null)
                     {
-                        PointF TempPosi;// = Player[i].Position;
-
-
-                        /*Player[i].Position*/
-                        TempPosi = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20), Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
+                        PointF TempPosi = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20), Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
 
                         int j = Murs.Murs.Length - 1;
                         for (; j >= 0; j--)
@@ -151,10 +146,12 @@ namespace ClonesEngine
 
                                 PointF VectMur = new PointF(Murs.Murs[j].A.X - Murs.Murs[j].B.X, Murs.Murs[j].A.Y - Murs.Murs[j].B.Y);
                                 PointF VectPlayer = new PointF(TempPosi.X - Player[i].Position.X, TempPosi.Y - Player[i].Position.Y);
-                                float dp = VectPlayer.X * VectMur.X + VectPlayer.Y * VectMur.Y;
-                                PointF proj = new PointF();
-                                proj.X = (dp / (VectMur.X * VectMur.X + VectMur.Y * VectMur.Y)) * VectMur.X;
-                                proj.Y = (dp / (VectMur.X * VectMur.X + VectMur.Y * VectMur.Y)) * VectMur.Y;
+                                float Dp = VectPlayer.X * VectMur.X + VectPlayer.Y * VectMur.Y;
+                                PointF Proj = new PointF
+                                {
+                                    X = (Dp/(VectMur.X*VectMur.X + VectMur.Y*VectMur.Y))*VectMur.X,
+                                    Y = (Dp/(VectMur.X*VectMur.X + VectMur.Y*VectMur.Y))*VectMur.Y
+                                };
                                 if (Player[i].Position.Y <= 0)
                                 {
                                     Player[i].Position = new PointF(Player[i].Position.X, 1);
@@ -172,7 +169,7 @@ namespace ClonesEngine
                                     Player[i].Position = new PointF(Settings.GameSize.Width - 1, Player[i].Position.Y);
                                 }
 
-                                TempPosi = new PointF(Player[i].Position.X + proj.X, Player[i].Position.Y + proj.Y);
+                                TempPosi = new PointF(Player[i].Position.X + Proj.X, Player[i].Position.Y + Proj.Y);
                                 if (float.IsNaN(Player[i].Position.X))
                                 {
                                     System.Windows.Forms.MessageBox.Show("The application is broken");

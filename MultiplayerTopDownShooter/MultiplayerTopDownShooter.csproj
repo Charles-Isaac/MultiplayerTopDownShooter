@@ -71,7 +71,6 @@
     <Compile Include="PlayerDamage.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="GestionnaireDePacket.cs" />
-    <Compile Include="GestionnaireJeu.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>

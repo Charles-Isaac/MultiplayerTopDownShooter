@@ -29,41 +29,36 @@ namespace ClonesEngine
     class GestionnaireDePacket
     {
         //    Stopwatch TickCounter;
-        object PlayerLock = new object();
-        UDPConnecter ConnectionUDP;
-        Thread ThreadReception;
+        private readonly object m_PlayerLock = new object();
+        private UDPConnecter m_ConnectionUdp;
         //public TramePreGen PreGen;
-        PlayerData[] m_PlayerList = new PlayerData[255];
-        
-        int[] m_PlayerTime = new int[255];
-        byte m_ID;
-        int AutoVerifData = 0;
-        Random RNG = new Random();
-        int LastTickCheck = 0;
+        private readonly PlayerData[] m_PlayerList = new PlayerData[255];
 
-        bool ResendDamage = false;
-        byte DamageTarget = 0;
-        bool Updatable = true;
-        List<PlayerDamage> BulletDamage = new List<PlayerDamage>();
+        private int[] m_PlayerTime = new int[255];
+        private byte m_ID;
+        private int m_AutoVerifData;
+        private readonly Random m_RNG = new Random();
+        private int m_LastTickCheck;
 
-        byte m_PlayerCount;
-        //byte[] m_PlayerList = new byte[255];
-        //byte[,] m_LastPackage = new byte[255, 9];
-        byte[] m_Receiver;
-        //byte[] m_PlayerIntList = new byte[255];
-        int m_PacketID;
-   //     public Weapons[] WeaponList;
+        private bool m_ResendDamage;
+        private byte m_DamageTarget;
+        private bool m_Updatable = true;
+        private List<PlayerDamage> m_BulletDamage = new List<PlayerDamage>();
+
+        private byte m_PlayerCount;
+        private byte[] m_Receiver;
+        private int m_PacketID;
         public byte SelectedWeapon = 0;
 
-        Map Murs;
-        int MapSeed;
+        private Map m_Murs;
+        private int m_MapSeed;
 
-        int m_LobbyPort = 54545;
+        private readonly int m_LobbyPort;// = 54545;
 
         #region Propriete
         public Map Map
         {
-            get { return Murs; }
+            get { return m_Murs; }
         }
         public byte PlayerCount
         {
@@ -73,11 +68,6 @@ namespace ClonesEngine
         {
             get { return m_ID; }
         }
-        /*
-        public byte[,] LastPackage
-        {
-            get { return m_LastPackage; }
-        }*/
         public PlayerData[] PlayerList
         {
             get { return m_PlayerList; }
@@ -91,6 +81,35 @@ namespace ClonesEngine
         {
             get { return m_PlayerTime; }
             set { m_PlayerTime = value; }
+        }
+
+        public int LobbyPort
+        {
+            get
+            {
+                return m_LobbyPort;
+            }
+        }
+
+        internal Map Murs
+        {
+            get
+            {
+                return m_Murs;
+            }
+
+            set
+            {
+                m_Murs = value;
+            }
+        }
+
+        public object PlayerLock
+        {
+            get
+            {
+                return m_PlayerLock;
+            }
         }
 
         #endregion
@@ -111,8 +130,7 @@ namespace ClonesEngine
             m_LobbyPort = Lobby;
             for (int i = 0; i < 255; i++)
             {
-                m_PlayerList[i] = new PlayerData();
-                m_PlayerList[i].Vitesse = Settings.DefaultPlayerSpeed;
+                m_PlayerList[i] = new PlayerData {Vitesse = Settings.DefaultPlayerSpeed};
 
                 m_PlayerList[i].CallWeaponConstructor();
                 m_PlayerTime[i] = Environment.TickCount;
@@ -123,27 +141,24 @@ namespace ClonesEngine
             //PreGen = new TramePreGen();
             DemarrerLaConnection();
 
-            ThreadStart start = new ThreadStart(Reception);
-            ThreadReception = new Thread(start);
-            ThreadReception.IsBackground = true;
+            ThreadStart Start = Reception;
+            Thread ThreadReception = new Thread(Start) {IsBackground = true};
             ThreadReception.Start();
-        /*    TickCounter = new Stopwatch();
-            TickCounter.Start();
-        */
-            //GetPlayerCount();
         }
-        public bool DemarrerLaConnection()
+        public void DemarrerLaConnection()
         {
+#if DEBUG
             try
             {
-                ConnectionUDP = new UDPConnecter(m_LobbyPort);
-                return true;
+                m_ConnectionUdp = new UDPConnecter(m_LobbyPort);
             }
             catch (Exception e)
             {
-                System.Windows.Forms.MessageBox.Show(e.Message);
-                throw e;
+                System.Windows.Forms.MessageBox.Show(e.Message); 
             }
+#else
+            m_ConnectionUdp = new UDPConnecter(m_LobbyPort);
+#endif
         }
 
         private void Reception()
@@ -160,7 +175,7 @@ namespace ClonesEngine
                     //Thread.Sleep(50);
                     do
                     {
-                        m_Receiver = ConnectionUDP.Receiver();
+                        m_Receiver = m_ConnectionUdp.Receiver();
                         switch (m_Receiver[0])
                         {
                             case (byte)PacketUse.AskNumberOfPlayer:
@@ -172,7 +187,7 @@ namespace ClonesEngine
 
                             case (byte)PacketUse.AnswerNumberOfPlayer:
 
-                                lock (PlayerLock)
+                                lock (m_PlayerLock)
                                 {
                                     if (m_Receiver[2] > m_PlayerCount || m_ID == 0)
                                     {
@@ -180,7 +195,7 @@ namespace ClonesEngine
 
                                         for (; m_PlayerCount < m_Receiver[2]; m_PlayerCount++)
                                         {
-                                            m_PlayerList[m_PlayerCount] = new PlayerData(m_PlayerCount, Environment.TickCount/*TickCounter.ElapsedTicks*/);
+                                            m_PlayerList[m_PlayerCount] = new PlayerData(m_PlayerCount);
                                             m_PlayerTime[m_PlayerCount] = Environment.TickCount;
                                         }
                                         if (m_ID == 0)
@@ -188,7 +203,7 @@ namespace ClonesEngine
                                             m_ID = m_Receiver[2];
                                             m_ID++;
                                             m_PlayerCount++;
-                                            m_PlayerList[m_ID] = new PlayerData(m_ID, Environment.TickCount/*TickCounter.ElapsedTicks*/);
+                                            m_PlayerList[m_ID] = new PlayerData(m_ID);
                                             m_PlayerTime[m_ID] = Environment.TickCount;
 
 
@@ -207,7 +222,7 @@ namespace ClonesEngine
                                 lock (m_PlayerList[m_Receiver[1]].BulletLock)
                                 {
                                    
-                                    PlayerData p = TramePreGen.ReceiverInfoJoueur(m_Receiver);
+                                    PlayerData tempPlayer = TramePreGen.ReceiverInfoJoueur(m_Receiver);
                                    /* if (m_PlayerList[m_Receiver[1]].WeaponList != null)
                                     {
                                         p.WeaponList = m_PlayerList[m_Receiver[1]].WeaponList;
@@ -219,19 +234,19 @@ namespace ClonesEngine
                                     */
                                     if (m_Receiver[1] == m_ID)
                                     {
-                                        p.WeaponList = m_PlayerList[m_Receiver[1]].WeaponList;
-                                        if (p.WeaponList != null)
+                                        tempPlayer.WeaponList = m_PlayerList[m_Receiver[1]].WeaponList;
+                                        if (tempPlayer.WeaponList != null)
                                         {
-                                            p.UpdateWeaponWielder();
-                                            p.WeaponList[0].Shot -= OnSendSound;
-                                            p.WeaponList[0].Shot += OnSendSound;
+                                            tempPlayer.UpdateWeaponWielder();
+                                            tempPlayer.WeaponList[0].Shot -= OnSendSound;
+                                            tempPlayer.WeaponList[0].Shot += OnSendSound;
                                         }
                                         else
                                         {
-                                            p.CallWeaponConstructor();
+                                            tempPlayer.CallWeaponConstructor();
 
 
-                                            p.WeaponList[0].Shot += OnSendSound;
+                                            tempPlayer.WeaponList[0].Shot += OnSendSound;
 
 
 
@@ -240,7 +255,7 @@ namespace ClonesEngine
                                     // Thread.Sleep(15);
                                                              
                                     //   p.Bullet = m_PlayerList[m_Receiver[1]].Bullet;
-                                    m_PlayerList[m_Receiver[1]] = p;
+                                    m_PlayerList[m_Receiver[1]] = tempPlayer;
                                     
                                     m_PlayerTime[m_Receiver[1]] = Environment.TickCount;
                                 }
@@ -248,14 +263,14 @@ namespace ClonesEngine
                             case (byte)PacketUse.AskMap:
                                 if (m_ID == 1)
                                 {
-                                    Send(TramePreGen.AnswerMapSeed(m_ID, MapSeed));
+                                    Send(TramePreGen.AnswerMapSeed(m_ID, m_MapSeed));
                                 }
                                 break;
                             case (byte)PacketUse.AnswerMap:
-                                if (MapSeed != BitConverter.ToInt32(m_Receiver, 2))
+                                if (m_MapSeed != BitConverter.ToInt32(m_Receiver, 2))
                                 {
-                                    MapSeed = BitConverter.ToInt32(m_Receiver, 2);
-                                    Murs = new Map(MapSeed);
+                                    m_MapSeed = BitConverter.ToInt32(m_Receiver, 2);
+                                    m_Murs = new Map(m_MapSeed);
                                 }
                                     
                                 break;
@@ -265,7 +280,7 @@ namespace ClonesEngine
                                     m_ID = 1;
                                     m_PlayerCount = 1;
                //                     AssignWeapons();
-                                    Thread.Sleep(RNG.Next(0, 50));
+                                    Thread.Sleep(m_RNG.Next(0, 50));
                                     //GenMap();
                                 }
                                 else
@@ -288,15 +303,15 @@ namespace ClonesEngine
                             case (byte)PacketUse.AskAutoVerif:
                                 if (m_Receiver[1] == m_ID)
                                 {
-                                    AutoVerifData = RNG.Next(1, int.MaxValue);
-                                    Send(TramePreGen.AnswerAutoVerif(AutoVerifData, m_ID));
+                                    m_AutoVerifData = m_RNG.Next(1, int.MaxValue);
+                                    Send(TramePreGen.AnswerAutoVerif(m_AutoVerifData, m_ID));
                                 }
                                 break;
 
                             case (byte)PacketUse.AnswerAutoVerif:
                                 if (m_Receiver[1] == m_ID)
                                 {   
-                                    if (AutoVerifData < BitConverter.ToInt32(m_Receiver, 2))
+                                    if (m_AutoVerifData < BitConverter.ToInt32(m_Receiver, 2))
                                     {
                                         m_ID = 0;
                                         m_PlayerCount = 0;
@@ -309,15 +324,15 @@ namespace ClonesEngine
                             case (byte)PacketUse.InfoPlayerDamage:
                                 if (m_Receiver[2] == m_ID)
                                 {
-                                    m_PlayerList[m_ID].Position = new PointF(RNG.Next(Settings.GameSize.Width), RNG.Next(Settings.GameSize.Height));
+                                    m_PlayerList[m_ID].Position = new PointF(m_RNG.Next(Settings.GameSize.Width), m_RNG.Next(Settings.GameSize.Height));
                                     Send(TramePreGen.AcknowledgeDamage(m_ID));
                                     Send(TramePreGen.InfoJoueur(m_PlayerList[ID], m_ID, m_PacketID));
                                 }
                                 break;
                             case (byte)PacketUse.AcknowledgeDamage:
-                                if (m_Receiver[1] == DamageTarget)
+                                if (m_Receiver[1] == m_DamageTarget)
                                 {
-                                    ResendDamage = false;
+                                    m_ResendDamage = false;
                                 }
                                 break;
 
@@ -347,26 +362,26 @@ namespace ClonesEngine
                                 break;
                         }//Switch
 
-                        if (LastTickCheck + 2650 < Environment.TickCount)
+                        if (m_LastTickCheck + 2650 < Environment.TickCount)
                         {
-                            LastTickCheck = Environment.TickCount + RNG.Next(1, 500);
+                            m_LastTickCheck = Environment.TickCount + m_RNG.Next(1, 500);
                             Send(TramePreGen.AskAutoVerif(m_ID));
-                            if (MapSeed == 0 && m_ID != 0)
+                            if (m_MapSeed == 0 && m_ID != 0)
                             {
-                                Send(TramePreGen.AnswerMapSeed(m_ID, MapSeed));
+                                Send(TramePreGen.AnswerMapSeed(m_ID, m_MapSeed));
                             }
                         }
 
                     } while (m_ID != 0);//While(true)
-                    lock (PlayerLock)
+                    lock (m_PlayerLock)
                     {
 
                     }
                 } while (TryCount < 100 && m_ID == 0);
                 if (TryCount == 100 && m_ID == 0)
                 {
-                    MapSeed = RNG.Next() + 1;
-                    Murs = new Map(MapSeed);
+                    m_MapSeed = m_RNG.Next() + 1;
+                    m_Murs = new Map(m_MapSeed);
                     m_ID = 1;
                     m_PlayerCount = 1;
 
@@ -383,43 +398,43 @@ namespace ClonesEngine
       
         public void Send(byte[] data)
         {
-            ConnectionUDP.Send(data);
+            m_ConnectionUdp.Send(data);
             m_PacketID++;
         }
 
         public void OnSendSound(object w, byte e)
         {
-            ConnectionUDP.Send(TramePreGen.PlaySound(m_ID, e));//////////////////////////
+            m_ConnectionUdp.Send(TramePreGen.PlaySound(m_ID, e));//////////////////////////
             m_PacketID++;
         }
 
-        public void UpdatePlayer(byte ID, Point MousePosition)
+        public void UpdatePlayer(byte PlayerID, Point MousePosition)
         {
-            if (ID != 0)
+            if (PlayerID != 0)
             {
                 // int Time = m_PlayerTime[ID];
                 // m_PlayerTime[ID] = Environment.TickCount;
-                List<PlayerDamage> BulletDamageBuffer = m_PlayerList[ID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID, Murs, MousePosition);
+                List<PlayerDamage> BulletDamageBuffer = m_PlayerList[PlayerID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID, m_Murs, MousePosition);
                 //int* test[34];
-                BulletDamage = BulletDamage.Concat(BulletDamageBuffer).ToList();
+                m_BulletDamage = m_BulletDamage.Concat(BulletDamageBuffer).ToList();
 
-                if (Updatable)
+                if (m_Updatable)
                 {
-                    Updatable = false;
-                    for (int i = BulletDamage.Count - 1; i >= 0; i--)
+                    m_Updatable = false;
+                    for (int i = m_BulletDamage.Count - 1; i >= 0; i--)
                     {
-                        DamageTarget = BulletDamage[i].ID;
+                        m_DamageTarget = m_BulletDamage[i].ID;
                         byte SendDamageTimeout = 25;
-                        ResendDamage = true;
-                        while (ResendDamage && SendDamageTimeout > 0)
+                        m_ResendDamage = true;
+                        while (m_ResendDamage && SendDamageTimeout > 0)
                         {
-                            Send(TramePreGen.PlayerDamage(m_ID, BulletDamage[i]));
+                            Send(TramePreGen.PlayerDamage(m_ID, m_BulletDamage[i]));
                             Thread.Sleep(10);
                             SendDamageTimeout--;
                         }
-                        BulletDamage.RemoveAt(i);
+                        m_BulletDamage.RemoveAt(i);
                     }
-                    Updatable = true;
+                    m_Updatable = true;
                 }
             }
         }

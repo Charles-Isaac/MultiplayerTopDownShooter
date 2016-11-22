@@ -34,17 +34,17 @@ namespace ClonesEngine
 
         public static byte[] InfoJoueur(PlayerData Joueur, byte ID, int NoPacket)
         {
-            int i = 0;
+            
             byte[] JoueurBytes = Serialize(Joueur);
             byte[] Packet = new byte[1 + 1 + 4 + JoueurBytes.Length];
             byte[] NoPacketBytes = BitConverter.GetBytes(NoPacket);
-            Packet[i++] = (byte)PacketUse.InfoJoueur;
-            Packet[i++] = ID;
-            for (i = 2; i < 6; i++)
+            Packet[0] = (byte)PacketUse.InfoJoueur;
+            Packet[1] = ID;
+            for (int i = 2; i < 6; i++)
             {
                 Packet[i] = NoPacketBytes[i - 2];
             }
-            for (i = 0; i < JoueurBytes.Length; i++)
+            for (int i = 0; i < JoueurBytes.Length; i++)
             {
                 Packet[i + 6] = JoueurBytes[i];
             }
@@ -53,22 +53,22 @@ namespace ClonesEngine
 
         
 
-        public static byte[] Serialize(PlayerData tData)
+        public static byte[] Serialize(PlayerData TData)
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream MemStream = new MemoryStream())
             {
-                lock (tData.BulletLock)
+                lock (TData.BulletLock)
                 {
-                    ProtoBuf.Serializer.Serialize(ms, tData);
+                    ProtoBuf.Serializer.Serialize(MemStream, TData);
                 }
-                return ms.ToArray();
+                return MemStream.ToArray();
             }
         }
-        public static PlayerData Deserialize(byte[] tData)
+        public static PlayerData Deserialize(byte[] TData)
         {
-            using (var ms = new MemoryStream(tData))
+            using (var MemStream = new MemoryStream(TData))
             {
-                return ProtoBuf.Serializer.Deserialize<PlayerData>(ms);
+                return ProtoBuf.Serializer.Deserialize<PlayerData>(MemStream);
             }
         }
 
@@ -81,14 +81,14 @@ namespace ClonesEngine
         }
         public static byte[] AnswerAutoVerif(int Data, byte ID)
         {
-            byte[] bData = BitConverter.GetBytes(Data);
+            byte[] ByteData = BitConverter.GetBytes(Data);
             byte[] Trame = new byte[6];
             Trame[0] = (byte)PacketUse.AnswerAutoVerif;
             Trame[1] = ID;
 
-            for (int i = 0; i < bData.Length; i++)
+            for (int i = 0; i < ByteData.Length; i++)
             {
-                Trame[i + 2] = bData[i];
+                Trame[i + 2] = ByteData[i];
             }
 
             return Trame;
@@ -125,7 +125,7 @@ namespace ClonesEngine
         }
         public static byte[] AskMapSeed()
         {
-            return new byte[] { (byte)PacketUse.AskMap };
+            return new[] { (byte)PacketUse.AskMap };
         }
 
         public static byte[] PlaySound(byte ID, byte SoundID)
