@@ -333,8 +333,8 @@ namespace ClonesEngine
                 m_Player.AjouterProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
 
 
-                new Task(() => { OnShot(this, (byte)WeaponSound.MachineGun); });
-            
+                OnShot(this, (byte)WeaponSound.MachineGun);
+
 
                 PlayShootingSound();
 
@@ -403,7 +403,7 @@ namespace ClonesEngine
                                 new PointF((float) Math.Cos(Radians), (float) Math.Sin(Radians)), m_BulletSpeed,
                                 (byte) ProjectileType.Bullet));
                             m_WeaponTimer.Start();
-                            new Task(() => { OnShot(this, (byte) WeaponSound.MachineGun); });
+                            OnShot(this, (byte) WeaponSound.MachineGun); 
                             PlayShootingSound(); //bug de la cadence de tir
 
                         }
