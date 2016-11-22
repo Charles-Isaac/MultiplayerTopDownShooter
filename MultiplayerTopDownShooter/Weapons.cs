@@ -334,7 +334,7 @@ namespace ClonesEngine
 
 
                 new Task(() => { OnShot(this, (byte)WeaponSound.MachineGun); });
-
+            
 
                 PlayShootingSound();
 

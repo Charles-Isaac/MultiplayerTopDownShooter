@@ -238,15 +238,27 @@ namespace ClonesEngine
                                         if (tempPlayer.WeaponList != null)
                                         {
                                             tempPlayer.UpdateWeaponWielder();
-                                            tempPlayer.WeaponList[0].Shot -= OnSendSound;
-                                            tempPlayer.WeaponList[0].Shot += OnSendSound;
+                                            for (int i = 0; i < (byte) WeaponType.NumberOfWeapons; i++)
+                                            {
+                                                tempPlayer.WeaponList[i].Shot -= OnSendSound;
+                                                tempPlayer.WeaponList[i].Shot += OnSendSound;
+                                            }
+
                                         }
                                         else
                                         {
                                             tempPlayer.CallWeaponConstructor();
 
 
-                                            tempPlayer.WeaponList[0].Shot += OnSendSound;
+                                            if (tempPlayer.WeaponList != null)
+                                            {
+                                                tempPlayer.UpdateWeaponWielder();
+                                                for (int i = 0; i < (byte)WeaponType.NumberOfWeapons; i++)
+                                                {
+                                                    tempPlayer.WeaponList[i].Shot += OnSendSound;
+                                                }
+
+                                            }
 
 
 
