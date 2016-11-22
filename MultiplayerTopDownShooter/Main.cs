@@ -19,7 +19,7 @@ namespace MultiplayerTopDownShooter
 
         private SizeF m_Format = new SizeF(1, 1);
 
-        private readonly SolidBrush m_Br;
+     //   private readonly SolidBrush m_Br;
         private readonly Point[] m_ShadowPolygon = new Point[6];
         private Point[,] m_ShadowArray;
 
@@ -36,9 +36,9 @@ namespace MultiplayerTopDownShooter
             InitializeComponent();
 
             //TransparencyKey = Color.Black;
-            using (Bitmap WeaponBitmapPistol = new Bitmap(Properties.Resources.ShadowTexture))
+            using (Bitmap BitmapShadow = new Bitmap(Properties.Resources.ShadowTexture))
             {
-                tBrush = new TextureBrush(WeaponBitmapPistol.Clone(new Rectangle(0, 0, WeaponBitmapPistol.Width, WeaponBitmapPistol.Height), PixelFormat.Format32bppPArgb));
+                tBrush = new TextureBrush(BitmapShadow.Clone(new Rectangle(0, 0, BitmapShadow.Width, BitmapShadow.Height), PixelFormat.Format32bppPArgb));
 
                 //tBrush.ScaleTransform((float)Settings.GameSize.Width / WeaponBitmapPistol.Width, (float)Settings.GameSize.Height / WeaponBitmapPistol.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
             }
@@ -89,26 +89,9 @@ namespace MultiplayerTopDownShooter
 
 
 
-            m_Br = new SolidBrush(Color.Black);// new TextureBrush(Properties.Resources.ShadowTexture, new Rectangle(0, 0, 250, 250));
-            /*
-
-                        var autoEvent = new AutoResetEvent(false);
-                        m_GP.StatusChecker(10);
-
-                        // Create a timer that invokes CheckStatus after one second, 
-                        // and every 1/4 second thereafter.
-
-                        WeaponTimer = new System.Threading.Timer(m_GP.CheckStatus,
-                                                   autoEvent, 1000, 250);
-                        WeaponTimer.*/
-            //   WeaponTimer = new System.Threading.Timer(autoEvent);
 
 
-
-
-
-
-          //  this.BackgroundImage = TerrainImage[0];//Properties.Resources.GroundTexture2;
+            
        }
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -305,7 +288,7 @@ namespace MultiplayerTopDownShooter
             
             //m_GP.PlayerList[m_GP.ID].PlayerBullet.RemoveAt(j);
         }
-        protected override void OnMouseDown(MouseEventArgs e)
+    /*    protected override void OnMouseDown(MouseEventArgs e)
         {
             Point MousePositionByForm = PointToClient(Cursor.Position);
             MousePositionByForm.X = (int)(MousePositionByForm.X * Settings.GameSize.Width / (float)ClientSize.Height);
@@ -313,15 +296,13 @@ namespace MultiplayerTopDownShooter
             m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].MouseDown(new PointF(((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) / (float)Math.Sqrt((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y))),
                 ((MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) / (float)Math.Sqrt((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y)))));
 
-        }
+        }*/
 
         
         private void Main_MouseUp(object sender, MouseEventArgs e)
         {
             m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].MouseUp();
-
-
-
+            
         }
         protected override void OnKeyDown(KeyEventArgs e)
         {

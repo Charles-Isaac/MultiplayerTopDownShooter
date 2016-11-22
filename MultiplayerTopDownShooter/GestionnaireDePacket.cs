@@ -126,7 +126,7 @@ namespace ClonesEngine
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Weapons)].Add(1, "NBulletLeft").Add(2, "NBulletInCharger");           
             //      WeaponList = new Weapons[(byte)WeaponType.NumberOfWeapons];
             //       AssignWeapons();
-
+            m_MapSeed = 0;
             m_LobbyPort = Lobby;
             for (int i = 0; i < 255; i++)
             {
@@ -261,7 +261,7 @@ namespace ClonesEngine
                                 }
                                 break;
                             case (byte)PacketUse.AskMap:
-                                if (m_ID == 1)
+                                if (m_ID >= 1)
                                 {
                                     Send(TramePreGen.AnswerMapSeed(m_ID, m_MapSeed));
                                 }
@@ -366,6 +366,7 @@ namespace ClonesEngine
                         {
                             m_LastTickCheck = Environment.TickCount + m_RNG.Next(1, 500);
                             Send(TramePreGen.AskAutoVerif(m_ID));
+                            Send(TramePreGen.AskMapSeed());
                             if (m_MapSeed == 0 && m_ID != 0)
                             {
                                 Send(TramePreGen.AnswerMapSeed(m_ID, m_MapSeed));

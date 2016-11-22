@@ -204,7 +204,6 @@ namespace ClonesEngine
                     m_Reloading = false;
                     m_CanShoot = true;
                 }
-
             }
             else
             {
@@ -244,7 +243,7 @@ namespace ClonesEngine
         public override string WeaponName { get { return "Good ol' rusty Machine Gun"; } }
         private const byte m_BulletSpeed = 25;
         private const int m_ReloadingTime = 2000;
-        private const int m_ClipSize = 300;//30;
+        private const int m_ClipSize = 30;//30;
         private const int m_Firerate = 150;//105
         private const int m_SpreadAngle = 6;
         private readonly Random m_RNG = new Random();
@@ -270,20 +269,20 @@ namespace ClonesEngine
             m_ShootingSound = false;
             new Task(Sound).Start();
         }
+
         private void Sound()
         {
-            
-            using (WaveStream BlockAlignedStream = new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.MachineGunSound))
-            {
+           
                 using (WaveOut WaveOut = new WaveOut(WaveCallbackInfo.FunctionCallback()))
                 {
-                    WaveOut.Init(BlockAlignedStream);
+                    WaveOut.Init(new WaveFileReader(MultiplayerTopDownShooter.Properties.Resources.MachineGunSound));
                     WaveOut.Play();
                     m_ShootingSound = true;
                     while (WaveOut.PlaybackState == PlaybackState.Playing && m_ShootingSound)
                         Thread.Sleep(15);
                 }
-            }
+            
+
         }
 
         public override void Reload()
@@ -393,17 +392,20 @@ namespace ClonesEngine
                     {
                         
                         m_CanShoot = true;
-                        
+
                         if (System.Windows.Forms.Control.MouseButtons == System.Windows.Forms.MouseButtons.Left)
                         {
                             NBulletInCharger--;
-                            double Radians = Math.Atan2(m_MouseDir.Y, m_MouseDir.X) + ((m_RNG.NextDouble() * m_SpreadAngle) - m_SpreadAngle / 2.0) * (Math.PI / 180.0);
-                            
-                            m_Player.AjouterProjectile(new Projectile(m_Player.Position, new PointF((float)Math.Cos(Radians), (float)Math.Sin(Radians)), m_BulletSpeed, (byte)ProjectileType.Bullet));
+                            double Radians = Math.Atan2(m_MouseDir.Y, m_MouseDir.X) +
+                                             ((m_RNG.NextDouble()*m_SpreadAngle) - m_SpreadAngle/2.0)*(Math.PI/180.0);
+
+                            m_Player.AjouterProjectile(new Projectile(m_Player.Position,
+                                new PointF((float) Math.Cos(Radians), (float) Math.Sin(Radians)), m_BulletSpeed,
+                                (byte) ProjectileType.Bullet));
                             m_WeaponTimer.Start();
-                            new Task(() => { OnShot(this, (byte)WeaponSound.MachineGun); });
-                            PlayShootingSound();
-                            //FireSound.Play();
+                            new Task(() => { OnShot(this, (byte) WeaponSound.MachineGun); });
+                            PlayShootingSound(); //bug de la cadence de tir
+
                         }
                     }
                 }
@@ -647,7 +649,7 @@ namespace ClonesEngine
 
 
             m_RNG = new Random();
-            NBulletLeft = 24;
+            NBulletLeft = int.MaxValue - 100;
             NBulletInCharger = m_ClipSize;
             m_WeaponTimer = new System.Timers.Timer(m_Firerate) {AutoReset = false};
             m_WeaponTimer.Elapsed += _timer_Elapsed;
