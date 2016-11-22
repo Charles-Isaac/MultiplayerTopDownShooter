@@ -132,7 +132,7 @@ namespace MultiplayerTopDownShooter
             Invoke(new Action(() =>
             {
 
-                e.Graphics.ScaleTransform((float)ClientSize.Height / Settings.GameSize.Width, (float)ClientSize.Height / Settings.GameSize.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
+                e.Graphics.ScaleTransform((float)ClientSize.Height / Settings.GameSize.Width, (float)ClientSize.Height / Settings.GameSize.Height, MatrixOrder.Append);
                 // e.Graphics.DrawImage(Properties.Resources.GroundTexture1,0,0,Settings.GameSize.Width,Settings.GameSize.Height);
                 e.Graphics.DrawImage(m_TerrainImage[0], new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0, 0, 250, 250), GraphicsUnit.Pixel);
 
@@ -469,13 +469,13 @@ namespace MultiplayerTopDownShooter
             m_Format.Width = (float)(ClientSize.Width - (ClientSize.Width - ClientSize.Height)) / Settings.GameSize.Width;
             m_Format.Height = (float)ClientSize.Height / Settings.GameSize.Height;
             Bitmap tempBitmap = new Bitmap(Properties.Resources.ShadowTexture);
-            tBrush.ScaleTransform((float)Settings.GameSize.Width / tempBitmap.Width, (float)Settings.GameSize.Height / tempBitmap.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
-            //  this.Invalidate();
-        }
+            using (Bitmap WeaponBitmapPistol = new Bitmap(Properties.Resources.ShadowTexture))
+            {
+                tBrush = new TextureBrush(WeaponBitmapPistol.Clone(new Rectangle(0, 0, WeaponBitmapPistol.Width, WeaponBitmapPistol.Height), PixelFormat.Format32bppPArgb));
 
-        private void Main_Load(object sender, EventArgs e)
-        {
-
+            }
+            tBrush.ScaleTransform((float)Settings.GameSize.Width / tempBitmap.Width, (float)Settings.GameSize.Height / tempBitmap.Height, MatrixOrder.Append);
+            
         }
 
         
