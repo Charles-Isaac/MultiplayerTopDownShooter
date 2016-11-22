@@ -1,6 +1,7 @@
 ﻿using ClonesEngine;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
@@ -26,13 +27,21 @@ namespace MultiplayerTopDownShooter
         private readonly Bitmap[] m_TerrainImage;
         private readonly Bitmap[] m_WeaponsImage;
 
+       // Image image = new Bitmap(Properties.Resources.ShadowTexture);
+        TextureBrush tBrush;
+
         //     System.Threading.Timer WeaponTimer;
         public Main()
         {
             InitializeComponent();
 
             //TransparencyKey = Color.Black;
+            using (Bitmap WeaponBitmapPistol = new Bitmap(Properties.Resources.ShadowTexture))
+            {
+                tBrush = new TextureBrush(WeaponBitmapPistol.Clone(new Rectangle(0, 0, WeaponBitmapPistol.Width, WeaponBitmapPistol.Height), PixelFormat.Format32bppPArgb));
 
+                //tBrush.ScaleTransform((float)Settings.GameSize.Width / WeaponBitmapPistol.Width, (float)Settings.GameSize.Height / WeaponBitmapPistol.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
+            }
             frmLobbyPrompt frmLobby = new frmLobbyPrompt();
             frmLobby.ShowDialog();
             if (frmLobby.DialogResult == DialogResult.OK)
@@ -123,7 +132,7 @@ namespace MultiplayerTopDownShooter
             Invoke(new Action(() =>
             {
 
-                e.Graphics.ScaleTransform((float)ClientSize.Height / Settings.GameSize.Width, (float)ClientSize.Height / Settings.GameSize.Width, System.Drawing.Drawing2D.MatrixOrder.Append);
+                e.Graphics.ScaleTransform((float)ClientSize.Height / Settings.GameSize.Width, (float)ClientSize.Height / Settings.GameSize.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
                 // e.Graphics.DrawImage(Properties.Resources.GroundTexture1,0,0,Settings.GameSize.Width,Settings.GameSize.Height);
                 e.Graphics.DrawImage(m_TerrainImage[0], new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0, 0, 250, 250), GraphicsUnit.Pixel);
 
@@ -176,11 +185,37 @@ namespace MultiplayerTopDownShooter
                         }
                         //try
                         {
-                            e.Graphics.FillPolygon(m_Br, m_ShadowPolygon);
+                            
+                            e.Graphics.FillPolygon(tBrush, m_ShadowPolygon);
                         }
                         //catch { MessageBox.Show("Erreur Ombre"); }
                     }
                 }
+
+
+
+
+                /*
+
+                Image image = new Bitmap(Properties.Resources.ShadowTexture);
+                TextureBrush tBrush = new TextureBrush(image);
+                tBrush.ScaleTransform((float)Settings.GameSize.Width / image.Width, (float)Settings.GameSize.Height / image.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
+                /* tBrush.Transform = new Matrix(
+                    1.0f / 640.0f,
+                    0.0f,
+                    0.0f,
+                    0.1f / 480.0f,
+                    0.0f,
+                    0.0f);
+                e.Graphics.FillRectangle(tBrush, new Rectangle(PointToClient(Cursor.Position).X, 0, Settings.GameSize.Width/2, Settings.GameSize.Height));
+
+                e.Graphics.DrawString(((float)PointToClient(Cursor.Position).Y / 100).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 250, 160);
+                */
+
+
+
+
+
 
                 if (m_GP.Map != null)
                 {
@@ -425,6 +460,7 @@ namespace MultiplayerTopDownShooter
 
         private void Main_Resize(object sender, EventArgs e)
         {
+
             if (ClientSize.Width < ClientSize.Height + 10)
             {
                 ClientSize = new Size(ClientSize.Height + 10,ClientSize.Height);
@@ -432,7 +468,9 @@ namespace MultiplayerTopDownShooter
 
             m_Format.Width = (float)(ClientSize.Width - (ClientSize.Width - ClientSize.Height)) / Settings.GameSize.Width;
             m_Format.Height = (float)ClientSize.Height / Settings.GameSize.Height;
-          //  this.Invalidate();
+            Bitmap tempBitmap = new Bitmap(Properties.Resources.ShadowTexture);
+            tBrush.ScaleTransform((float)Settings.GameSize.Width / tempBitmap.Width, (float)Settings.GameSize.Height / tempBitmap.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
+            //  this.Invalidate();
         }
 
         private void Main_Load(object sender, EventArgs e)

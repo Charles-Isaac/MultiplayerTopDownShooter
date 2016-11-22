@@ -10,3 +10,4 @@ C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownS
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Release\ClonesEngine.frmLobbyPrompt.resources
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Release\NAudio.dll
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Release\NAudio.xml
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Release\MultiplayerTopDownShooter.csprojResolveAssemblyReference.cache

@@ -118,6 +118,60 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\GroundTexture1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GroundTexture2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Glock17.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShadowTexture.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Glock 17.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Glock 17 %281%29.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ie_shot_gun-luminalace-770179786.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SniperSound.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MachineGunSound.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MachineGunSound %281%29.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MachineGunSound %282%29.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CODMW3 RPG for Insurgency RPG7.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Flash Bang sound HQ!.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MachineGun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Pistol.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RocketLauncher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shotgun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Sniper.jpg" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\Player000.png" />
   </ItemGroup>
   <ItemGroup>
@@ -190,58 +244,10 @@
     <None Include="Resources\Player345.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\GroundTexture1.jpg" />
+    <None Include="Resources\GroundTexture2 - Copie.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\GroundTexture2.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Glock17.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ShadowTexture.jpeg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Glock 17.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Glock 17 %281%29.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ie_shot_gun-luminalace-770179786.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SniperSound.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MachineGunSound.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MachineGunSound %281%29.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MachineGunSound %282%29.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CODMW3 RPG for Insurgency RPG7.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Flash Bang sound HQ!.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MachineGun.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Pistol.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\RocketLauncher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Shotgun.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Sniper.jpg" />
+    <None Include="Resources\GroundTexture2n.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

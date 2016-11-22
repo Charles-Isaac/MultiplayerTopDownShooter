@@ -241,11 +241,11 @@ namespace ClonesEngine
 
   //      System.Media.SoundPlayer FireSound = new System.Media.SoundPlayer(MultiplayerTopDownShooter.Properties.Resources.MachineGunSound);
 
-        public override string WeaponName { get { return "Machine Gun"; } }
+        public override string WeaponName { get { return "Good ol' rusty Machine Gun"; } }
         private const byte m_BulletSpeed = 25;
         private const int m_ReloadingTime = 2000;
         private const int m_ClipSize = 300;//30;
-        private const int m_Firerate = 115;//105
+        private const int m_Firerate = 150;//105
         private const int m_SpreadAngle = 6;
         private readonly Random m_RNG = new Random();
         private readonly object m_WeaponLock = new object();
