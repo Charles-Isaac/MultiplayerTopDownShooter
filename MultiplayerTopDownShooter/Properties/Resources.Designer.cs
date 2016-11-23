@@ -70,6 +70,15 @@ namespace MultiplayerTopDownShooter.Properties {
         }
         
         /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
+        public static System.IO.UnmanagedMemoryStream ExplosionSound1 {
+            get {
+                return ResourceManager.GetStream("ExplosionSound1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap Glock17 {
