@@ -41,7 +41,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Main";
             this.Text = "Form1";
-            this.TopMost = true;
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Main_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Main_MouseDown);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Main_MouseUp);
