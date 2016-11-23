@@ -7,7 +7,7 @@ using NAudio.Wave;
 
 namespace ClonesEngine
 {
-    enum WeaponType : byte
+    enum WeaponType : byte //Enum contenant les IDs des armes dispo
     {
         NumberOfWeapons = 5,
         Pistol = 0,
@@ -17,7 +17,7 @@ namespace ClonesEngine
         RocketLauncher = 4,
 
     }
-    enum WeaponSound : byte
+    enum WeaponSound : byte //Enum contenant les IDs des sons
     {
         Pistol = 0,
         Shotgun = 1,
@@ -27,14 +27,14 @@ namespace ClonesEngine
         Explosion = 5,
 
     }
-    enum ProjectileType : byte
+    enum ProjectileType : byte //Enum contenant les IDs des types de projectiles dispo
     {
         Bullet = 0,
         Rocket = 1,
         Grenade = 2,
 
     }
-    public class PlaySoundEventArgs : EventArgs
+    public class PlaySoundEventArgs : EventArgs //classe des arguments pour l'event faisant jouer du son
     {
         private byte m_SoundID;
 
@@ -44,23 +44,22 @@ namespace ClonesEngine
             set { m_SoundID = value; }
         }
     }
-    abstract class Weapons
+    abstract class Weapons //Classe abstraite utilisé comme template pour toutes les armes
     {
-        public abstract void MouseDown(PointF MouseDir);
-        public abstract void MouseUp();
-        public abstract void Reload();
+        public abstract void MouseDown(PointF MouseDir); //methode utilisé quand un bouton de la sourie est appuyé
+        public abstract void MouseUp();//methode utilisé quand un bouton de la sourie est relaché (utilisé pour les armes automatiques)
+        public abstract void Reload();//methode utilisé quand le joueur recharge une arme
 
-        public abstract int NBulletLeft { get; set; }
-        public abstract int NBulletInCharger { get; set; }
-        public abstract PointF MouseDirection { set; }
-        public abstract string WeaponName { get; }
-        public abstract PlayerData User { set; }
-        public abstract void PlayShootingSound();
+        public abstract int NBulletLeft { get; set; } //propriété utilisé pour obtenir ou modifier pour le nombre de balles restantes en inventaire
+        public abstract int NBulletInCharger { get; set; }//propriété utilisé pour obtenir ou modifier pour le nombre de balles restantes dans le chargeur
+        public abstract PointF MouseDirection { set; } //propriété utilisé pour mettre a jours la direction pinté par la sourie
+        public abstract string WeaponName { get; } //le nom de l'arme... duuuuh
+        public abstract PlayerData User { set; } //Donnés de l'utilisateur de l'arme
+        public abstract void PlayShootingSound(); //methode pour jouer le son de l'arme
 
 
 
         public EventHandler<byte> Shot;
-   //     public delegate void PlaySoundEventArgs(Weapons w, EventHandler e);
 
         public virtual void OnShot(Weapons w, byte e)
         {
@@ -68,10 +67,6 @@ namespace ClonesEngine
         }
 
         
-        /*
-        public abstract event EventHandler Shot;
-        public abstract EventArgs e = null;
-        public abstract delegate void TickHandler(Weapons w, EventArgs e);*/
     }
 
     sealed class Pistol : Weapons
@@ -168,11 +163,11 @@ namespace ClonesEngine
 
                 double Radians = Math.Atan2(m_MouseDir.Y, m_MouseDir.X) + ((m_RNG.NextDouble() * m_SpreadAngle) - m_SpreadAngle / 2.0) * (Math.PI / 180.0);
                 MouseDir = new PointF((float)Math.Cos(Radians), (float)Math.Sin(Radians));
-                m_Player.AjouterProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
+                m_Player.AddProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
                 OnShot(this, (byte)WeaponSound.Pistol);
                 PlayShootingSound();
 
-           //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
+           //   _PlayerList[_Wielder].AddProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
             }
         }
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -330,7 +325,7 @@ namespace ClonesEngine
                 
                 double Radians = Math.Atan2(m_MouseDir.Y, m_MouseDir.X) + ((m_RNG.NextDouble() * m_SpreadAngle) - m_SpreadAngle / 2.0) * (Math.PI / 180.0);
                 MouseDir = new PointF((float)Math.Cos(Radians), (float)Math.Sin(Radians));
-                m_Player.AjouterProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
+                m_Player.AddProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
 
 
                 OnShot(this, (byte)WeaponSound.MachineGun);
@@ -399,7 +394,7 @@ namespace ClonesEngine
                             double Radians = Math.Atan2(m_MouseDir.Y, m_MouseDir.X) +
                                              ((m_RNG.NextDouble()*m_SpreadAngle) - m_SpreadAngle/2.0)*(Math.PI/180.0);
 
-                            m_Player.AjouterProjectile(new Projectile(m_Player.Position,
+                            m_Player.AddProjectile(new Projectile(m_Player.Position,
                                 new PointF((float) Math.Cos(Radians), (float) Math.Sin(Radians)), m_BulletSpeed,
                                 (byte) ProjectileType.Bullet));
                             m_WeaponTimer.Start();
@@ -416,7 +411,7 @@ namespace ClonesEngine
                     CanShoot = true;
                     double radians = Math.Atan2(_MouseDir.Y, _MouseDir.X) + ((RNG.NextDouble() * SpreadAngle) - SpreadAngle / 2.0) * (Math.PI / 180.0);
                     PointF MouseDirection = new PointF((float)Math.Cos(radians), (float)Math.Sin(radians));
-                    _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDirection, BulletSpeed));
+                    _PlayerList[_Wielder].AddProjectile(new Projectile(_PlayerList[_Wielder].Position, MouseDirection, BulletSpeed));
                     if (System.Windows.Forms.Control.MouseButtons == System.Windows.Forms.MouseButtons.Left)
                     {
                         m_WeaponTimer.Start();
@@ -526,11 +521,11 @@ namespace ClonesEngine
 
                 double Radians = Math.Atan2(m_MouseDir.Y, m_MouseDir.X) + ((m_RNG.NextDouble() * m_SpreadAngle) - m_SpreadAngle / 2.0) * (Math.PI / 180.0);
                 MouseDir = new PointF((float)Math.Cos(Radians), (float)Math.Sin(Radians));
-                m_Player.AjouterProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
+                m_Player.AddProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
                 OnShot(this, (byte)WeaponSound.Sniper);
                 PlayShootingSound();
 
-                //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
+                //   _PlayerList[_Wielder].AddProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
             }
         }
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -693,7 +688,7 @@ namespace ClonesEngine
                 {
                     double Radians = Math.Atan2(m_MouseDir.Y, m_MouseDir.X) + ((m_RNG.NextDouble() * m_SpreadAngle) - m_SpreadAngle / 2.0) * (Math.PI / 180.0);
                     MouseDir = new PointF((float)Math.Cos(Radians), (float)Math.Sin(Radians));
-                    m_Player.AjouterProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
+                    m_Player.AddProjectile(new Projectile(m_Player.Position, MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
                 }
                 OnShot(this, (byte)WeaponSound.Shotgun);
                 PlayShootingSound();
@@ -884,7 +879,7 @@ namespace ClonesEngine
                         {
                             double Radians = Math.Atan2(m_Player.Bullet[i].Direction.Y, m_Player.Bullet[i].Direction.X) + ((m_RNG.NextDouble() * 340) - 340 / 2.0) * (Math.PI / 180.0);
                             MouseDirection = new PointF((float)Math.Cos(Radians), (float)Math.Sin(Radians));
-                            m_Player.AjouterProjectile(new Projectile(m_Player.Bullet[i].Position, m_MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
+                            m_Player.AddProjectile(new Projectile(m_Player.Bullet[i].Position, m_MouseDir, m_BulletSpeed, (byte)ProjectileType.Bullet));
                         }
                         m_Player.Bullet.RemoveAt(i);
                     }
@@ -904,7 +899,7 @@ namespace ClonesEngine
                     m_IsAiming = true;
                     m_WeaponTimer.Start();
                     m_MouseDir = MouseDir;
-                    //   _PlayerList[_Wielder].AjouterProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
+                    //   _PlayerList[_Wielder].AddProjectile(new Projectile(_PlayerList[_Wielder].Position, _MouseDir, BulletSpeed));
              }
 
             if (!m_HasExploded)
@@ -940,7 +935,7 @@ namespace ClonesEngine
                     PlayShootingSound();
                     double Radians = Math.Atan2(m_MouseDir.Y, m_MouseDir.X) + ((m_RNG.NextDouble() * m_SpreadAngle) - m_SpreadAngle / 2.0) * (Math.PI / 180.0);
                     MouseDirection = new PointF((float)Math.Cos(Radians), (float)Math.Sin(Radians));
-                    m_Player.AjouterProjectile(new Projectile(m_Player.Position, m_MouseDir, m_BulletSpeed, (byte)ProjectileType.Rocket));
+                    m_Player.AddProjectile(new Projectile(m_Player.Position, m_MouseDir, m_BulletSpeed, (byte)ProjectileType.Rocket));
                     m_Reloading = true;
                     m_HasExploded = false;
               //      CanShoot = false;

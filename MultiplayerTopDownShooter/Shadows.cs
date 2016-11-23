@@ -5,7 +5,7 @@ namespace MultiplayerTopDownShooter
 {
     static class Shadows
     {
-        public static Point[,] ReturnMeAnArray(int NombreDeMurs, Mur[] WallX, PointF LightSource, int Width, int Height)
+        public static Point[,] ReturnMeAnArray(int NombreDeMurs, Mur[] WallX, PointF LightSource, int Width, int Height) //retourn un array 2D de point correspondant au polygones des ombres
         {
             Point[,] tempPt = new Point[NombreDeMurs, 6];
             int[,,] PolyGone = new int[NombreDeMurs/* * 2 + 4*/, 4, 2];  //int[NO of the polygon, NO of the point of the angles of the polygon, X or Y]

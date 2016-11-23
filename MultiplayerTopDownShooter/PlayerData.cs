@@ -114,7 +114,7 @@ namespace ClonesEngine
             set { m_Couleur = value; }
         }
 
-        public void AjouterProjectile(Projectile bullet)
+        public void AddProjectile(Projectile bullet)
         {
             lock (m_BulletLock)
             {

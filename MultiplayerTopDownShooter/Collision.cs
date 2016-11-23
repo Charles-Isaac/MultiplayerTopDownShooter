@@ -4,7 +4,7 @@ namespace ClonesEngine
 {
     static class Collision
     {
-        public static bool IsIntersecting(PointF VecteurA1, PointF VecteurA2, PointF VecteurB1, PointF VecteurB2)
+        public static bool IsIntersecting(PointF VecteurA1, PointF VecteurA2, PointF VecteurB1, PointF VecteurB2) //Retourne un booléen indiquant si la ligne tracé entre VecteurA1 et VecteurA2 intersectionne la ligne tracé entre VecteurB1 et VecteurB2 
         {
             float Denominator = ((VecteurA2.X - VecteurA1.X) * (VecteurB2.Y - VecteurB1.Y)) - ((VecteurA2.Y - VecteurA1.Y) * (VecteurB2.X - VecteurB1.X));
             float Numerator1 = ((VecteurA1.Y - VecteurB1.Y) * (VecteurB2.X - VecteurB1.X)) - ((VecteurA1.X - VecteurB1.X) * (VecteurB2.Y - VecteurB1.Y));
@@ -18,9 +18,8 @@ namespace ClonesEngine
             return (R >= 0 && R <= 1) && (S >= 0 && S <= 1);
         }
 
-        public static bool PlayerBulletCollision(PlayerData Player, PointF OldProjectile, PointF NewProjectile)
-        {//a + 5, b - 5;
-            //c == new, d == old
+        public static bool PlayerBulletCollision(PlayerData Player, PointF OldProjectile, PointF NewProjectile) //Retourne un booléen indiquant si le projectile est entré en collision
+        {
             float DenominatorX = (((Player.Position.X - Player.Size / 2) - (Player.Position.X + Player.Size / 2)) * ((OldProjectile.Y) - (NewProjectile.Y))) - (((Player.Position.Y) - (Player.Position.Y)) * ((OldProjectile.X) - (NewProjectile.X)));
             float Numerator1X = (((Player.Position.Y) - (NewProjectile.Y)) * ((OldProjectile.X) - (NewProjectile.X))) - (((Player.Position.X + Player.Size / 2) - (NewProjectile.X)) * ((OldProjectile.Y) - (NewProjectile.Y)));
             float Numerator2X = (((Player.Position.Y) - (NewProjectile.Y)) * ((Player.Position.X - Player.Size / 2) - (Player.Position.X + Player.Size / 2))) - (((Player.Position.X + Player.Size / 2) - (NewProjectile.X)) * ((Player.Position.Y) - (Player.Position.Y)));
@@ -42,7 +41,7 @@ namespace ClonesEngine
             
         }
 
-        public static void PlayerBorder(PlayerData Player)
+       /* public static void PlayerBorder(PlayerData Player)
         {
             if (Player.Position.X < 0)
             {
@@ -66,15 +65,7 @@ namespace ClonesEngine
                     Player.Position = new PointF(Player.Position.X, (float)System.Windows.Forms.Form.ActiveForm?.Height);
                 }
             }
-        }
-        public static bool BulletWallsCollision(Map Murs, PointF OldPosition, PointF NewPosition)
-        {
-            return true;
-        }
-        public static PointF PlayerWallsCollision(Map Murs, PointF OldPosition, PointF NewPosition)
-        {
-            
-            return NewPosition;
-        }
+        }*/
+       
     }
 }
