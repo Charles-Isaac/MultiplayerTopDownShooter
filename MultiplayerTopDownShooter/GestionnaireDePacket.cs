@@ -379,7 +379,7 @@ namespace ClonesEngine
                             m_LastTickCheck = Environment.TickCount + m_RNG.Next(1, 500);
                             Send(TramePreGen.AskAutoVerif(m_ID));
                             Send(TramePreGen.AskMapSeed());
-                            if (m_MapSeed == 0 && m_ID != 0)
+                            if (m_MapSeed != 0 && m_ID != 0)
                             {
                                 Send(TramePreGen.AnswerMapSeed(m_ID, m_MapSeed));
                             }
