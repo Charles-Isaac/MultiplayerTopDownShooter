@@ -170,10 +170,7 @@ namespace ClonesEngine
                                 }
 
                                 TempPosi = new PointF(Player[i].Position.X + Proj.X, Player[i].Position.Y + Proj.Y);
-                                if (float.IsNaN(Player[i].Position.X))
-                                {
-                                    System.Windows.Forms.MessageBox.Show("The application is broken");
-                                }
+                                j = Murs.Murs.Length;
 
                             }
 
