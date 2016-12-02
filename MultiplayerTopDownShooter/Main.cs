@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace MultiplayerTopDownShooter
@@ -21,7 +22,7 @@ namespace MultiplayerTopDownShooter
 
      //   private readonly SolidBrush m_Br;
         private readonly Point[] m_ShadowPolygon = new Point[6];
-        private Point[,] m_ShadowArray;
+      //  private Point[,] m_ShadowArray;
 
         private readonly Bitmap[] m_PlayersImage;
         private readonly Bitmap[] m_TerrainImage;
@@ -158,20 +159,40 @@ namespace MultiplayerTopDownShooter
                 }
                 if (m_GP.Map != null)
                 {
-                    m_ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs.Length, m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position, Settings.GameSize.Width, Settings.GameSize.Height);
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                    for (int i = m_GP.Map.Murs.Length - 1; i >= 0; i--)
+
+                    PointF[] ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position);
+                    if (ShadowArray.Length >= 3)
                     {
-                        for (int j = 0; j < 6; j++)
-                        {
-                            m_ShadowPolygon[j] = m_ShadowArray[i, j];
-                        }
-                        //try
-                        {
-                            
-                            e.Graphics.FillPolygon(tBrush, m_ShadowPolygon);
-                        }
-                        //catch { MessageBox.Show("Erreur Ombre"); }
+
+
+                        watch.Stop();
+                        var elapsedMs = watch.ElapsedMilliseconds;
+                        watch.Reset();
+                        watch.Start();
+
+                        GraphicsPath gp = new GraphicsPath();
+                        gp.AddPolygon(ShadowArray);
+
+                        Region rgn = new Region(gp);
+
+
+                        e.Graphics.ExcludeClip(rgn);
+
+
+                        e.Graphics.FillRectangle(tBrush, new Rectangle(new Point(), Settings.GameSize));
+
+
+
+                        e.Graphics.ResetClip();
+                        var elapsedMs2 = watch.ElapsedMilliseconds;
+
+                        e.Graphics.DrawString(elapsedMs.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
+                            Settings.GameSize.Width + 500, 160);
+
+                        e.Graphics.DrawString(elapsedMs2.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
+                            Settings.GameSize.Width + 500, 200);
                     }
                 }
 

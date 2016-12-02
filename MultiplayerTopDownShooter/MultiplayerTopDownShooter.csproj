@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildingTemplate.cs" />
     <Compile Include="frmLobbyPrompt.cs">
       <SubType>Form</SubType>
     </Compile>

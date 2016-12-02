@@ -28,24 +28,39 @@ namespace ClonesEngine
             }
             for (int i = 0; i < m_NombreDeMurs; i++)
             {
-                if (m_TMurs[i].A.X < m_TMurs[i].B.X)
+                if (m_TMurs[i].A.X > m_TMurs[i].B.X)
                 {
                     Point TempVar = m_TMurs[i].A;
                     m_TMurs[i].A = m_TMurs[i].B;
                     m_TMurs[i].B = TempVar;
                 }
             }
-            m_TMurs[m_NombreDeMurs/* + 0*/].A = new Point(0, -5);
-            m_TMurs[m_NombreDeMurs/* + 0*/].B = new Point(0, Settings.GameSize.Height + 5);
 
-            m_TMurs[m_NombreDeMurs + 1].A = new Point(Settings.GameSize.Width, Settings.GameSize.Height + 5);
-            m_TMurs[m_NombreDeMurs + 1].B = new Point(Settings.GameSize.Width, -5);
 
-            m_TMurs[m_NombreDeMurs + 2].A = new Point(Settings.GameSize.Width + 5, Settings.GameSize.Height);
-            m_TMurs[m_NombreDeMurs + 2].B = new Point(-5, Settings.GameSize.Height);
+            m_TMurs[m_NombreDeMurs/* + 0*/].A = new Point(0, -0);
+            m_TMurs[m_NombreDeMurs/* + 0*/].B = new Point(0, Settings.GameSize.Height + 0);
 
-            m_TMurs[m_NombreDeMurs + 3].A = new Point(Settings.GameSize.Width + 5, 0);
-            m_TMurs[m_NombreDeMurs + 3].B = new Point(-5, 0);
+            m_TMurs[m_NombreDeMurs + 1].A = new Point(Settings.GameSize.Width, Settings.GameSize.Height + 0);
+            m_TMurs[m_NombreDeMurs + 1].B = new Point(Settings.GameSize.Width, -0);
+
+            m_TMurs[m_NombreDeMurs + 2].A = new Point(Settings.GameSize.Width + 0, Settings.GameSize.Height);
+            m_TMurs[m_NombreDeMurs + 2].B = new Point(-0, Settings.GameSize.Height);
+
+            m_TMurs[m_NombreDeMurs + 3].A = new Point(Settings.GameSize.Width + 0, 0);
+            m_TMurs[m_NombreDeMurs + 3].B = new Point(-0, 0);
+
+
+            for (int i = m_NombreDeMurs; i < m_NombreDeMurs + 4; i++) //fool devs loop
+            {
+                if (m_TMurs[i].A.X > m_TMurs[i].B.X)
+                {
+                    Point TempVar = m_TMurs[i].A;
+                    m_TMurs[i].A = m_TMurs[i].B;
+                    m_TMurs[i].B = TempVar;
+                }
+            }
+
+
         }
         public Mur[] Murs
         {

@@ -364,7 +364,7 @@ namespace ClonesEngine
                                     }
                                     else
                                     {
-                                        System.Windows.Forms.MessageBox.Show("Debug");
+                                        System.Windows.Forms.MessageBox.Show("Mauvais son", "Debug");
                                     }
                                 }
                                 break;

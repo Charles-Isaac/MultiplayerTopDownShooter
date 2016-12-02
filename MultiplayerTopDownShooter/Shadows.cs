@@ -1,148 +1,225 @@
 ﻿using System.Drawing;
 using ClonesEngine;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace MultiplayerTopDownShooter
 {
     static class Shadows
     {
-        public static Point[,] ReturnMeAnArray(int NombreDeMurs, Mur[] WallX, PointF LightSource, int Width, int Height) //retourn un array 2D de point correspondant au polygones des ombres
+        public static PointF[] ReturnMeAnArray(Mur[] WallX, PointF LightSource) //retourn un array 2D de point correspondant au polygones des ombres
         {
-            Point[,] tempPt = new Point[NombreDeMurs, 6];
-            int[,,] PolyGone = new int[NombreDeMurs/* * 2 + 4*/, 4, 2];  //int[NO of the polygon, NO of the point of the angles of the polygon, X or Y]
-            for (int i = 0; i < NombreDeMurs; i++)
+            List<PointF> ListeDePointIntersectionOmbre = new List<PointF>();
+            List<double> ListeAngle = new List<double>();
+            
+            for (int j = 0; j < WallX.Length; j++)
             {
-                double TDVAngle1X = WallX[i].A.X - LightSource.X;
-                double TDVAngle1Y = WallX[i].A.Y - LightSource.Y;
-                double TDVAngle0X = WallX[i].B.X - LightSource.X;
-                double TDVAngle0Y = WallX[i].B.Y - LightSource.Y;
+                double Angle = Math.Atan2(WallX[j].A.Y - LightSource.Y, WallX[j].A.X - LightSource.X);
+                ListeAngle.Add(Angle - 0.0001);
+             //   ListeAngle.Add(Angle);
+                ListeAngle.Add(Angle + 0.0001);
 
-                PolyGone[i, 0, 0] = WallX[i].A.X;
-                PolyGone[i, 0, 1] = WallX[i].A.Y;
-                PolyGone[i, 1, 0] = WallX[i].B.X;
-                PolyGone[i, 1, 1] = WallX[i].B.Y;
-
-                if (TDVAngle0X > 0)
-                {
-
-                    PolyGone[i, 2, 0] = Width;
-                    PolyGone[i, 2, 1] = (int)(LightSource.Y + TDVAngle0Y * (Width - LightSource.X) / TDVAngle0X);
-                }
-                else
-                {
-                    if (TDVAngle0X < 0)
-                    {
-                        PolyGone[i, 2, 0] = 0;
-                        PolyGone[i, 2, 1] = (int)(LightSource.Y + TDVAngle0Y * (0 - LightSource.X) / TDVAngle0X);
-                    }
-                    else
-                    {
-                        PolyGone[i, 2, 0] = (int)LightSource.X;
-                        if (TDVAngle0Y > 0)
-                        {
-                            PolyGone[i, 2, 1] = Height;
-                        }
-                        else
-                        {
-                            if (TDVAngle0Y < 0)
-                            {
-                                PolyGone[i, 2, 1] = 0;
-                            }
-                            else
-                            {
-                                PolyGone[i, 2, 1] = (int)(LightSource.Y);
-                            }
-                        }
-                    }
-                }
-
-
-
-
-
-
-                if (TDVAngle1X > 0)
-                {
-                    PolyGone[i, 3, 0] = Width;
-                    PolyGone[i, 3, 1] = (int)(LightSource.Y + TDVAngle1Y * (Width - LightSource.X) / TDVAngle1X);
-                }
-                else
-                {
-                    if (TDVAngle1X < 0)
-                    {
-                        PolyGone[i, 3, 0] = 0;
-                        PolyGone[i, 3, 1] = (int)(LightSource.Y + TDVAngle1Y * (0 - LightSource.X) / TDVAngle1X);
-                    }
-                    else
-                    {
-                        PolyGone[i, 3, 0] = (int)LightSource.X;
-                        if (TDVAngle1Y > 0)
-                        {
-                            PolyGone[i, 3, 1] = Height;
-                        }
-                        else
-                        {
-                            if (TDVAngle1Y < 0)
-                            {
-                                PolyGone[i, 3, 1] = 0;
-                            }
-                            else
-                            {
-                                PolyGone[i, 3, 1] = (int)(LightSource.Y);
-                            }
-                        }
-                    }
-                }
-
+                Angle = Math.Atan2(WallX[j].B.Y - LightSource.Y, WallX[j].B.X - LightSource.X);
+                ListeAngle.Add(Angle - 0.0001);
+             //   ListeAngle.Add(Angle);
+                ListeAngle.Add(Angle + 0.0001);
             }
-
-
-            for (int i = 0; i < NombreDeMurs; i++)
+            for (int j = ListeAngle.Count - 1; j >= 0; j--)
             {
-                tempPt[i, 0].X = PolyGone[i, 0, 0];
-                tempPt[i, 0].Y = PolyGone[i, 0, 1];
-                tempPt[i, 1].X = PolyGone[i, 1, 0];
-                tempPt[i, 1].Y = PolyGone[i, 1, 1];
-                tempPt[i, 2].X = PolyGone[i, 2, 0];
-                tempPt[i, 2].Y = PolyGone[i, 2, 1];
+                double dx = Math.Cos(ListeAngle[j]);
+                double dy = Math.Sin(ListeAngle[j]);
 
-                tempPt[i, 3].X = PolyGone[i, 2, 0];
-                tempPt[i, 3].Y = PolyGone[i, 2, 1];
-                tempPt[i, 4].X = PolyGone[i, 3, 0];
-                tempPt[i, 4].Y = PolyGone[i, 3, 1];
+                PointF RayA = new PointF(LightSource.X, LightSource.Y);
+                DoublePoint RayB = new DoublePoint(LightSource.X + dx, LightSource.Y + dy);
 
-                tempPt[i, 5].X = PolyGone[i, 3, 0];
-                tempPt[i, 5].Y = PolyGone[i, 3, 1];
-
-                if (tempPt[i, 2].X != tempPt[i, 5].X)
+                PointWVect ClosestIntersect = null;
+                for (int i = 0; i < WallX.Length; i++)
                 {
-                    if (((tempPt[i, 1].X - tempPt[i, 0].X) * (LightSource.Y - tempPt[i, 0].Y) - (tempPt[i, 1].Y - tempPt[i, 0].Y) * (LightSource.X - tempPt[i, 0].X)) < 0)
+                    PointWVect Intersect = GetIntersection(RayA, RayB, WallX[i]);
+                    if (Intersect == null) continue;
+                    if (ClosestIntersect == null || Intersect.Longueur < ClosestIntersect.Longueur)
                     {
-                        if (tempPt[i, 2].Y > 0)
-                        {
-                            tempPt[i, 3].Y = 0;
-                        }
-                        if (tempPt[i, 5].Y > 0)
-                        {
-                            tempPt[i, 4].Y = 0;
-                        }
+                        ClosestIntersect = Intersect;
                     }
-                    else
-                    {
-                        if (((tempPt[i, 1].X - tempPt[i, 0].X) * (LightSource.Y - tempPt[i, 0].Y) - (tempPt[i, 1].Y - tempPt[i, 0].Y) * (LightSource.X - tempPt[i, 0].X)) > 0)
-                        {
-                            if (tempPt[i, 2].Y < Height)
-                            {
-                                tempPt[i, 3].Y = Height;
-                            }
-                            if (tempPt[i, 5].Y < Height)
-                            {
-                                tempPt[i, 4].Y = Height;
-                            }
-                        }
-                    }
+                }
+
+                if (ClosestIntersect != null) // Add to list of intersects
+                {
+                    ListeDePointIntersectionOmbre.Add((PointF) ClosestIntersect);
                 }
             }
-            return tempPt;
+            
+            
+            ListeDePointIntersectionOmbre = ListeDePointIntersectionOmbre.OrderBy(x => Math.Atan2(x.X - LightSource.X, x.Y - LightSource.Y)).ToList();
+
+            for (int i = ListeDePointIntersectionOmbre.Count - 1; i >= 1; i--)
+            {
+                
+                    if ((Math.Abs(ListeDePointIntersectionOmbre[i].Y - ListeDePointIntersectionOmbre[i-1].Y) <= 0.4) && (Math.Abs(ListeDePointIntersectionOmbre[i].X - ListeDePointIntersectionOmbre[i-1].X) <= 0.4))
+                    {
+                        ListeDePointIntersectionOmbre.RemoveAt(i-1);
+                        i--;
+                    }
+                
+            }
+
+            for (int i = ListeDePointIntersectionOmbre.Count - 1; i >= 2; i--)
+            {
+                if (Math.Abs(ListeDePointIntersectionOmbre[i].X *
+                    (ListeDePointIntersectionOmbre[i-1].Y - ListeDePointIntersectionOmbre[i-2].Y) + 
+                    ListeDePointIntersectionOmbre[i-1].X *
+                    (ListeDePointIntersectionOmbre[i-2].Y - ListeDePointIntersectionOmbre[i].Y) +
+                    ListeDePointIntersectionOmbre[i-2].X *
+                    (ListeDePointIntersectionOmbre[i].Y - ListeDePointIntersectionOmbre[i-1].Y)) <= 0.4)
+                {
+                    ListeDePointIntersectionOmbre.RemoveAt(i-1);
+                }
+            }
+           
+
+            return ListeDePointIntersectionOmbre.OrderBy(x => Math.Atan2(x.X - LightSource.X, x.Y - LightSource.Y)).ToArray();
+
+        }
+        private static PointWVect GetIntersection(PointF RayA, DoublePoint RayB, Mur Segment)
+        {
+
+            // RAY in parametric: Point + Delta*T1
+            double r_px = RayA.X;
+            double r_py = RayA.Y;
+            double r_dx = RayB.X - RayA.X;
+            double r_dy = RayB.Y - RayA.Y;
+
+            // SEGMENT in parametric: Point + Delta*T2
+            int s_px = Segment.A.X;
+            int s_py = Segment.A.Y;
+            int s_dx = Segment.B.X - Segment.A.X;
+            int s_dy = Segment.B.Y - Segment.A.Y;
+
+            // Are they parallel? If so, no intersect
+            double r_mag = Math.Sqrt(r_dx * r_dx + r_dy * r_dy);
+            double s_mag = Math.Sqrt(s_dx * s_dx + s_dy * s_dy);
+            if (r_dx / r_mag == s_dx / s_mag && r_dy / r_mag == s_dy / s_mag)
+            {
+                // Unit vectors are the same.
+                return null;
+            }
+
+            // SOLVE FOR T1 & T2
+            // r_px+r_dx*T1 = s_px+s_dx*T2 && r_py+r_dy*T1 = s_py+s_dy*T2
+            // ==> T1 = (s_px+s_dx*T2-r_px)/r_dx = (s_py+s_dy*T2-r_py)/r_dy
+            // ==> s_px*r_dy + s_dx*T2*r_dy - r_px*r_dy = s_py*r_dx + s_dy*T2*r_dx - r_py*r_dx
+            // ==> T2 = (r_dx*(s_py-r_py) + r_dy*(r_px-s_px))/(s_dx*r_dy - s_dy*r_dx)
+            double T2 = (r_dx * (s_py - r_py) + r_dy * (r_px - s_px)) / (s_dx * r_dy - s_dy * r_dx);
+            double T1 = (s_px + s_dx * T2 - r_px) / r_dx;
+
+            // Must be within parametic whatevers for RAY/SEGMENT
+            if (T1 < 0) return null;
+            if (T2 < 0 || T2 > 1) return null;
+
+            // Return the POINT OF INTERSECTION
+            return new PointWVect((r_px + r_dx * T1), (r_py + r_dy * T1), T1);
+
+        }
+
+        private class DoublePoint
+        {
+            private double m_X;
+            private double m_Y;
+
+            public DoublePoint(double X, double Y)
+            {
+                m_X = X;
+                m_Y = Y;
+            }
+
+            public double X
+            {
+                get
+                {
+                    return m_X;
+                }
+
+                set
+                {
+                    m_X = value;
+                }
+            }
+
+            public double Y
+            {
+                get
+                {
+                    return m_Y;
+                }
+
+                set
+                {
+                    m_Y = value;
+                }
+            }
+        }
+
+
+
+        private class PointWVect
+        {
+            private double m_X;
+            private double m_Y;
+            private double m_Longueur;
+
+            public PointWVect(double X, double Y, double Longueur)
+            {
+                m_X = X;
+                m_Y = Y;
+                m_Longueur = Longueur;
+            }
+
+            public static explicit operator PointF(PointWVect PWV)
+            {
+                return new PointF((float)PWV.m_X,(float)PWV.m_Y);
+            }
+
+            public double X
+            {
+                get
+                {
+                    return m_X;
+                }
+
+                set
+                {
+                    m_X = value;
+                }
+            }
+
+            public double Y
+            {
+                get
+                {
+                    return m_Y;
+                }
+
+                set
+                {
+                    m_Y = value;
+                }
+            }
+
+            public double Longueur
+            {
+                get
+                {
+                    return m_Longueur;
+                }
+
+                set
+                {
+                    m_Longueur = value;
+                }
+            }
         }
     }
+    
 }

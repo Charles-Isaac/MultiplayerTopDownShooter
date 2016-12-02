@@ -31,6 +31,7 @@
             this.txtLobbyName = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnTest = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtLobbyName
@@ -60,11 +61,22 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Game room:";
             // 
+            // btnTest
+            // 
+            this.btnTest.Location = new System.Drawing.Point(84, 204);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(75, 23);
+            this.btnTest.TabIndex = 3;
+            this.btnTest.Text = "Test";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
             // frmLobbyPrompt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.btnTest);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.txtLobbyName);
@@ -80,5 +92,6 @@
         private System.Windows.Forms.TextBox txtLobbyName;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnTest;
     }
 }

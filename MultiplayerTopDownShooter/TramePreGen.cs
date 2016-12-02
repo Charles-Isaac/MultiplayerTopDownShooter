@@ -66,7 +66,7 @@ namespace ClonesEngine
         }
         public static PlayerData Deserialize(byte[] TData)
         {
-            using (var MemStream = new MemoryStream(TData))
+            using (MemoryStream MemStream = new MemoryStream(TData))
             {
                 return ProtoBuf.Serializer.Deserialize<PlayerData>(MemStream);
             }

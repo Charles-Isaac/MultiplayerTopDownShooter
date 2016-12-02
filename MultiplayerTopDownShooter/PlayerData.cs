@@ -170,7 +170,7 @@ namespace ClonesEngine
                                 }
 
                                 TempPosi = new PointF(Player[i].Position.X + Proj.X, Player[i].Position.Y + Proj.Y);
-                                j = Murs.Murs.Length;
+                                    j = Murs.Murs.Length;
 
                             }
 
