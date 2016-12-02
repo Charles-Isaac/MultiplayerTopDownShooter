@@ -29,7 +29,7 @@ namespace MultiplayerTopDownShooter
         private readonly Bitmap[] m_WeaponsImage;
 
        // Image image = new Bitmap(Properties.Resources.ShadowTexture);
-        TextureBrush tBrush;
+        TextureBrush m_TBrush;
 
         //     System.Threading.Timer WeaponTimer;
         public Main()
@@ -39,7 +39,7 @@ namespace MultiplayerTopDownShooter
             //TransparencyKey = Color.Black;
             using (Bitmap BitmapShadow = new Bitmap(Properties.Resources.ShadowTexture))
             {
-                tBrush = new TextureBrush(BitmapShadow.Clone(new Rectangle(0, 0, BitmapShadow.Width, BitmapShadow.Height), PixelFormat.Format32bppPArgb));
+                m_TBrush = new TextureBrush(BitmapShadow.Clone(new Rectangle(0, 0, BitmapShadow.Width, BitmapShadow.Height), PixelFormat.Format32bppPArgb));
 
                 //tBrush.ScaleTransform((float)Settings.GameSize.Width / WeaponBitmapPistol.Width, (float)Settings.GameSize.Height / WeaponBitmapPistol.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
             }
@@ -181,7 +181,7 @@ namespace MultiplayerTopDownShooter
                         e.Graphics.ExcludeClip(rgn);
 
 
-                        e.Graphics.FillRectangle(tBrush, new Rectangle(new Point(), Settings.GameSize));
+                        e.Graphics.FillRectangle(m_TBrush, new Rectangle(new Point(), Settings.GameSize));
 
 
 
@@ -473,10 +473,10 @@ namespace MultiplayerTopDownShooter
             Bitmap tempBitmap = new Bitmap(Properties.Resources.ShadowTexture);
             using (Bitmap WeaponBitmapPistol = new Bitmap(Properties.Resources.ShadowTexture))
             {
-                tBrush = new TextureBrush(WeaponBitmapPistol.Clone(new Rectangle(0, 0, WeaponBitmapPistol.Width, WeaponBitmapPistol.Height), PixelFormat.Format32bppPArgb));
+                m_TBrush = new TextureBrush(WeaponBitmapPistol.Clone(new Rectangle(0, 0, WeaponBitmapPistol.Width, WeaponBitmapPistol.Height), PixelFormat.Format32bppPArgb));
 
             }
-            tBrush.ScaleTransform((float)Settings.GameSize.Width / tempBitmap.Width, (float)Settings.GameSize.Height / tempBitmap.Height, MatrixOrder.Append);
+            m_TBrush.ScaleTransform((float)Settings.GameSize.Width / tempBitmap.Width, (float)Settings.GameSize.Height / tempBitmap.Height, MatrixOrder.Append);
             
         }
 
