@@ -202,7 +202,7 @@ namespace ClonesEngine
                     bool Exist = true;
 
                     m_LBullet[i].UpdateStatus(OldTime[ID], NewTime);
-
+                    
 
                     for (byte j = 1; j <= PlayerCount; j++)
                     {
@@ -243,8 +243,14 @@ namespace ClonesEngine
                                 {
                                     m_LBullet.RemoveAt(i);
                                 }
+                                Exist = false;
                                 j = 0;/////////////////////////////////////////////////////////////////////////ugh...
                             }
+                        }
+                        if (Exist && (m_LBullet[i].Position.X > Settings.GameSize.Width + 10 || m_LBullet[i].Position.Y > Settings.GameSize.Height + 10 || m_LBullet[i].Position.X < -10 || m_LBullet[i].Position.X < -10))
+                        {
+                            m_LBullet.RemoveAt(i);
+                            continue;
                         }
                     }
                 }
