@@ -23,8 +23,6 @@ namespace ClonesEngine
         private int m_DirectionRegard;
         [XmlElement(Order = 4)]
         private PointF m_DirectionDeplacement;
-       // [XmlElement(Order = 5)]
-       // long m_LastTickUpdate;
         [XmlElement(Order = 5)]
         private byte m_Velocite;
         [XmlElement(Order = 6)]
@@ -36,7 +34,7 @@ namespace ClonesEngine
         [XmlElement(Order = 9)]
         private int m_Score;
 
-       // [XmlElement(Order = 10)]
+
         public Weapons[] WeaponList;
 
 
@@ -48,15 +46,12 @@ namespace ClonesEngine
             lock (m_BulletLock)
             {
                 CallWeaponConstructor();
-                //m_LastTickUpdate = 0;
                 m_Position = new PointF(1, 1);
                 m_DirectionRegard = 0;
                 m_DirectionDeplacement = new PointF(0, 0);
                 m_ID = 0;
                 m_DeathStatus = 1;
-                m_Velocite = Settings.DefaultPlayerSpeed;
-                //m_Couleur = Color.Black.ToArgb();
-               
+                m_Velocite = Settings.DefaultPlayerSpeed;               
                 Random RNG = new Random();
                 m_Couleur = Color.FromArgb(RNG.Next(256), RNG.Next(256), RNG.Next(256)).ToArgb();
                 m_Size = Settings.DefaultPlayerSize;
@@ -93,10 +88,6 @@ namespace ClonesEngine
 
         public PlayerData(byte IDConstructeur)
         {
-            //m_LastTickUpdate = TickCount;
-            //    CallWeaponConstructor();
-
-          //  UpdateWeaponWielder();
             m_Position = new PointF(0, 0);
             m_DirectionRegard = 0;
             m_DirectionDeplacement = new PointF(0, 0);
@@ -130,8 +121,7 @@ namespace ClonesEngine
             for (int i = 1; i <= PlayerCount; i++)
             {
 
-                // Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
-                //Collision.PlayerBorder(Player[i]);
+                
                 if (Player[i].Velocite.X != 0 || Player[i].Velocite.Y != 0)
                 {
                     if (Murs != null)
@@ -180,20 +170,10 @@ namespace ClonesEngine
                     }   
                 }
             }
-            Player[ID].m_DirectionRegard = (int)(-((Math.Atan2(MousePosition.X - Player[ID].Position.X, MousePosition.Y - Player[ID].Position.Y) * 180 / Math.PI) - 180)+7.5)%360;//*173.5/Math.PI)-173.5);
+            Player[ID].m_DirectionRegard = (int)(-((Math.Atan2(MousePosition.X - Player[ID].Position.X, MousePosition.Y - Player[ID].Position.Y) * 180 / Math.PI) - 180)+7.5)%360;
 
 
-            /*
-            if (System.Windows.Forms.Form.ActiveForm == null || m_Position.X > System.Windows.Forms.Form.ActiveForm.Width || m_Position.X < 0 || m_LBullet[i].Position.Y > System.Windows.Forms.Form.ActiveForm.Height || m_LBullet[i].Position.Y < 0)
-            {
-                m_LBullet.RemoveAt(i);
-            }
-            /*  for (int i = m_LBullet.Count - 1; i > 0; i--)
-              {
-                  m_LBullet[i].Position = new Point((m_LBullet[i].Position.X * m_LBullet[i].Velocite * (Environment.TickCount - TickCount) / 20 + m_LBullet[i].Position.X), (m_LBullet[i].Position.Y * m_LBullet[i].Velocite * (Environment.TickCount - TickCount) / 20 + m_LBullet[i].Position.Y));
-              }
-              */
-            //      Enter();
+          
             lock (m_BulletLock)
             {
                 for (int i = m_LBullet.Count - 1; i >= 0; i--)
@@ -208,8 +188,7 @@ namespace ClonesEngine
                     {
                         if (Exist && j != ID && Collision.PlayerBulletCollision(Player[j], OldPosition, m_LBullet[i].Position))
                         {
-                            //lock (m_BulletLock)
-                            // {
+                            
                             m_Score++;
                             if (m_LBullet[i].TypeOfProjectile == (byte)ProjectileType.Rocket)
                             {
@@ -224,13 +203,13 @@ namespace ClonesEngine
                          
                             Exist = false;
                             BulletDamage.Add(new PlayerDamage(j, 1));
-                            //  }
+                            
                         }
                     }
 
                     if (Exist && Murs != null)
                     {
-                        for (int j = Murs.Murs.Length - 1; j >= 0; j--)
+                        for (int j = Murs.Murs.Length - 1; j >= 0 && Exist; j--)
                         {
                             if (Collision.IsIntersecting(OldPosition, m_LBullet[i].Position, Murs.Murs[j].A, Murs.Murs[j].B))
                             {
@@ -244,7 +223,7 @@ namespace ClonesEngine
                                     m_LBullet.RemoveAt(i);
                                 }
                                 Exist = false;
-                                j = 0;/////////////////////////////////////////////////////////////////////////ugh...
+                                
                             }
                         }
                         if (Exist && (m_LBullet[i].Position.X > Settings.GameSize.Width + 10 || m_LBullet[i].Position.Y > Settings.GameSize.Height + 10 || m_LBullet[i].Position.X < -10 || m_LBullet[i].Position.X < -10))

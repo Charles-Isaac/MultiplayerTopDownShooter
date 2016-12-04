@@ -28,10 +28,8 @@ namespace ClonesEngine
     }
     class GestionnaireDePacket
     {
-        //    Stopwatch TickCounter;
         private readonly object m_PlayerLock = new object();
         private UDPConnecter m_ConnectionUdp;
-        //public TramePreGen PreGen;
         private readonly PlayerData[] m_PlayerList = new PlayerData[255];
 
         private int[] m_PlayerTime = new int[255];
@@ -124,8 +122,7 @@ namespace ClonesEngine
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Projectile), true);
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Projectile)].Add(1, "Position").Add(2, "Direction").Add(3, "Velocite").Add("TypeOfProjectile");
             ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Weapons)].Add(1, "NBulletLeft").Add(2, "NBulletInCharger");           
-            //      WeaponList = new Weapons[(byte)WeaponType.NumberOfWeapons];
-            //       AssignWeapons();
+
             m_MapSeed = 0;
             m_LobbyPort = Lobby;
             for (int i = 0; i < 255; i++)
@@ -138,7 +135,6 @@ namespace ClonesEngine
             m_ID = 0;
             m_PlayerCount = 0;
             m_PacketID = 0;
-            //PreGen = new TramePreGen();
             DemarrerLaConnection();
 
             ThreadStart Start = Reception;
@@ -168,11 +164,9 @@ namespace ClonesEngine
             {
                 do
                 {
-                    //Exit();
                     TryCount++;
                     Thread.Sleep(25);
                     Send(TramePreGen.AskNumberOfPlayer);
-                    //Thread.Sleep(50);
                     do
                     {
                         m_Receiver = m_ConnectionUdp.Receiver();
@@ -191,7 +185,7 @@ namespace ClonesEngine
                                 {
                                     if (m_Receiver[2] > m_PlayerCount || m_ID == 0)
                                     {
-                                        //this may reset the last player
+                                        //this may reset the last players
 
                                         for (; m_PlayerCount < m_Receiver[2]; m_PlayerCount++)
                                         {
@@ -207,9 +201,6 @@ namespace ClonesEngine
                                             m_PlayerTime[m_ID] = Environment.TickCount;
 
 
-                          //                  AssignWeapons();
-
-
                                             Send(TramePreGen.AnswerListeJoueur(m_PlayerCount, m_ID));
                                             Send(TramePreGen.AskAutoVerif(ID));
                                             Send(TramePreGen.AskMapSeed());
@@ -223,15 +214,7 @@ namespace ClonesEngine
                                 {
                                    
                                     PlayerData tempPlayer = TramePreGen.ReceiverInfoJoueur(m_Receiver);
-                                   /* if (m_PlayerList[m_Receiver[1]].WeaponList != null)
-                                    {
-                                        p.WeaponList = m_PlayerList[m_Receiver[1]].WeaponList;
-                                    }
-                                    else
-                                    {
-                                        p.CallWeaponConstructor();
-                                    }
-                                    */
+                                 
                                     if (m_Receiver[1] == m_ID)
                                     {
                                         tempPlayer.WeaponList = m_PlayerList[m_Receiver[1]].WeaponList;
@@ -264,9 +247,7 @@ namespace ClonesEngine
 
                                         }
                                     }
-                                    // Thread.Sleep(15);
-                                                             
-                                    //   p.Bullet = m_PlayerList[m_Receiver[1]].Bullet;
+
                                     m_PlayerList[m_Receiver[1]] = tempPlayer;
                                     
                                     m_PlayerTime[m_Receiver[1]] = Environment.TickCount;
@@ -291,9 +272,8 @@ namespace ClonesEngine
                                 {
                                     m_ID = 1;
                                     m_PlayerCount = 1;
-               //                     AssignWeapons();
                                     Thread.Sleep(m_RNG.Next(0, 50));
-                                    //GenMap();
+
                                 }
                                 else
                                 {
@@ -370,9 +350,8 @@ namespace ClonesEngine
                                 break;
                             default:
                                 System.Windows.Forms.MessageBox.Show("Unknown package format");
-                                //Thread.Sleep(5);
                                 break;
-                        }//Switch
+                        }//Switch case end
 
                         if (m_LastTickCheck + 2650 < Environment.TickCount)
                         {
@@ -386,10 +365,7 @@ namespace ClonesEngine
                         }
 
                     } while (m_ID != 0);//While(true)
-                    lock (m_PlayerLock)
-                    {
-
-                    }
+                    lock (m_PlayerLock) {} //This isn't useless
                 } while (TryCount < 100 && m_ID == 0);
                 if (TryCount == 100 && m_ID == 0)
                 {
@@ -398,10 +374,6 @@ namespace ClonesEngine
                     m_ID = 1;
                     m_PlayerCount = 1;
 
-          //          AssignWeapons();
-                    
-
-                    //Send(TramePreGen.AnswerMap)
                 }
                 TryCount = 0;
                 Thread.Sleep(150);
@@ -417,7 +389,7 @@ namespace ClonesEngine
 
         public void OnSendSound(object w, byte e)
         {
-            m_ConnectionUdp.Send(TramePreGen.PlaySound(m_ID, e));//////////////////////////
+            m_ConnectionUdp.Send(TramePreGen.PlaySound(m_ID, e));//This make the other players play the sounds from your guns
             m_PacketID++;
         }
 
@@ -425,10 +397,7 @@ namespace ClonesEngine
         {
             if (PlayerID != 0)
             {
-                // int Time = m_PlayerTime[ID];
-                // m_PlayerTime[ID] = Environment.TickCount;
                 List<PlayerDamage> BulletDamageBuffer = m_PlayerList[PlayerID].UpdateStats(m_PlayerTime, Environment.TickCount, m_PlayerList, m_PlayerCount, m_ID, m_Murs, MousePosition);
-                //int* test[34];
                 m_BulletDamage = m_BulletDamage.Concat(BulletDamageBuffer).ToList();
 
                 if (m_Updatable)
@@ -450,11 +419,6 @@ namespace ClonesEngine
                     m_Updatable = true;
                 }
             }
-        }
-       
-        public void UpdateMousePosition(Point MousePosition)
-        {
-            //useless////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
     }
 }

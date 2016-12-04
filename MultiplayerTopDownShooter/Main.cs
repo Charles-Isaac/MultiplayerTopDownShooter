@@ -11,7 +11,6 @@ namespace MultiplayerTopDownShooter
 
     public partial class Main : Form
     {
-     //  private readonly Random m_RNG;
         private readonly GestionnaireDePacket m_GP;
         private int m_ChronoFPS;
         private int m_CompteurFPS;
@@ -19,29 +18,22 @@ namespace MultiplayerTopDownShooter
         private readonly int m_Lobby = 54545;
 
         private SizeF m_Format = new SizeF(1, 1);
-
-     //   private readonly SolidBrush m_Br;
-        private readonly Point[] m_ShadowPolygon = new Point[6];
-      //  private Point[,] m_ShadowArray;
+        
 
         private readonly Bitmap[] m_PlayersImage;
         private readonly Bitmap[] m_TerrainImage;
         private readonly Bitmap[] m_WeaponsImage;
-
-       // Image image = new Bitmap(Properties.Resources.ShadowTexture);
+        
         TextureBrush m_TBrush;
-
-        //     System.Threading.Timer WeaponTimer;
+        
         public Main()
         {
             InitializeComponent();
-
-            //TransparencyKey = Color.Black;
+            
             using (Bitmap BitmapShadow = new Bitmap(Properties.Resources.ShadowTexture))
             {
                 m_TBrush = new TextureBrush(BitmapShadow.Clone(new Rectangle(0, 0, BitmapShadow.Width, BitmapShadow.Height), PixelFormat.Format32bppPArgb));
 
-                //tBrush.ScaleTransform((float)Settings.GameSize.Width / WeaponBitmapPistol.Width, (float)Settings.GameSize.Height / WeaponBitmapPistol.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
             }
             frmLobbyPrompt frmLobby = new frmLobbyPrompt();
             frmLobby.ShowDialog();
@@ -50,9 +42,8 @@ namespace MultiplayerTopDownShooter
                 m_Lobby = frmLobby.Lobby;
             }
             WindowState = FormWindowState.Maximized;
-       //     m_RNG = new Random();
+
             m_GP = new GestionnaireDePacket(m_Lobby);
-       //     DoubleBuffered = true;
 
             m_ChronoFPS = Environment.TickCount;
 
@@ -111,190 +102,193 @@ namespace MultiplayerTopDownShooter
             }
             base.OnMouseWheel(e);
         }
+
         private void Main_Paint(object sender, PaintEventArgs e)
         {
-            //Invoke(new Action(() =>
+
+            e.Graphics.ScaleTransform((float) ClientSize.Height/Settings.GameSize.Width,
+                (float) ClientSize.Height/Settings.GameSize.Height, MatrixOrder.Append);
+            e.Graphics.DrawImage(m_TerrainImage[0],
+                new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0, 0, 250, 250),
+                GraphicsUnit.Pixel);
+
+
+
+            for (int i = 1; i <= m_GP.PlayerCount; i++)
             {
-
-                e.Graphics.ScaleTransform((float)ClientSize.Height / Settings.GameSize.Width, (float)ClientSize.Height / Settings.GameSize.Height, MatrixOrder.Append);
-                // e.Graphics.DrawImage(Properties.Resources.GroundTexture1,0,0,Settings.GameSize.Width,Settings.GameSize.Height);
-                e.Graphics.DrawImage(m_TerrainImage[0], new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0, 0, 250, 250), GraphicsUnit.Pixel);
+                e.Graphics.DrawImage(m_PlayersImage[m_GP.PlayerList[i].DirectionRegard/15],
+                    m_GP.PlayerList[i].Position.X - 45, m_GP.PlayerList[i].Position.Y - 45);
 
 
 
-                for (int i = 1; i <= m_GP.PlayerCount; i++)
+                lock (m_GP.PlayerList[i].BulletLock)
                 {
-                    //Murs
-                    // e.Graphics.DrawImage((Image)Properties.Resources.ResourceManager.GetObject("Player" + ((int)((m_GP.PlayerList[i].DirectionRegard + 7.5) / 15) * 15).ToString().PadLeft(3,'0'), Properties.Resources.Culture), m_GP.PlayerList[i].Position.X - 45, m_GP.PlayerList[i].Position.Y - 45);
-                    e.Graphics.DrawImage(m_PlayersImage[m_GP.PlayerList[i].DirectionRegard / 15], m_GP.PlayerList[i].Position.X - 45, m_GP.PlayerList[i].Position.Y - 45);
 
-
-
-                    // e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(m_GP.PlayerList[i].Couleur)),
-                    //      m_GP.PlayerList[i].Position.X - m_GP.PlayerList[i].Size / 2, m_GP.PlayerList[i].Position.Y - m_GP.PlayerList[i].Size / 2, m_GP.PlayerList[i].Size, m_GP.PlayerList[i].Size);
-                    lock (m_GP.PlayerList[i].BulletLock)
+                    for (int j = m_GP.PlayerList[i].Bullet.Count - 1; j >= 0; j--)
                     {
-                        /*  Point MousePosition1 = this.PointToClient(Cursor.Position);
-                          MousePosition1.X = (int)(MousePosition1.X * Settings.GameSize.Width / (float)this.ClientSize.Height);
-                          MousePosition1.Y = (int)(MousePosition1.Y * Settings.GameSize.Height / (float)this.ClientSize.Height);
-
-                          m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].MouseDown(MousePosition1);*/
-                        for (int j = m_GP.PlayerList[i].Bullet.Count - 1; j >= 0; j--)
+                        if (m_GP.PlayerList[i].Bullet[j].TypeOfProjectile == (byte) ProjectileType.Rocket)
                         {
-                            if (m_GP.PlayerList[i].Bullet[j].TypeOfProjectile == (byte)ProjectileType.Rocket)
-                            {
-                                e.Graphics.FillEllipse(new SolidBrush(Color.Red/*FromArgb(m_GP.PlayerList[i].Couleur)*/), m_GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize / 2, m_GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize / 2, Settings.DefaultBulletSize, Settings.DefaultBulletSize);
-                            }
-                            else
-                            {
-                                e.Graphics.FillEllipse(new SolidBrush(Color.Yellow/*FromArgb(m_GP.PlayerList[i].Couleur)*/), m_GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize / 2, m_GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize / 2, Settings.DefaultBulletSize, Settings.DefaultBulletSize);
-                            }
-
-
-
-                            e.Graphics.DrawEllipse(new Pen(Color.Black/*FromArgb(m_GP.PlayerList[i].Couleur)*/, Settings.DefaultBulletSize / 4), m_GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize / 2, m_GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize / 2, Settings.DefaultBulletSize, Settings.DefaultBulletSize);
+                            e.Graphics.FillEllipse(new SolidBrush(Color.Red /*FromArgb(m_GP.PlayerList[i].Couleur)*/),
+                                m_GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize/2,
+                                m_GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize/2,
+                                Settings.DefaultBulletSize, Settings.DefaultBulletSize);
                         }
-                    }
-
-                }
-                if (m_GP.Map != null)
-                {
-                    var watch = System.Diagnostics.Stopwatch.StartNew();
-
-
-                    PointF[] ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position);
-                    if (ShadowArray.Length >= 3)
-                    {
-
-
-                        watch.Stop();
-                        var elapsedMs = watch.ElapsedMilliseconds;
-                        watch.Reset();
-                        watch.Start();
-
-                        GraphicsPath gp = new GraphicsPath();
-                        gp.AddPolygon(ShadowArray);
-
-                        Region rgn = new Region(gp);
-
-
-                        e.Graphics.ExcludeClip(rgn);
-
-
-                        e.Graphics.FillRectangle(m_TBrush, new Rectangle(new Point(), Settings.GameSize));
+                        else
+                        {
+                            e.Graphics.FillEllipse(
+                                new SolidBrush(Color.Yellow /*FromArgb(m_GP.PlayerList[i].Couleur)*/),
+                                m_GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize/2,
+                                m_GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize/2,
+                                Settings.DefaultBulletSize, Settings.DefaultBulletSize);
+                        }
 
 
 
-                        e.Graphics.ResetClip();
-                        var elapsedMs2 = watch.ElapsedMilliseconds;
-
-                        e.Graphics.DrawString(elapsedMs.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
-                            Settings.GameSize.Width + 500, 160);
-
-                        e.Graphics.DrawString(elapsedMs2.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
-                            Settings.GameSize.Width + 500, 200);
+                        e.Graphics.DrawEllipse(
+                            new Pen(Color.Black /*FromArgb(m_GP.PlayerList[i].Couleur)*/, Settings.DefaultBulletSize/4),
+                            m_GP.PlayerList[i].Bullet[j].Position.X - Settings.DefaultBulletSize/2,
+                            m_GP.PlayerList[i].Bullet[j].Position.Y - Settings.DefaultBulletSize/2,
+                            Settings.DefaultBulletSize, Settings.DefaultBulletSize);
                     }
                 }
 
+            }
+            if (m_GP.Map != null)
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
 
 
-
-                /*
-
-                Image image = new Bitmap(Properties.Resources.ShadowTexture);
-                TextureBrush tBrush = new TextureBrush(image);
-                tBrush.ScaleTransform((float)Settings.GameSize.Width / image.Width, (float)Settings.GameSize.Height / image.Height, System.Drawing.Drawing2D.MatrixOrder.Append);
-                /* tBrush.Transform = new Matrix(
-                    1.0f / 640.0f,
-                    0.0f,
-                    0.0f,
-                    0.1f / 480.0f,
-                    0.0f,
-                    0.0f);
-                e.Graphics.FillRectangle(tBrush, new Rectangle(PointToClient(Cursor.Position).X, 0, Settings.GameSize.Width/2, Settings.GameSize.Height));
-
-                e.Graphics.DrawString(((float)PointToClient(Cursor.Position).Y / 100).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 250, 160);
-                */
-
-
-
-
-
-
-                if (m_GP.Map != null)
+                PointF[] ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position);
+                if (ShadowArray.Length >= 3)
                 {
-                    for (int j = m_GP.Map.Murs.Length - 1; j >= 0; j--)
-                    {
-                        e.Graphics.DrawLine(new Pen(Color.Green, 5.0F), m_GP.Map.Murs[j].A, m_GP.Map.Murs[j].B);
-                    }
+
+
+                    watch.Stop();
+                    var elapsedMs = watch.ElapsedMilliseconds;
+                    watch.Reset();
+                    watch.Start();
+
+                    GraphicsPath gp = new GraphicsPath();
+                    gp.AddPolygon(ShadowArray);
+
+                    Region rgn = new Region(gp);
+
+
+                    e.Graphics.ExcludeClip(rgn);
+
+
+                    e.Graphics.FillRectangle(m_TBrush, new Rectangle(new Point(), Settings.GameSize));
+
+
+
+                    e.Graphics.ResetClip();
+                    var elapsedMs2 = watch.ElapsedMilliseconds;
+
+                    e.Graphics.DrawString(elapsedMs.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
+                        Settings.GameSize.Width + 500, 160);
+
+                    e.Graphics.DrawString(elapsedMs2.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
+                        Settings.GameSize.Width + 500, 200);
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+            if (m_GP.Map != null)
+            {
+                for (int j = m_GP.Map.Murs.Length - 1; j >= 0; j--)
+                {
+                    e.Graphics.DrawLine(new Pen(Color.Green, 5.0F), m_GP.Map.Murs[j].A, m_GP.Map.Murs[j].B);
+                }
+            }
+
+
+
+
+
+
+            if (Environment.TickCount - m_ChronoFPS > 1000)
+            {
+                m_FPS = m_CompteurFPS;
+                m_ChronoFPS = Environment.TickCount;
+                m_CompteurFPS = 0;
+            }
+            m_CompteurFPS++;
+            e.Graphics.DrawString("FPS: " + m_FPS.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
+                Settings.GameSize.Width + 70, 160);
+            e.Graphics.DrawString("Your game ID: " + m_GP.ID.ToString(), new Font("Arial", 30),
+                new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 10);
+            e.Graphics.DrawString("Your score: " + m_GP.PlayerList[m_GP.ID].Score.ToString(), new Font("Arial", 30),
+                new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 60);
+           
+            for (int i = 1; i < m_GP.PlayerCount + 1; i++)
+            {
+                e.Graphics.DrawString("Player " + i.ToString() + " score: " + m_GP.PlayerList[i].Score.ToString(),
+                    new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 700 + 50*i);
+            }
+
+
+            Point PositionSourie = PointToClient(Cursor.Position);
+            PositionSourie.X = (int) (PositionSourie.X*Settings.GameSize.Width/(float) ClientSize.Height);
+            PositionSourie.Y = (int) (PositionSourie.Y*Settings.GameSize.Height/(float) ClientSize.Height);
+
+
+            if (m_GP.PlayerList[m_GP.ID].WeaponList != null)
+            {
+                e.Graphics.DrawString(m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].WeaponName,
+                    new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 310);
+                e.Graphics.DrawString(
+                    m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletInCharger.ToString(),
+                    new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 210);
+                if (m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletLeft < 1000)
+                {
+                    e.Graphics.DrawString(
+                        m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletLeft.ToString(),
+                        new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 260);
+                }
+                else
+                {
+                    e.Graphics.DrawString("∞", new Font("Arial", 30), new SolidBrush(Color.Black),
+                        Settings.GameSize.Width + 70, 260);
                 }
 
 
 
+                m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].MouseDirection =
+                    new PointF(
+                        ((PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X)/
+                         (float)
+                         Math.Sqrt((PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X)*
+                                   (PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X) +
+                                   (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y)*
+                                   (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y))),
+                        ((PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y)/
+                         (float)
+                         Math.Sqrt((PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X)*
+                                   (PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X) +
+                                   (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y)*
+                                   (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y))));
+                e.Graphics.DrawLine(new Pen(Color.Red), m_GP.PlayerList[m_GP.ID].Position, PositionSourie);
+
+                e.Graphics.DrawImage(m_WeaponsImage[m_GP.SelectedWeapon], Settings.GameSize.Width + 70, 400);
+
+            }
+
+            m_GP.UpdatePlayer(m_GP.ID, PositionSourie);
+            m_GP.Send(TramePreGen.InfoJoueur(m_GP.PlayerList[m_GP.ID], m_GP.ID, m_GP.PacketID));
 
 
-
-                if (Environment.TickCount - m_ChronoFPS > 1000)
-                {
-                    m_FPS = m_CompteurFPS;
-                    m_ChronoFPS = Environment.TickCount;
-                    m_CompteurFPS = 0;
-                }
-                m_CompteurFPS++;
-                e.Graphics.DrawString("FPS: " + m_FPS.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 160);
-                e.Graphics.DrawString("Your game ID: " + m_GP.ID.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 10);
-                e.Graphics.DrawString("Your score: " + m_GP.PlayerList[m_GP.ID].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 60);
-                e.Graphics.DrawString("Where you are looking: " + ((int)((m_GP.PlayerList[m_GP.ID].DirectionRegard + 7.5) / 15) * 15).ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 110);
-                for (int i = 1; i < m_GP.PlayerCount + 1; i++)
-                {
-                    e.Graphics.DrawString("Player " + i.ToString() + " score: " + m_GP.PlayerList[i].Score.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 700 + 50 * i);
-                }
-
-
-                Point PositionSourie = PointToClient(Cursor.Position);
-                PositionSourie.X = (int)(PositionSourie.X * Settings.GameSize.Width / (float)ClientSize.Height);
-                PositionSourie.Y = (int)(PositionSourie.Y * Settings.GameSize.Height / (float)ClientSize.Height);
-
-
-                if (m_GP.PlayerList[m_GP.ID].WeaponList != null)
-                {
-                    e.Graphics.DrawString(m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].WeaponName, new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 310);
-                    e.Graphics.DrawString(m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletInCharger.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 210);
-                    if (m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletLeft < 1000)
-                    {
-                        e.Graphics.DrawString(m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletLeft.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 260);
-                    }
-                    else
-                    {
-                        e.Graphics.DrawString("∞", new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 260);
-                    }
-
-
-
-                    // System.Threading.Thread.Sleep(400); //Lag gen
-                    m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].MouseDirection = new PointF(((PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X) / (float)Math.Sqrt((PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X) * (PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X) + (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y))),
-                   ((PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y) / (float)Math.Sqrt((PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X) * (PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X) + (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y))));
-                    e.Graphics.DrawLine(new Pen(Color.Red), m_GP.PlayerList[m_GP.ID].Position, PositionSourie);
-
-                    e.Graphics.DrawImage(m_WeaponsImage[m_GP.SelectedWeapon], Settings.GameSize.Width + 70, 400);
-
-                }
-
-                m_GP.UpdatePlayer(m_GP.ID, PositionSourie);
-                m_GP.Send(TramePreGen.InfoJoueur(m_GP.PlayerList[m_GP.ID], m_GP.ID, m_GP.PacketID));
-
-                /*if (MouseButtons == MouseButtons.Left)
-                {
-                    Main_MouseDown(sender, new MouseEventArgs(MouseButtons.Left,1,10,10,1));
-                }*/
-                //Thread.Sleep(RNG.Next(100)); //random ping generator ;)
-
-                //             e.Graphics.DrawImage(Properties.Resources.Glock17, Settings.GameSize.Width+10, 0);
-                //Invalidate();
-                Invalidate(new Rectangle(new Point(0, 0), new Size(ClientSize.Width, ClientSize.Height)));
-            }//));
-
+            Invalidate(new Rectangle(new Point(0, 0), new Size(ClientSize.Width, ClientSize.Height)));
         }
+
+
 
         private void Main_MouseDown(object sender, MouseEventArgs e)
         {
@@ -303,21 +297,8 @@ namespace MultiplayerTopDownShooter
             MousePositionByForm.Y = (int)(MousePositionByForm.Y * Settings.GameSize.Height / (float)ClientSize.Height);
             m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon]?.MouseDown(new PointF(((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) / (float)Math.Sqrt((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y))),
                 ((MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) / (float)Math.Sqrt((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y)))));
-
-            //     m_GP.PlayerList[m_GP.ID].AddProjectile(new PointF(((MousePosition.X - m_GP.PlayerList[m_GP.ID].Position.X) / (float)Math.Sqrt((MousePosition.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePosition.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePosition.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePosition.Y - m_GP.PlayerList[m_GP.ID].Position.Y))),
-            //   ((MousePosition.Y - m_GP.PlayerList[m_GP.ID].Position.Y) / (float)Math.Sqrt((MousePosition.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePosition.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePosition.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePosition.Y - m_GP.PlayerList[m_GP.ID].Position.Y)))));
-
-            //m_GP.PlayerList[m_GP.ID].PlayerBullet.RemoveAt(j);
         }
-    /*    protected override void OnMouseDown(MouseEventArgs e)
-        {
-            Point MousePositionByForm = PointToClient(Cursor.Position);
-            MousePositionByForm.X = (int)(MousePositionByForm.X * Settings.GameSize.Width / (float)ClientSize.Height);
-            MousePositionByForm.Y = (int)(MousePositionByForm.Y * Settings.GameSize.Height / (float)ClientSize.Height);
-            m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].MouseDown(new PointF(((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) / (float)Math.Sqrt((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y))),
-                ((MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) / (float)Math.Sqrt((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y)))));
 
-        }*/
 
         
         private void Main_MouseUp(object sender, MouseEventArgs e)
@@ -330,9 +311,6 @@ namespace MultiplayerTopDownShooter
             base.OnKeyDown(e);
             switch (e.KeyCode)
             {
-                /*case Keys.I:
-                    Players[0].IsAI = !Players[0].IsAI;
-                    break;*/ //On/Off AI main player, used for debug purpose (and cheating)
                 case Keys.S:
                     ChangeArrowsState(ArrowsPressed.Down, true);
                     break;

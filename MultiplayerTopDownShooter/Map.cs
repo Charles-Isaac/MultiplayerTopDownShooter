@@ -3,7 +3,6 @@ using System.Drawing;
 
 namespace ClonesEngine
 {
-    // [XmlType]
     class Map
     {
         private readonly int m_NombreDeMurs = Settings.NumberOfWalls;
@@ -15,7 +14,6 @@ namespace ClonesEngine
             Random RNG = new Random(Seed);
             for (int i = 0; i < m_NombreDeMurs + 4; i++)
             {
-                // Murs[i].A = new PointF(RNG.Next(Settings.DefaultResolution.X);
                 m_TMurs[i] = new Mur(new Point(RNG.Next(5, Settings.GameSize.Width - 5), RNG.Next(5, Settings.GameSize.Height - 5)), new Point(RNG.Next(5, Settings.GameSize.Width - 5), RNG.Next(5, Settings.GameSize.Height - 5)));
 
                 int j = 0;
@@ -37,8 +35,8 @@ namespace ClonesEngine
             }
 
 
-            m_TMurs[m_NombreDeMurs/* + 0*/].A = new Point(0, -0);
-            m_TMurs[m_NombreDeMurs/* + 0*/].B = new Point(0, Settings.GameSize.Height + 0);
+            m_TMurs[m_NombreDeMurs].A = new Point(0, -0);
+            m_TMurs[m_NombreDeMurs].B = new Point(0, Settings.GameSize.Height + 0);
 
             m_TMurs[m_NombreDeMurs + 1].A = new Point(Settings.GameSize.Width, Settings.GameSize.Height + 0);
             m_TMurs[m_NombreDeMurs + 1].B = new Point(Settings.GameSize.Width, -0);
@@ -67,7 +65,6 @@ namespace ClonesEngine
             get { return m_TMurs; }
         }
     }
-   // [XmlType]
     class Mur
     {
         private Point m_A;

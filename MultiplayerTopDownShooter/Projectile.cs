@@ -10,28 +10,17 @@ namespace ClonesEngine
         private PointF m_DirectionDeplacement;
         private byte m_Velocite;
         private byte m_TypeOfProjectile;
-       // int m_LastTickUpdate;
         public Projectile()
         {
             //it may not looks like it but this methode is useful, do not erase
         }
-        /*
-        public Projectile(int LastTickCount)
-        {
-            m_Position = new PointF(0, 0);
-            m_DirectionDeplacement = new PointF(0, 0);
-            m_Velocite = 10;
-            //m_LastTickUpdate = LastTickCount;
-        }
-        */
-
+        
         public Projectile(PointF Position, PointF DirectionDeplacement, byte Velocite, byte TypeOfProjectile)
         {
             m_TypeOfProjectile = TypeOfProjectile;
             m_Position = Position;
             m_DirectionDeplacement = DirectionDeplacement;
             m_Velocite = Velocite;
-            //m_LastTickUpdate = LastTickCount;
         }
 
         public void UpdateStatus(int OldTime, int NewTime)
@@ -58,11 +47,6 @@ namespace ClonesEngine
             get { return m_DirectionDeplacement; }
             set { m_DirectionDeplacement = value; }
         }
-        /*public int LastTickUpdate
-        {
-            get { return m_LastTickUpdate; }
-            set { m_LastTickUpdate = value; }
-        }*/
         public byte Velocite
         {
             get { return m_Velocite; }

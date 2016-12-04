@@ -13,7 +13,7 @@ namespace ClonesEngine
 
         public static byte[] AnswerListeJoueur(byte NJoueur, byte ID)
         {
-            byte[] Answer = new byte[3/*1 + 1 + 1*/];
+            byte[] Answer = new byte[3];
             Answer[0] = (byte)PacketUse.AnswerNumberOfPlayer;
             Answer[1] = ID;
             Answer[2] = NJoueur;
