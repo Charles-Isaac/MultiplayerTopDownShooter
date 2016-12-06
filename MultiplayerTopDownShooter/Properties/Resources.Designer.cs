@@ -91,19 +91,9 @@ namespace MultiplayerTopDownShooter.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap GroundTexture1 {
+        public static System.Drawing.Bitmap GroundTexture {
             get {
-                object obj = ResourceManager.GetObject("GroundTexture1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap GroundTexture2 {
-            get {
-                object obj = ResourceManager.GetObject("GroundTexture2", resourceCulture);
+                object obj = ResourceManager.GetObject("GroundTexture", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

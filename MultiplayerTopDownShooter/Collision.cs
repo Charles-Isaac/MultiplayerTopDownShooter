@@ -15,7 +15,7 @@ namespace ClonesEngine
             float R = Numerator1 / Denominator;
             float S = Numerator2 / Denominator;
 
-            return (R >= 0 && R < 1) && (S >= 0 && S < 1);
+            return (R >= 0 && R <= 1) && (S >= 0 && S <= 1);
         }
 
         public static bool PlayerBulletCollision(PlayerData Player, PointF OldProjectile, PointF NewProjectile) //Retourne un booléen indiquant si le projectile est entré en collision

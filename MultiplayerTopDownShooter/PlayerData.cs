@@ -137,11 +137,22 @@ namespace ClonesEngine
                                 PointF VectMur = new PointF(Murs.Murs[j].A.X - Murs.Murs[j].B.X, Murs.Murs[j].A.Y - Murs.Murs[j].B.Y);
                                 PointF VectPlayer = new PointF(TempPosi.X - Player[i].Position.X, TempPosi.Y - Player[i].Position.Y);
                                 float Dp = VectPlayer.X * VectMur.X + VectPlayer.Y * VectMur.Y;
-                                PointF Proj = new PointF
+                                
+                                PointF Proj = new PointF((Dp/(VectMur.X*VectMur.X + VectMur.Y*VectMur.Y))*VectMur.X,
+                                    (Dp/(VectMur.X*VectMur.X + VectMur.Y*VectMur.Y))*VectMur.Y
+                                );
+                                if (float.IsNaN(Proj.X))
                                 {
-                                    X = (Dp/(VectMur.X*VectMur.X + VectMur.Y*VectMur.Y))*VectMur.X,
-                                    Y = (Dp/(VectMur.X*VectMur.X + VectMur.Y*VectMur.Y))*VectMur.Y
-                                };
+                                    Proj.X = 0;
+                                }
+                                if (float.IsNaN(Proj.Y))
+                                {
+                                    Proj.Y = 0;
+                                    if (Proj.X == 0)
+                                    {
+                                        continue;
+                                    }
+                                }
                                 if (Player[i].Position.Y <= 0)
                                 {
                                     Player[i].Position = new PointF(Player[i].Position.X, 1);
@@ -161,6 +172,7 @@ namespace ClonesEngine
 
                                 TempPosi = new PointF(Player[i].Position.X + Proj.X, Player[i].Position.Y + Proj.Y);
                                     j = Murs.Murs.Length;
+                               
 
                             }
 
@@ -229,7 +241,6 @@ namespace ClonesEngine
                         if (Exist && (m_LBullet[i].Position.X > Settings.GameSize.Width + 10 || m_LBullet[i].Position.Y > Settings.GameSize.Height + 10 || m_LBullet[i].Position.X < -10 || m_LBullet[i].Position.X < -10))
                         {
                             m_LBullet.RemoveAt(i);
-                            continue;
                         }
                     }
                 }

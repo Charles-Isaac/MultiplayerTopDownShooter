@@ -3,7 +3,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace MultiplayerTopDownShooter
@@ -18,28 +17,35 @@ namespace MultiplayerTopDownShooter
         private readonly int m_Lobby = 54545;
 
         private SizeF m_Format = new SizeF(1, 1);
-        
+
 
         private readonly Bitmap[] m_PlayersImage;
         private readonly Bitmap[] m_TerrainImage;
         private readonly Bitmap[] m_WeaponsImage;
-        
+
         TextureBrush m_TBrush;
-        
+
         public Main()
         {
             InitializeComponent();
-            
+
+            //creation de la brush utilisé pour dessiner les ombres
             using (Bitmap BitmapShadow = new Bitmap(Properties.Resources.ShadowTexture))
             {
-                m_TBrush = new TextureBrush(BitmapShadow.Clone(new Rectangle(0, 0, BitmapShadow.Width, BitmapShadow.Height), PixelFormat.Format32bppPArgb));
+                m_TBrush =
+                    new TextureBrush(BitmapShadow.Clone(new Rectangle(0, 0, BitmapShadow.Width, BitmapShadow.Height),
+                        PixelFormat.Format32bppPArgb));
 
             }
-            frmLobbyPrompt frmLobby = new frmLobbyPrompt();
+            frmLobbyPrompt frmLobby = new frmLobbyPrompt(); //formulaire utilisé pour choisir la salle
             frmLobby.ShowDialog();
             if (frmLobby.DialogResult == DialogResult.OK)
             {
                 m_Lobby = frmLobby.Lobby;
+            }
+            else
+            {
+                Load += (s, e) => Close(); //Ferme l'application
             }
             WindowState = FormWindowState.Maximized;
 
@@ -49,53 +55,75 @@ namespace MultiplayerTopDownShooter
 
             m_PlayersImage = new Bitmap[24];
             m_TerrainImage = new Bitmap[1];
-            m_WeaponsImage = new Bitmap[(byte)WeaponType.NumberOfWeapons];
-            for (int i = 0; i < 24; i++)
+            m_WeaponsImage = new Bitmap[(byte) WeaponType.NumberOfWeapons];
+            for (int i = 0; i < 24; i++)//Creation de la texture des joueurs
             {
-                using (Bitmap PlayerBitmap = new Bitmap(Properties.Resources.ResourceManager.GetObject("Player" + (i*15).ToString().PadLeft(3, '0'), Properties.Resources.Culture) as Image))
-                    m_PlayersImage[i] = PlayerBitmap.Clone(new Rectangle(0, 0, PlayerBitmap.Width, PlayerBitmap.Height), PixelFormat.Format32bppPArgb);
+                using (
+                    Bitmap PlayerBitmap =
+                        new Bitmap(
+                            Properties.Resources.ResourceManager.GetObject(
+                                "Player" + (i*15).ToString().PadLeft(3, '0'), Properties.Resources.Culture) as Image))
+                    m_PlayersImage[i] = PlayerBitmap.Clone(
+                        new Rectangle(0, 0, PlayerBitmap.Width, PlayerBitmap.Height), PixelFormat.Format32bppPArgb);
             }
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 1; i++)//Creation de la texture du sol
             {
-                using (Bitmap GroundBitmap = new Bitmap(Properties.Resources.ResourceManager.GetObject("GroundTexture2", Properties.Resources.Culture) as Image))
-                    m_TerrainImage[i] = GroundBitmap.Clone(new Rectangle(0, 0, GroundBitmap.Width, GroundBitmap.Height), PixelFormat.Format32bppPArgb);
+                using (
+                    Bitmap GroundBitmap =
+                        new Bitmap(
+                            Properties.Resources.ResourceManager.GetObject("GroundTexture",
+                                Properties.Resources.Culture) as Image))
+                    m_TerrainImage[i] = GroundBitmap.Clone(
+                        new Rectangle(0, 0, GroundBitmap.Width, GroundBitmap.Height), PixelFormat.Format32bppPArgb);
             }
 
 
-
+            #region TextureArmes
             using (Bitmap WeaponBitmapPistol = new Bitmap(Properties.Resources.Pistol))
-                m_WeaponsImage[(byte)WeaponType.Pistol] = WeaponBitmapPistol.Clone(new Rectangle(0, 0, WeaponBitmapPistol.Width, WeaponBitmapPistol.Height), PixelFormat.Format32bppPArgb);
+                m_WeaponsImage[(byte) WeaponType.Pistol] =
+                    WeaponBitmapPistol.Clone(new Rectangle(0, 0, WeaponBitmapPistol.Width, WeaponBitmapPistol.Height),
+                        PixelFormat.Format32bppPArgb);
 
             using (Bitmap WeaponBitmapMachineGun = new Bitmap(Properties.Resources.MachineGun))
-                m_WeaponsImage[(byte)WeaponType.MachineGun] = WeaponBitmapMachineGun.Clone(new Rectangle(0, 0, WeaponBitmapMachineGun.Width, WeaponBitmapMachineGun.Height), PixelFormat.Format32bppPArgb);
+                m_WeaponsImage[(byte) WeaponType.MachineGun] =
+                    WeaponBitmapMachineGun.Clone(
+                        new Rectangle(0, 0, WeaponBitmapMachineGun.Width, WeaponBitmapMachineGun.Height),
+                        PixelFormat.Format32bppPArgb);
 
             using (Bitmap WeaponBitmapShotgun = new Bitmap(Properties.Resources.Shotgun))
-                m_WeaponsImage[(byte)WeaponType.Shotgun] = WeaponBitmapShotgun.Clone(new Rectangle(0, 0, WeaponBitmapShotgun.Width, WeaponBitmapShotgun.Height), PixelFormat.Format32bppPArgb);
+                m_WeaponsImage[(byte) WeaponType.Shotgun] =
+                    WeaponBitmapShotgun.Clone(
+                        new Rectangle(0, 0, WeaponBitmapShotgun.Width, WeaponBitmapShotgun.Height),
+                        PixelFormat.Format32bppPArgb);
 
             using (Bitmap WeaponBitmapSniper = new Bitmap(Properties.Resources.Sniper))
-                m_WeaponsImage[(byte)WeaponType.Sniper] = WeaponBitmapSniper.Clone(new Rectangle(0, 0, WeaponBitmapSniper.Width, WeaponBitmapSniper.Height), PixelFormat.Format32bppPArgb);
+                m_WeaponsImage[(byte) WeaponType.Sniper] =
+                    WeaponBitmapSniper.Clone(new Rectangle(0, 0, WeaponBitmapSniper.Width, WeaponBitmapSniper.Height),
+                        PixelFormat.Format32bppPArgb);
 
             using (Bitmap WeaponBitmapRocketLauncher = new Bitmap(Properties.Resources.RocketLauncher))
-                m_WeaponsImage[(byte)WeaponType.RocketLauncher] = WeaponBitmapRocketLauncher.Clone(new Rectangle(0, 0, WeaponBitmapRocketLauncher.Width, WeaponBitmapRocketLauncher.Height), PixelFormat.Format32bppPArgb);
+                m_WeaponsImage[(byte) WeaponType.RocketLauncher] =
+                    WeaponBitmapRocketLauncher.Clone(
+                        new Rectangle(0, 0, WeaponBitmapRocketLauncher.Width, WeaponBitmapRocketLauncher.Height),
+                        PixelFormat.Format32bppPArgb);
 
 
-
-
-
+            #endregion TextureArmes
             
-       }
-        protected override void OnMouseWheel(MouseEventArgs e)
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e) //Change l'arme selectionnee
         {
             m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].MouseUp();
-            m_GP.SelectedWeapon += (byte)(e.Delta / 120);
+            m_GP.SelectedWeapon += (byte) (e.Delta/120);
             if (m_GP.SelectedWeapon == 255)
             {
-                m_GP.SelectedWeapon = (byte)WeaponType.NumberOfWeapons - 1;
+                m_GP.SelectedWeapon = (byte) WeaponType.NumberOfWeapons - 1;
             }
             else
             {
-                if (m_GP.SelectedWeapon > (byte)WeaponType.NumberOfWeapons - 1)
+                if (m_GP.SelectedWeapon > (byte) WeaponType.NumberOfWeapons - 1)
                 {
                     m_GP.SelectedWeapon = 0;
                 }
@@ -105,26 +133,25 @@ namespace MultiplayerTopDownShooter
 
         private void Main_Paint(object sender, PaintEventArgs e)
         {
-
+            //Adapte le jeu a la taille de l'ecran
             e.Graphics.ScaleTransform((float) ClientSize.Height/Settings.GameSize.Width,
-                (float) ClientSize.Height/Settings.GameSize.Height, MatrixOrder.Append);
+                (float) ClientSize.Height/Settings.GameSize.Height, MatrixOrder.Append); 
+            //dessine le sol
             e.Graphics.DrawImage(m_TerrainImage[0],
                 new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0, 0, 250, 250),
                 GraphicsUnit.Pixel);
 
 
-
+            //parcourt la totalité des joueurs
             for (int i = 1; i <= m_GP.PlayerCount; i++)
             {
-                e.Graphics.DrawImage(m_PlayersImage[m_GP.PlayerList[i].DirectionRegard/15],
-                    m_GP.PlayerList[i].Position.X - 45, m_GP.PlayerList[i].Position.Y - 45);
-
-
-
-                lock (m_GP.PlayerList[i].BulletLock)
+                //Dessine le joueur
+                e.Graphics.DrawImage(m_PlayersImage[m_GP.PlayerList[i].DirectionRegard / 15],
+                        m_GP.PlayerList[i].Position.X - 45, m_GP.PlayerList[i].Position.Y - 45);
+                
+                lock (m_GP.PlayerList[i].BulletLock) //Entre dans la section critique
                 {
-
-                    for (int j = m_GP.PlayerList[i].Bullet.Count - 1; j >= 0; j--)
+                    for (int j = m_GP.PlayerList[i].Bullet.Count - 1; j >= 0; j--) //dessine toutes les balles
                     {
                         if (m_GP.PlayerList[i].Bullet[j].TypeOfProjectile == (byte) ProjectileType.Rocket)
                         {
@@ -155,52 +182,24 @@ namespace MultiplayerTopDownShooter
             }
             if (m_GP.Map != null)
             {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+              
 
-
+                //calcule toutes les ombres
                 PointF[] ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position);
+
+                //Dessine le polygone calcule avec la brosse d'ombre
                 if (ShadowArray.Length >= 3)
                 {
-
-
-                    watch.Stop();
-                    var elapsedMs = watch.ElapsedMilliseconds;
-                    watch.Reset();
-                    watch.Start();
-
-                    GraphicsPath gp = new GraphicsPath();
-                    gp.AddPolygon(ShadowArray);
-
-                    Region rgn = new Region(gp);
-
-
-                    e.Graphics.ExcludeClip(rgn);
-
-
+                    GraphicsPath GP = new GraphicsPath();
+                    GP.AddPolygon(ShadowArray);
+                    Region Rgn = new Region(GP);
+                    e.Graphics.ExcludeClip(Rgn);
                     e.Graphics.FillRectangle(m_TBrush, new Rectangle(new Point(), Settings.GameSize));
-
-
-
                     e.Graphics.ResetClip();
-                    var elapsedMs2 = watch.ElapsedMilliseconds;
-
-                    e.Graphics.DrawString(elapsedMs.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
-                        Settings.GameSize.Width + 500, 160);
-
-                    e.Graphics.DrawString(elapsedMs2.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
-                        Settings.GameSize.Width + 500, 200);
                 }
             }
 
-
-
-
-
-
-
-
-
-
+            //dessine tous les murs si la map a ete genere
             if (m_GP.Map != null)
             {
                 for (int j = m_GP.Map.Murs.Length - 1; j >= 0; j--)
@@ -208,12 +207,8 @@ namespace MultiplayerTopDownShooter
                     e.Graphics.DrawLine(new Pen(Color.Green, 5.0F), m_GP.Map.Murs[j].A, m_GP.Map.Murs[j].B);
                 }
             }
-
-
-
-
-
-
+            
+            //affiche les FPS
             if (Environment.TickCount - m_ChronoFPS > 1000)
             {
                 m_FPS = m_CompteurFPS;
@@ -221,6 +216,7 @@ namespace MultiplayerTopDownShooter
                 m_CompteurFPS = 0;
             }
             m_CompteurFPS++;
+
             e.Graphics.DrawString("FPS: " + m_FPS.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
                 Settings.GameSize.Width + 70, 160);
             e.Graphics.DrawString("Your game ID: " + m_GP.ID.ToString(), new Font("Arial", 30),
@@ -244,18 +240,19 @@ namespace MultiplayerTopDownShooter
             {
                 e.Graphics.DrawString(m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].WeaponName,
                     new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 310);
-                e.Graphics.DrawString(
+                e.Graphics.DrawString("Balles dans le chargeur: " +
                     m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletInCharger.ToString(),
                     new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 210);
+
                 if (m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletLeft < 1000)
                 {
-                    e.Graphics.DrawString(
+                    e.Graphics.DrawString("Balles restante: " + 
                         m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].NBulletLeft.ToString(),
                         new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 260);
                 }
                 else
                 {
-                    e.Graphics.DrawString("∞", new Font("Arial", 30), new SolidBrush(Color.Black),
+                    e.Graphics.DrawString("Balles restante: ∞", new Font("Arial", 30), new SolidBrush(Color.Black),
                         Settings.GameSize.Width + 70, 260);
                 }
 
@@ -275,6 +272,7 @@ namespace MultiplayerTopDownShooter
                                    (PositionSourie.X - m_GP.PlayerList[m_GP.ID].Position.X) +
                                    (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y)*
                                    (PositionSourie.Y - m_GP.PlayerList[m_GP.ID].Position.Y))));
+
                 e.Graphics.DrawLine(new Pen(Color.Red), m_GP.PlayerList[m_GP.ID].Position, PositionSourie);
 
                 e.Graphics.DrawImage(m_WeaponsImage[m_GP.SelectedWeapon], Settings.GameSize.Width + 70, 400);
@@ -285,7 +283,7 @@ namespace MultiplayerTopDownShooter
             m_GP.Send(TramePreGen.InfoJoueur(m_GP.PlayerList[m_GP.ID], m_GP.ID, m_GP.PacketID));
 
 
-            Invalidate(new Rectangle(new Point(0, 0), new Size(ClientSize.Width, ClientSize.Height)));
+            Invalidate(/*new Rectangle(new Point(0, 0), new Size(ClientSize.Width, ClientSize.Height))*/);
         }
 
 
@@ -327,7 +325,7 @@ namespace MultiplayerTopDownShooter
                     m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.SelectedWeapon].Reload();
                     break;
                 case Keys.Escape:
-                    Environment.Exit(0);
+                    Application.Exit();
                     break;
                 case Keys.Space:
                     ChangeArrowsState(ArrowsPressed.Space, true);
@@ -422,7 +420,6 @@ namespace MultiplayerTopDownShooter
             Up = 0x04,
             Down = 0x08,
             Space = 0x10,
-          //  Escape = 0x20,
             All = 0x3F
         }
         private ArrowsPressed m_ArrowsPressed;

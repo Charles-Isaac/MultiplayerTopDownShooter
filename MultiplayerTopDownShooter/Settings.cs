@@ -10,7 +10,7 @@ namespace ClonesEngine
         private const byte m_DeFaultBulletSpeed = 15;
         private const byte m_DefaltBulletSize = 18;//12
         private const byte m_PlayerSize = 80;
-        private const int m_NumberOfWalls = 1;
+        private const int m_NumberOfBuilding = 30;
 
         private const int m_GameSizeX = 2000;
         private const int m_GameSizeY = 2000;
@@ -28,9 +28,9 @@ namespace ClonesEngine
         {
             get { return m_DefaultPlayerSpeed; }
         }
-        public static int NumberOfWalls
+        public static int NumberOfBuilding
         {
-            get { return m_NumberOfWalls; }
+            get { return m_NumberOfBuilding; }
         }
         public static byte DefaultPlayerSize
         {

@@ -75,7 +75,7 @@ namespace ClonesEngine
         public override int NBulletLeft { get; set; }
         public override int NBulletInCharger { get; set; }
 
-        public override string WeaponName { get { return "Wannabe a Glock17"; } } 
+        public override string WeaponName { get { return "Pistolet"; } } 
         private const byte m_BulletSpeed = 25;
         private const int m_ReloadingTime = 2000;
         private const int m_ClipSize = 17;
@@ -230,7 +230,7 @@ namespace ClonesEngine
         public override int NBulletLeft { get; set; }
         public override int NBulletInCharger { get; set; }
 
-        public override string WeaponName { get { return "Good ol' rusty Machine Gun"; } }
+        public override string WeaponName { get { return "Mitrailleuse antique"; } }
         private const byte m_BulletSpeed = 25;
         private const int m_ReloadingTime = 2000;
         private const int m_ClipSize = 30;//30;
@@ -413,7 +413,7 @@ namespace ClonesEngine
         public override int NBulletLeft { get; set; }
         public override int NBulletInCharger { get; set; }
         
-        public override string WeaponName { get { return "Some HUGE Sniper Rifle"; } }
+        public override string WeaponName { get { return "Fusil de précision"; } }
         private const byte m_BulletSpeed = 200;
         private const int m_ReloadingTime = 5000;
         private const int m_ClipSize = 5;
@@ -733,7 +733,7 @@ namespace ClonesEngine
         public override int NBulletLeft { get; set; }
         public override int NBulletInCharger { get; set; }
      
-        public override string WeaponName { get { return "Some huge ass rocket launcher"; } }
+        public override string WeaponName { get { return "Lance roquette"; } }
         private const byte m_BulletSpeed = 10;
         private const int m_ReloadingTime = 5000;
         private const int m_ClipSize = 1;
