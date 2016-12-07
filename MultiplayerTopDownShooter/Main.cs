@@ -328,12 +328,12 @@ namespace MultiplayerTopDownShooter
                     Application.Exit();
                     break;
                 case Keys.Space:
-                    ChangeArrowsState(ArrowsPressed.Space, true);
+                   /* ChangeArrowsState(ArrowsPressed.Space, true);
                     Point Light = PointToClient(Cursor.Position);
                     Light.X = (int)(Light.X * Settings.GameSize.Width / (float)ClientSize.Height);
                     Light.Y = (int)(Light.Y * Settings.GameSize.Height / (float)ClientSize.Height);
                     m_GP.PlayerList[m_GP.ID].Position = Light;
-                    break;
+                    break;*/
                 case Keys.Return:
 
                     m_GP.Send(new[] {(byte)PacketUse.ResetAllID, m_GP.ID});
