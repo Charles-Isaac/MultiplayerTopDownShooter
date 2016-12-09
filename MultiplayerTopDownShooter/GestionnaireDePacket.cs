@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace ClonesEngine
 {
@@ -46,7 +47,7 @@ namespace ClonesEngine
         private byte m_PlayerCount;
         private byte[] m_Receiver;
         private int m_PacketID;
-        public byte SelectedWeapon = 0;
+        public byte m_SelectedWeapon = 0;
 
         private Map m_Murs;
         private int m_MapSeed;
@@ -191,6 +192,7 @@ namespace ClonesEngine
                                         {
                                             m_PlayerList[m_PlayerCount] = new PlayerData(m_PlayerCount);
                                             m_PlayerTime[m_PlayerCount] = Environment.TickCount;
+                                            
                                         }
                                         if (m_ID == 0)
                                         {
@@ -201,6 +203,7 @@ namespace ClonesEngine
                                             m_PlayerTime[m_ID] = Environment.TickCount;
 
 
+                                            Respawn();
                                             Send(TramePreGen.AnswerListeJoueur(m_PlayerCount, m_ID));
                                             Send(TramePreGen.AskAutoVerif(ID));
                                             Send(TramePreGen.AskMapSeed());
@@ -300,6 +303,7 @@ namespace ClonesEngine
                                 }
                                 break;
 
+
                             case (byte)PacketUse.AnswerAutoVerif:
                                 if (m_Receiver[1] == m_ID)
                                 {   
@@ -316,8 +320,10 @@ namespace ClonesEngine
                             case (byte)PacketUse.InfoPlayerDamage:
                                 if (m_Receiver[2] == m_ID)
                                 {
-                                    m_PlayerList[m_ID].Position = new PointF(m_RNG.Next(Settings.GameSize.Width), m_RNG.Next(Settings.GameSize.Height));
+                                    
+                                    m_PlayerList[m_ID].CallWeaponConstructor();
                                     Send(TramePreGen.AcknowledgeDamage(m_ID));
+                                    Respawn();
                                     Send(TramePreGen.InfoJoueur(m_PlayerList[ID], m_ID, m_PacketID));
                                 }
                                 break;
@@ -373,14 +379,44 @@ namespace ClonesEngine
                     m_Murs = new Map(m_MapSeed);
                     m_ID = 1;
                     m_PlayerCount = 1;
-
+                    Respawn();
                 }
                 TryCount = 0;
                 Thread.Sleep(150);
                 Send(TramePreGen.AskAutoVerif(ID));
             }
         }
-      
+
+        public void Respawn()
+        {
+            bool Visible = true;
+            PointF tempPoint = new PointF();
+            lock (m_PlayerLock)
+            {
+                while (Visible)
+                {
+                    tempPoint = new PointF(m_RNG.Next(1, Settings.GameSize.Width - 1),
+                        m_RNG.Next(1, Settings.GameSize.Height - 1));
+                    if (PlayerCount > 1)
+                    {
+                        if (m_Murs != null)
+                        {
+                            Visible = false;
+
+                        }
+                        else
+                        {
+                            Visible = false;
+                        }
+                    }
+                    else
+                    {
+                        Visible = false;
+                    }
+                }
+                m_PlayerList[m_ID].Position = tempPoint;
+            }
+        }
         public void Send(byte[] data)
         {
             m_ConnectionUdp.Send(data);
@@ -406,12 +442,12 @@ namespace ClonesEngine
                     for (int i = m_BulletDamage.Count - 1; i >= 0; i--)
                     {
                         m_DamageTarget = m_BulletDamage[i].ID;
-                        byte SendDamageTimeout = 25;
+                        byte SendDamageTimeout = 12;
                         m_ResendDamage = true;
                         while (m_ResendDamage && SendDamageTimeout > 0)
                         {
                             Send(TramePreGen.PlayerDamage(m_ID, m_BulletDamage[i]));
-                            Thread.Sleep(10);
+                            Thread.Sleep(30);
                             SendDamageTimeout--;
                         }
                         m_BulletDamage.RemoveAt(i);

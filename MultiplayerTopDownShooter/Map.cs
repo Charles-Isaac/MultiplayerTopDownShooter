@@ -32,14 +32,14 @@ namespace ClonesEngine
 
                 int NumberOfWallAdded;
                 int PreviousWallCount = FutureMap.Count;
-                switch (RNG.Next(3))
+                switch (RNG.Next(2))
                 {
                     case 0:
-                        FutureMap.AddRange(BuildingTemplate.Couloir(new Point(RNG.Next(1, Settings.GameSize.Width), RNG.Next(1, Settings.GameSize.Height)), RNG.NextDouble() * 360, out NumberOfWallAdded));
+                        FutureMap.AddRange(BuildingTemplate.Couloir(new Point(RNG.Next(1, Settings.GameSize.Width), RNG.Next(1, Settings.GameSize.Height)), ((int)(RNG.NextDouble() * 4)*90), out NumberOfWallAdded));
 
                         break;
                     case 1:
-                        FutureMap.AddRange(BuildingTemplate.Fence(new Point(RNG.Next(1, Settings.GameSize.Width), RNG.Next(1, Settings.GameSize.Height)), RNG.NextDouble() * 360, out NumberOfWallAdded));
+                        FutureMap.AddRange(BuildingTemplate.Fence(new Point(RNG.Next(1, Settings.GameSize.Width), RNG.Next(1, Settings.GameSize.Height)), ((int)(RNG.NextDouble() * 4) * 90), out NumberOfWallAdded));
 
                         break;
                     default:

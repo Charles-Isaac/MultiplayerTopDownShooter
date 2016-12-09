@@ -34,7 +34,7 @@ namespace ClonesEngine
         Grenade = 2,
 
     }
-    public class PlaySoundEventArgs : EventArgs //classe des arguments pour l'event faisant jouer du son
+   /* public class PlaySoundEventArgs : EventArgs //classe des arguments pour l'event faisant jouer du son
     {
         private byte m_SoundID;
 
@@ -43,13 +43,13 @@ namespace ClonesEngine
             get { return m_SoundID; }
             set { m_SoundID = value; }
         }
-    }
+    }*/
     abstract class Weapons //Classe abstraite utilisé comme template pour toutes les armes
     {
         public abstract void MouseDown(PointF MouseDir); //methode utilisé quand un bouton de la sourie est appuyé
         public abstract void MouseUp();//methode utilisé quand un bouton de la sourie est relaché (utilisé pour les armes automatiques)
         public abstract void Reload();//methode utilisé quand le joueur recharge une arme
-
+      //  public abstract void Reloaded();
         public abstract int NBulletLeft { get; set; } //propriété utilisé pour obtenir ou modifier pour le nombre de balles restantes en inventaire
         public abstract int NBulletInCharger { get; set; }//propriété utilisé pour obtenir ou modifier pour le nombre de balles restantes dans le chargeur
         public abstract PointF MouseDirection { set; } //propriété utilisé pour mettre a jours la direction pinté par la sourie
@@ -58,14 +58,14 @@ namespace ClonesEngine
         public abstract void PlayShootingSound(); //methode pour jouer le son de l'arme
 
 
-
+       // public delegate void OnShotEventHandler(Weapons w, byte e);
         public EventHandler<byte> Shot;
+       // public event OnShotEventHandler Shot;
 
-        public virtual void OnShot(Weapons w, byte e)
+        protected virtual void OnShot(Weapons w, byte e)
         {
             Shot?.Invoke(w, e);
         }
-
         
     }
 
@@ -275,6 +275,8 @@ namespace ClonesEngine
 
         }
 
+        
+
         public override void Reload()
         {
             if (!m_Reloading)
@@ -297,7 +299,7 @@ namespace ClonesEngine
         public MachineGun(PlayerData Player)
         {
             m_Player = Player;
-            NBulletLeft = int.MaxValue - 100;
+            NBulletLeft = 50;//int.MaxValue - 100;
             NBulletInCharger = m_ClipSize;
             m_WeaponTimer = new System.Timers.Timer(m_Firerate) {AutoReset = false};
             m_WeaponTimer.Elapsed += _timer_Elapsed;
@@ -484,7 +486,7 @@ namespace ClonesEngine
         {
             m_Player = Player;
 
-            NBulletLeft = int.MaxValue - 100;
+            NBulletLeft = 15;//int.MaxValue - 100;
             NBulletInCharger = m_ClipSize;
             m_WeaponTimer = new System.Timers.Timer(m_Firerate) {AutoReset = false};
             m_WeaponTimer.Elapsed += _timer_Elapsed;
@@ -627,7 +629,7 @@ namespace ClonesEngine
 
 
             m_RNG = new Random();
-            NBulletLeft = int.MaxValue - 100;
+            NBulletLeft = 16;//int.MaxValue - 100;
             NBulletInCharger = m_ClipSize;
             m_WeaponTimer = new System.Timers.Timer(m_Firerate) {AutoReset = false};
             m_WeaponTimer.Elapsed += _timer_Elapsed;
@@ -803,7 +805,7 @@ namespace ClonesEngine
         public RocketLauncher(PlayerData Player)
         {
             m_Player = Player;
-            NBulletLeft = int.MaxValue - 100;
+            NBulletLeft = 5;//int.MaxValue - 100;
             NBulletInCharger = m_ClipSize;
             m_WeaponTimer = new System.Timers.Timer(m_Firerate) {AutoReset = false};
             m_WeaponTimer.Elapsed += _timer_Elapsed;
