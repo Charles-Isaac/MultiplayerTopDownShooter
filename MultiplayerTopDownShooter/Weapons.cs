@@ -79,7 +79,7 @@ namespace ClonesEngine
         private const byte m_BulletSpeed = 25;
         private const int m_ReloadingTime = 2000;
         private const int m_ClipSize = 17;
-        private const int m_Firerate = 100;
+        private const int m_Firerate = 10;
         private const int m_SpreadAngle = 2;
         private readonly Random m_RNG = new Random();
         private bool m_CanShoot = true;

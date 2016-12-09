@@ -244,7 +244,7 @@ namespace MultiplayerTopDownShooter
                     m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.m_SelectedWeapon].NBulletInCharger.ToString(),
                     new Font("Arial", 30), new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 210);
 
-                if (m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.m_SelectedWeapon].NBulletLeft < 1000)
+                if (m_GP.PlayerList[m_GP.ID].WeaponList?[m_GP.m_SelectedWeapon].NBulletLeft < 1000)
                 {
                     e.Graphics.DrawString("Balles restante: " + 
                         m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.m_SelectedWeapon].NBulletLeft.ToString(),
@@ -301,14 +301,39 @@ namespace MultiplayerTopDownShooter
         
         private void Main_MouseUp(object sender, MouseEventArgs e)
         {
+
+
             m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.m_SelectedWeapon].MouseUp();
             
         }
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
+
             switch (e.KeyCode)
             {
+                case Keys.End:
+                    m_GP.NewMap();
+                    break;
+                case Keys.Next:
+                    m_GP.PlayerList[m_GP.ID].Vitesse++;
+                    break;
+                case Keys.D1:
+                    m_GP.m_SelectedWeapon = 0;
+                    break;
+                case Keys.D2:
+                    m_GP.m_SelectedWeapon = 1;
+                    break;
+                case Keys.D3:
+                    m_GP.m_SelectedWeapon = 2;
+                    break;
+                case Keys.D4:
+                    m_GP.m_SelectedWeapon = 3;
+                    break;
+                case Keys.D5:
+                    m_GP.m_SelectedWeapon = 4;
+                    break;
+                
                 case Keys.S:
                     ChangeArrowsState(ArrowsPressed.Down, true);
                     break;
@@ -327,8 +352,8 @@ namespace MultiplayerTopDownShooter
                 case Keys.Escape:
                     Application.Exit();
                     break;
-                case Keys.Space:
-                   /* ChangeArrowsState(ArrowsPressed.Space, true);
+                /*case Keys.Space:
+                    ChangeArrowsState(ArrowsPressed.Space, true);
                     Point Light = PointToClient(Cursor.Position);
                     Light.X = (int)(Light.X * Settings.GameSize.Width / (float)ClientSize.Height);
                     Light.Y = (int)(Light.Y * Settings.GameSize.Height / (float)ClientSize.Height);

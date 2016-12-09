@@ -58,6 +58,7 @@ namespace ClonesEngine
         public Map Map
         {
             get { return m_Murs; }
+            set { m_Murs = value; }
         }
         public byte PlayerCount
         {
@@ -385,6 +386,13 @@ namespace ClonesEngine
                 Thread.Sleep(150);
                 Send(TramePreGen.AskAutoVerif(ID));
             }
+        }
+
+        public void NewMap()
+        {
+            m_MapSeed = m_RNG.Next();
+            m_Murs = new Map(m_MapSeed);
+            Send(TramePreGen.AnswerMapSeed(m_ID, m_MapSeed));
         }
 
         public void Respawn()

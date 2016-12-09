@@ -127,7 +127,7 @@ namespace ClonesEngine
                     if (Murs != null)
                     {
                         PointF TempPosi = new PointF(Player[i].Position.X + (Player[i].Velocite.X * Player[i].Vitesse * (NewTime - OldTime[i]) / 20), Player[i].Position.Y + (Player[i].Velocite.Y * Player[i].Vitesse * (NewTime - OldTime[i]) / 20));
-
+                        int Timeout = 10;
                         int j = Murs.Murs.Length - 1;
                         for (; j >= 0; j--)
                         {
@@ -171,8 +171,13 @@ namespace ClonesEngine
                                 }
 
                                 TempPosi = new PointF(Player[i].Position.X + Proj.X, Player[i].Position.Y + Proj.Y);
+                                Timeout--;
+                                if (Timeout >= 0)
+                                {
                                     j = Murs.Murs.Length;
-                               
+
+                                }
+
 
                             }
 
