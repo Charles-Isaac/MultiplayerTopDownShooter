@@ -12,3 +12,7 @@ C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownS
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\ClonesEngine.frmLobbyPrompt.resources
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\NAudio.dll
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\NAudio.xml
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\MultiplayerTopDownShooter.exe.manifest
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Debug\MultiplayerTopDownShooter.application
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\MultiplayerTopDownShooter.exe.manifest
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Debug\MultiplayerTopDownShooter.application

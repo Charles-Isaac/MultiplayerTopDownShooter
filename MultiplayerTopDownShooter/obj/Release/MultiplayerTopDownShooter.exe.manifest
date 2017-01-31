@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MultiplayerTopDownShooter.exe" size="3410448">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MultiplayerTopDownShooter.exe" size="3405328">
       <assemblyIdentity name="MultiplayerTopDownShooter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>TPw3YMxsbqVdz/SnoHMTqWdjo+azo0cHYjrNJA1d7ak=</dsig:DigestValue>
+        <dsig:DigestValue>jC2zGUrSm4qUDOZ+sHvlbZyrDdS/x199UlU0hxFFX5U=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

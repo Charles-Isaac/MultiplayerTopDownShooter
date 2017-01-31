@@ -246,9 +246,6 @@ namespace ClonesEngine
                                                 }
 
                                             }
-
-
-
                                         }
                                     }
 
@@ -397,29 +394,45 @@ namespace ClonesEngine
 
         public void Respawn()
         {
-            bool Visible = true;
+            bool Hidden = false;
             PointF tempPoint = new PointF();
+            int RespawnTimeout = 1000;
             lock (m_PlayerLock)
             {
-                while (Visible)
+                while (!Hidden && RespawnTimeout-- > 0)
                 {
                     tempPoint = new PointF(m_RNG.Next(1, Settings.GameSize.Width - 1),
                         m_RNG.Next(1, Settings.GameSize.Height - 1));
-                    if (PlayerCount > 1)
+                    int PlayerIndex = 1;
+                    bool HiddenPlayer = true;
+                    if (m_Murs == null)
                     {
-                        if (m_Murs != null)
-                        {
-                            Visible = false;
-
-                        }
-                        else
-                        {
-                            Visible = false;
-                        }
+                        Hidden = true;
                     }
                     else
                     {
-                        Visible = false;
+                        while (HiddenPlayer && PlayerIndex < m_PlayerCount)
+                        {
+                            if (PlayerIndex == m_ID)
+                            {
+                                PlayerIndex++;
+                            }
+                            else
+                            {
+                                int IndexMur = 4;
+                                while (IndexMur < m_Murs.Murs.Length &&
+                                       !Collision.IsIntersecting(tempPoint, m_PlayerList[PlayerIndex].Position,
+                                           m_Murs.Murs[IndexMur].A, m_Murs.Murs[IndexMur].B))
+                                {
+                                    IndexMur++;
+                                }
+                                HiddenPlayer = (IndexMur < m_Murs.Murs.Length);
+                                PlayerIndex++;
+                            }
+                        }
+                        Hidden = (PlayerIndex == m_PlayerCount && HiddenPlayer);
+
+
                     }
                 }
                 m_PlayerList[m_ID].Position = tempPoint;

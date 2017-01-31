@@ -10,3 +10,7 @@ C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownS
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Release\MultiplayerTopDownShooter.csproj.GenerateResource.Cache
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Release\MultiplayerTopDownShooter.exe
 C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Release\MultiplayerTopDownShooter.pdb
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Release\MultiplayerTopDownShooter.exe.manifest
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\bin\Release\MultiplayerTopDownShooter.application
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Release\MultiplayerTopDownShooter.exe.manifest
+C:\Users\Charles-Isaac\Documents\Visual Studio 2015\Projects\MultiplayerTopDownShooter\MultiplayerTopDownShooter\obj\Release\MultiplayerTopDownShooter.application
