@@ -214,7 +214,7 @@ namespace ClonesEngine
                             else
                             {
                                m_LBullet.RemoveAt(i);
-                                Player[j].Position = new PointF(0,0);
+                                Player[j].Position = new PointF(-20,-20);
                             }
 
                          

@@ -124,7 +124,7 @@ namespace ClonesEngine
 
         public override void Reload()
         {
-            if (!m_Reloading)
+            if (!m_Reloading && NBulletInCharger < m_ClipSize)
             {
                 NBulletLeft += NBulletInCharger;
                 NBulletInCharger = 0;
@@ -279,7 +279,7 @@ namespace ClonesEngine
 
         public override void Reload()
         {
-            if (!m_Reloading)
+            if (!m_Reloading && NBulletInCharger < m_ClipSize)
             {
                 NBulletLeft += NBulletInCharger;
                 NBulletInCharger = 0;
@@ -465,7 +465,7 @@ namespace ClonesEngine
 
         public override void Reload()
         {
-            if (!m_Reloading)
+            if (!m_Reloading && NBulletInCharger < m_ClipSize)
             {
                 NBulletLeft += NBulletInCharger;
                 NBulletInCharger = 0;
@@ -581,7 +581,7 @@ namespace ClonesEngine
    
         public override string WeaponName { get { return "Shotgun"; } }
         private const byte m_BulletSpeed = 15;
-        private const int m_ReloadingTime = 5000;
+        private const int m_ReloadingTime = 700;
         private const int m_SpreadAngle = 30;
         private const int m_NumberOfBuckshot = 10;
         private const int m_ClipSize = 8;
@@ -638,10 +638,10 @@ namespace ClonesEngine
 
         public override void Reload()
         {
-            if (!m_Reloading)
+            if (!m_Reloading && NBulletInCharger < m_ClipSize)
             {
-                NBulletLeft += NBulletInCharger;
-                NBulletInCharger = 0;
+      //          NBulletLeft += NBulletInCharger;
+     //           NBulletInCharger = 0;
                 m_Reloading = true;
                 m_CanShoot = false;
                 m_WeaponTimer.Interval = m_ReloadingTime;
@@ -674,6 +674,17 @@ namespace ClonesEngine
                 OnShot(this, (byte)WeaponSound.Shotgun);
                 PlayShootingSound();
             }
+            else
+            {
+                m_Reloading = false;
+                if (NBulletInCharger > 0)
+                {
+                    m_CanShoot = true;
+                }
+                m_WeaponTimer.Interval = m_Firerate;
+
+                m_WeaponTimer.Start();
+            }
         }
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -688,20 +699,24 @@ namespace ClonesEngine
                 }
                 else
                 {
-                    if (NBulletLeft <= m_ClipSize)
+                    if (NBulletLeft > 0)
                     {
-                        NBulletInCharger = NBulletLeft;
-                        NBulletLeft = 0;
+                        NBulletLeft--;
+                        NBulletInCharger++;
+                        if (NBulletInCharger < m_ClipSize && NBulletLeft > 0)
+                        {
+                            m_WeaponTimer.Start();
+                        }
+                        else
+                        {
+                            m_WeaponTimer.Stop();
+                            m_WeaponTimer.Interval = m_Firerate;
+                            m_Reloading = false;
+                            m_CanShoot = true;
+                        }
                     }
-                    else
-                    {
-                        NBulletLeft -= m_ClipSize;
-                        NBulletInCharger = m_ClipSize;
-                    }
-                    m_WeaponTimer.Stop();
-                    m_WeaponTimer.Interval = m_Firerate;
-                    m_Reloading = false;
-                    m_CanShoot = true;
+                    
+                    
                 }
 
             }

@@ -134,8 +134,8 @@ namespace MultiplayerTopDownShooter
         private void Main_Paint(object sender, PaintEventArgs e)
         {
             //Adapte le jeu a la taille de l'ecran
-            e.Graphics.ScaleTransform((float) ClientSize.Height/Settings.GameSize.Width,
-                (float) ClientSize.Height/Settings.GameSize.Height, MatrixOrder.Append); 
+            e.Graphics.ScaleTransform((float) ClientSize.Height/Settings.GameSize.Width*Settings.GameStretchX,
+                (float) ClientSize.Height/Settings.GameSize.Height*Settings.GameStretchY, MatrixOrder.Append); 
             //dessine le sol
             e.Graphics.DrawImage(m_TerrainImage[0],
                 new Rectangle(0, 0, Settings.GameSize.Width, Settings.GameSize.Height), new Rectangle(0, 0, 250, 250),
@@ -232,8 +232,8 @@ namespace MultiplayerTopDownShooter
 
 
             Point PositionSourie = PointToClient(Cursor.Position);
-            PositionSourie.X = (int) (PositionSourie.X*Settings.GameSize.Width/(float) ClientSize.Height);
-            PositionSourie.Y = (int) (PositionSourie.Y*Settings.GameSize.Height/(float) ClientSize.Height);
+            PositionSourie.X = (int) (PositionSourie.X*Settings.GameSize.Width/(float) ClientSize.Height / Settings.GameStretchX);
+            PositionSourie.Y = (int) (PositionSourie.Y*Settings.GameSize.Height/(float) ClientSize.Height / Settings.GameStretchY);
 
 
             if (m_GP.PlayerList[m_GP.ID].WeaponList != null)
@@ -291,8 +291,8 @@ namespace MultiplayerTopDownShooter
         private void Main_MouseDown(object sender, MouseEventArgs e)
         {
             Point MousePositionByForm = PointToClient(Cursor.Position);
-            MousePositionByForm.X = (int)(MousePositionByForm.X * Settings.GameSize.Width / (float)ClientSize.Height);
-            MousePositionByForm.Y = (int)(MousePositionByForm.Y * Settings.GameSize.Height / (float)ClientSize.Height);
+            MousePositionByForm.X = (int)(MousePositionByForm.X * Settings.GameSize.Width / (float)ClientSize.Height / Settings.GameStretchX);
+            MousePositionByForm.Y = (int)(MousePositionByForm.Y * Settings.GameSize.Height / (float)ClientSize.Height / Settings.GameStretchY);
             m_GP.PlayerList[m_GP.ID].WeaponList[m_GP.m_SelectedWeapon]?.MouseDown(new PointF(((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) / (float)Math.Sqrt((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y))),
                 ((MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) / (float)Math.Sqrt((MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) * (MousePositionByForm.X - m_GP.PlayerList[m_GP.ID].Position.X) + (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y) * (MousePositionByForm.Y - m_GP.PlayerList[m_GP.ID].Position.Y)))));
         }
@@ -352,13 +352,13 @@ namespace MultiplayerTopDownShooter
                 case Keys.Escape:
                     Application.Exit();
                     break;
-                /*case Keys.Space:
+                case Keys.Space:
                     ChangeArrowsState(ArrowsPressed.Space, true);
                     Point Light = PointToClient(Cursor.Position);
-                    Light.X = (int)(Light.X * Settings.GameSize.Width / (float)ClientSize.Height);
-                    Light.Y = (int)(Light.Y * Settings.GameSize.Height / (float)ClientSize.Height);
+                    Light.X = (int)(Light.X * Settings.GameSize.Width / (float)ClientSize.Height / Settings.GameStretchX);
+                    Light.Y = (int)(Light.Y * Settings.GameSize.Height / (float)ClientSize.Height / Settings.GameStretchY);
                     m_GP.PlayerList[m_GP.ID].Position = Light;
-                    break;*/
+                    break;
                 case Keys.Return:
 
                     m_GP.Send(new[] {(byte)PacketUse.ResetAllID, m_GP.ID});
