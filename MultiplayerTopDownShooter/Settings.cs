@@ -7,16 +7,16 @@ namespace ClonesEngine
 
 
         private const byte m_DefaultPlayerSpeed = 5;
-        private const byte m_DeFaultBulletSpeed = 15;
+        private const float m_DeFaultBulletSpeed = 1.2F;
         private const byte m_DefaltBulletSize = 18;//12
         private const byte m_PlayerSize = 80;
-        private const int m_NumberOfBuilding = 20;//16;
+        private const int m_NumberOfBuilding = 40;//16;
 
         private const float m_GameStretchX = 16F/11;//2000;
         private const float m_GameStretchY = 1F;//2000;
 
-        private const int m_GameSizeX = (int)(2000* m_GameStretchX);//2000;
-        private const int m_GameSizeY = (int)(2000 * m_GameStretchY);//2000;
+        private const int m_GameSizeX = (int)(3000* m_GameStretchX);//2000;
+        private const int m_GameSizeY = (int)(3000 * m_GameStretchY);//2000;
 
        
 
@@ -41,7 +41,7 @@ namespace ClonesEngine
         {
             get { return m_PlayerSize; }
         }
-        public static byte DefaultBulletSpeed
+        public static float DefaultBulletSpeed
         {
             get { return m_DeFaultBulletSpeed; }
         }

@@ -34,7 +34,7 @@ namespace MultiplayerTopDownShooter
                 DoublePoint RayB = new DoublePoint(LightSource.X + dx, LightSource.Y + dy);
 
                 PointWVect ClosestIntersect = null;
-                for (int i = 0; i < WallX.Length; i++)
+                for (int i = WallX.Length - 1; i >= 0; i--)
                 {
                     PointWVect Intersect = GetIntersection(RayA, RayB, WallX[i]);
                     if (Intersect == null) continue;
@@ -71,14 +71,27 @@ namespace MultiplayerTopDownShooter
                     ListeDePointIntersectionOmbre[i-1].X *
                     (ListeDePointIntersectionOmbre[i-2].Y - ListeDePointIntersectionOmbre[i].Y) +
                     ListeDePointIntersectionOmbre[i-2].X *
-                    (ListeDePointIntersectionOmbre[i].Y - ListeDePointIntersectionOmbre[i-1].Y)) <= 0.4)
+                    (ListeDePointIntersectionOmbre[i].Y - ListeDePointIntersectionOmbre[i-1].Y)) <= 8.4)
                 {
                     ListeDePointIntersectionOmbre.RemoveAt(i-1);
                 }
             }
            
+  //          ListeDePointIntersectionOmbre = ListeDePointIntersectionOmbre.OrderBy(x => Math.Atan2(x.X - LightSource.X, x.Y - LightSource.Y)).ToList();
+            ListeDePointIntersectionOmbre.Add(ListeDePointIntersectionOmbre[0]);
+            ListeDePointIntersectionOmbre.Add(new PointF( LightSource.X, -0));
+            ListeDePointIntersectionOmbre.Add(new PointF(Settings.GameSize.Width + 0, -0));
+            ListeDePointIntersectionOmbre.Add(new PointF(Settings.GameSize.Width + 0, Settings.GameSize.Height + 0));
+            ListeDePointIntersectionOmbre.Add(new PointF(-0, Settings.GameSize.Height + 0));
 
-            return ListeDePointIntersectionOmbre.OrderBy(x => Math.Atan2(x.X - LightSource.X, x.Y - LightSource.Y)).ToArray();
+
+            ListeDePointIntersectionOmbre.Add(new PointF(-0, -0));
+            
+            ListeDePointIntersectionOmbre.Add(new PointF(LightSource.X, -0));
+
+         //   ListeDePointIntersectionOmbre.Add(ListeDePointIntersectionOmbre[ListeDePointIntersectionOmbre.Count - 7/*Copie le derier de la liste avant les ajouts*/]);
+            //double test = Math.Atan2(ListeDePointIntersectionOmbre[0].X - LightSource.X, ListeDePointIntersectionOmbre[0].Y - LightSource.Y);
+            return ListeDePointIntersectionOmbre.ToArray();
 
         }
         private static PointWVect GetIntersection(PointF RayA, DoublePoint RayB, Mur Segment)

@@ -188,8 +188,13 @@ namespace MultiplayerTopDownShooter
                 PointF[] ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position);
 
                 //Dessine le polygone calcule avec la brosse d'ombre
+        
+                e.Graphics.FillPolygon(m_TBrush, ShadowArray);
+
+                /*
                 if (ShadowArray.Length >= 3)
                 {
+
                     GraphicsPath GP = new GraphicsPath();
                     GP.AddPolygon(ShadowArray);
                     Region Rgn = new Region(GP);
@@ -197,6 +202,7 @@ namespace MultiplayerTopDownShooter
                     e.Graphics.FillRectangle(m_TBrush, new Rectangle(new Point(), Settings.GameSize));
                     e.Graphics.ResetClip();
                 }
+                */
             }
 
             //dessine tous les murs si la map a ete genere

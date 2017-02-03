@@ -24,7 +24,7 @@ namespace ClonesEngine
         [XmlElement(Order = 4)]
         private PointF m_DirectionDeplacement;
         [XmlElement(Order = 5)]
-        private byte m_Velocite;
+        private byte m_Vitesse;
         [XmlElement(Order = 6)]
         private int m_Couleur;
         [XmlElement(Order = 7)]
@@ -51,7 +51,7 @@ namespace ClonesEngine
                 m_DirectionDeplacement = new PointF(0, 0);
                 m_ID = 0;
                 m_DeathStatus = 1;
-                m_Velocite = Settings.DefaultPlayerSpeed;               
+                m_Vitesse = Settings.DefaultPlayerSpeed;               
                 Random RNG = new Random();
                 m_Couleur = Color.FromArgb(RNG.Next(256), RNG.Next(256), RNG.Next(256)).ToArgb();
                 m_Size = Settings.DefaultPlayerSize;
@@ -92,7 +92,7 @@ namespace ClonesEngine
             m_DirectionRegard = 0;
             m_DirectionDeplacement = new PointF(0, 0);
             m_ID = IDConstructeur;
-            m_Velocite = Settings.DefaultPlayerSpeed;
+            m_Vitesse = Settings.DefaultPlayerSpeed;
             m_Size = Settings.DefaultPlayerSize;
             m_Score = 0;
             Random RNG = new Random();
@@ -287,8 +287,8 @@ namespace ClonesEngine
         }
         public byte Vitesse
         {
-            get { return m_Velocite; }
-            set { m_Velocite = value; }
+            get { return m_Vitesse; }
+            set { m_Vitesse = value; }
         }
     }
 }
