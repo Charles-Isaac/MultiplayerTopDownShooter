@@ -180,39 +180,25 @@ namespace MultiplayerTopDownShooter
                 }
 
             }
+
             if (m_GP.Map != null)
             {
-              
 
+                for (int j = m_GP.Map.Murs.Length - 1; j >= 0; j--)
+                {
+                    e.Graphics.DrawLine(new Pen(Color.White, 25.0F), m_GP.Map.Murs[j].A, m_GP.Map.Murs[j].B);
+                }
                 //calcule toutes les ombres
                 PointF[] ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position);
 
                 //Dessine le polygone calcule avec la brosse d'ombre
         
                 e.Graphics.FillPolygon(m_TBrush, ShadowArray);
-
-                /*
-                if (ShadowArray.Length >= 3)
-                {
-
-                    GraphicsPath GP = new GraphicsPath();
-                    GP.AddPolygon(ShadowArray);
-                    Region Rgn = new Region(GP);
-                    e.Graphics.ExcludeClip(Rgn);
-                    e.Graphics.FillRectangle(m_TBrush, new Rectangle(new Point(), Settings.GameSize));
-                    e.Graphics.ResetClip();
-                }
-                */
+                
             }
 
             //dessine tous les murs si la map a ete genere
-            if (m_GP.Map != null)
-            {
-                for (int j = m_GP.Map.Murs.Length - 1; j >= 0; j--)
-                {
-                    e.Graphics.DrawLine(new Pen(Color.Green, 5.0F), m_GP.Map.Murs[j].A, m_GP.Map.Murs[j].B);
-                }
-            }
+           
             
             //affiche les FPS
             if (Environment.TickCount - m_ChronoFPS > 1000)

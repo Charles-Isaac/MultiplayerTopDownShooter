@@ -10,7 +10,7 @@ namespace ClonesEngine
         private const float m_DeFaultBulletSpeed = 1.2F;
         private const byte m_DefaltBulletSize = 18;//12
         private const byte m_PlayerSize = 80;
-        private const int m_NumberOfBuilding = 40;//16;
+        private const int m_NumberOfBuilding = 20;//16;
 
         private const float m_GameStretchX = 16F/11;//2000;
         private const float m_GameStretchY = 1F;//2000;
