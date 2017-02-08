@@ -186,7 +186,7 @@ namespace MultiplayerTopDownShooter
 
                 for (int j = m_GP.Map.Murs.Length - 1; j >= 0; j--)
                 {
-                    e.Graphics.DrawLine(new Pen(Color.White, 25.0F), m_GP.Map.Murs[j].A, m_GP.Map.Murs[j].B);
+                    e.Graphics.DrawLine(new Pen(Color.Green, 15.0F), m_GP.Map.Murs[j].A, m_GP.Map.Murs[j].B);
                 }
                 //calcule toutes les ombres
                 PointF[] ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position);
