@@ -22,7 +22,7 @@ namespace ClonesEngine
         [XmlElement(Order = 3)]
         private int m_DirectionRegard;
         [XmlElement(Order = 4)]
-        private PointF m_DirectionDeplacement;
+        private Point m_DirectionDeplacement;
         [XmlElement(Order = 5)]
         private byte m_Vitesse;
         [XmlElement(Order = 6)]
@@ -48,7 +48,7 @@ namespace ClonesEngine
                 CallWeaponConstructor();
                 m_Position = new PointF(1, 1);
                 m_DirectionRegard = 0;
-                m_DirectionDeplacement = new PointF(0, 0);
+                m_DirectionDeplacement = new Point(0, 0);
                 m_ID = 0;
                 m_DeathStatus = 1;
                 m_Vitesse = Settings.DefaultPlayerSpeed;               
@@ -90,7 +90,7 @@ namespace ClonesEngine
         {
             m_Position = new PointF(0, 0);
             m_DirectionRegard = 0;
-            m_DirectionDeplacement = new PointF(0, 0);
+            m_DirectionDeplacement = new Point(0, 0);
             m_ID = IDConstructeur;
             m_Vitesse = Settings.DefaultPlayerSpeed;
             m_Size = Settings.DefaultPlayerSize;
@@ -275,7 +275,7 @@ namespace ClonesEngine
             get { return m_DirectionRegard; }
             set { m_DirectionRegard = value; }
         }
-        public PointF Velocite
+        public Point Velocite
         {
             get { return m_DirectionDeplacement; }
             set { m_DirectionDeplacement = value; }

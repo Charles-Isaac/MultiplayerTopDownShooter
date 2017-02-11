@@ -395,13 +395,13 @@ namespace ClonesEngine
         public void Respawn()
         {
             bool Hidden = false;
-            PointF tempPoint = new PointF();
+            Point tempPoint = new Point();
             int RespawnTimeout = 1000;
             lock (m_PlayerLock)
             {
                 while (!Hidden && RespawnTimeout-- > 0)
                 {
-                    tempPoint = new PointF(m_RNG.Next(1, Settings.GameSize.Width - 1),
+                    tempPoint = new Point(m_RNG.Next(1, Settings.GameSize.Width - 1),
                         m_RNG.Next(1, Settings.GameSize.Height - 1));
                     int PlayerIndex = 1;
                     bool HiddenPlayer = true;
