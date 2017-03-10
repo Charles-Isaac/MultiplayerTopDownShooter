@@ -186,10 +186,8 @@ namespace MultiplayerTopDownShooter
 
                 
                 //calcule toutes les ombres
-          
                 PointF[] ShadowArray = Shadows.ReturnMeAnArray(m_GP.Map.Murs, m_GP.PlayerList[m_GP.ID].Position);
 
-               
                 //Dessine le polygone calcule avec la brosse d'ombre
         
                 e.Graphics.FillPolygon(m_TBrush, ShadowArray);
@@ -212,7 +210,7 @@ namespace MultiplayerTopDownShooter
             }
             m_CompteurFPS++;
 
-            e.Graphics.DrawString("FPS: " + m_FPS, new Font("Arial", 30), new SolidBrush(Color.Black),
+            e.Graphics.DrawString("FPS: " + m_FPS.ToString(), new Font("Arial", 30), new SolidBrush(Color.Black),
                 Settings.GameSize.Width + 70, 160);
             e.Graphics.DrawString("Your game ID: " + m_GP.ID.ToString(), new Font("Arial", 30),
                 new SolidBrush(Color.Black), Settings.GameSize.Width + 70, 10);
@@ -395,37 +393,37 @@ namespace MultiplayerTopDownShooter
 
             if ((m_ArrowsPressed & ArrowsPressed.Up) == ArrowsPressed.None && (m_ArrowsPressed & ArrowsPressed.Down) != ArrowsPressed.None)
             {
-                m_GP.PlayerList[m_GP.ID].Velocite = new Point(m_GP.PlayerList[m_GP.ID].Velocite.X, 1);
+                m_GP.PlayerList[m_GP.ID].Velocite = new PointF(m_GP.PlayerList[m_GP.ID].Velocite.X, 1);
                 //VY = 1;
             }
 
             if ((m_ArrowsPressed & ArrowsPressed.Down) == ArrowsPressed.None && (m_ArrowsPressed & ArrowsPressed.Up) != ArrowsPressed.None)
             {
-                m_GP.PlayerList[m_GP.ID].Velocite = new Point(m_GP.PlayerList[m_GP.ID].Velocite.X, -1);
+                m_GP.PlayerList[m_GP.ID].Velocite = new PointF(m_GP.PlayerList[m_GP.ID].Velocite.X, -1);
                 //VY = -1;
             }
 
             if ((m_ArrowsPressed & ArrowsPressed.Right) == ArrowsPressed.None && (m_ArrowsPressed & ArrowsPressed.Left) != ArrowsPressed.None)
             {
-                m_GP.PlayerList[m_GP.ID].Velocite = new Point(-1, m_GP.PlayerList[m_GP.ID].Velocite.Y);
+                m_GP.PlayerList[m_GP.ID].Velocite = new PointF(-1, m_GP.PlayerList[m_GP.ID].Velocite.Y);
                 //VX = -1;
             }
 
             if ((m_ArrowsPressed & ArrowsPressed.Left) == ArrowsPressed.None && (m_ArrowsPressed & ArrowsPressed.Right) != ArrowsPressed.None)
             {
-                m_GP.PlayerList[m_GP.ID].Velocite = new Point(1, m_GP.PlayerList[m_GP.ID].Velocite.Y);
+                m_GP.PlayerList[m_GP.ID].Velocite = new PointF(1, m_GP.PlayerList[m_GP.ID].Velocite.Y);
                 //VX = 1;
             }
 
             if (((m_ArrowsPressed & ArrowsPressed.Up) | (m_ArrowsPressed & ArrowsPressed.Down)) == ArrowsPressed.None)
             {
-                m_GP.PlayerList[m_GP.ID].Velocite = new Point(m_GP.PlayerList[m_GP.ID].Velocite.X, 0);
+                m_GP.PlayerList[m_GP.ID].Velocite = new PointF(m_GP.PlayerList[m_GP.ID].Velocite.X, 0);
                 //VY = 0;
             }
 
             if (((m_ArrowsPressed & ArrowsPressed.Right) | (m_ArrowsPressed & ArrowsPressed.Left)) == ArrowsPressed.None)
             {
-                m_GP.PlayerList[m_GP.ID].Velocite = new Point(0, m_GP.PlayerList[m_GP.ID].Velocite.Y);
+                m_GP.PlayerList[m_GP.ID].Velocite = new PointF(0, m_GP.PlayerList[m_GP.ID].Velocite.Y);
                 //VX = 0;
             }
 

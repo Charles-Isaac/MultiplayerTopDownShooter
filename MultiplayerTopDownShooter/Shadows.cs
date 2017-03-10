@@ -2,84 +2,56 @@
 using ClonesEngine;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace MultiplayerTopDownShooter
 {
     static class Shadows
     {
-        public static PointF[] ReturnMeAnArray(Mur[] WallX, PointF LightSource) //retourne un array 2D de point correspondant au polygones des ombres
+        public static PointF[] ReturnMeAnArray(Mur[] WallX, PointF LightSource) //retourn un array 2D de point correspondant au polygones des ombres
         {
-            Point PositionSourceDeLumiereApproximative = new Point((int)LightSource.X, (int)LightSource.Y);
-            
-                        
-
             List<PointF> ListeDePointIntersectionOmbre = new List<PointF>();
-            List<Point> ListeAngle2 = new List<Point>();
+            List<double> ListeAngle = new List<double>();
             
             for (int j = 0; j < WallX.Length; j++)
             {
-                ListeAngle2.Add(new Point(WallX[j].A.X - PositionSourceDeLumiereApproximative.X - Math.Sign(WallX[j].A.Y - PositionSourceDeLumiereApproximative.Y), WallX[j].A.Y - PositionSourceDeLumiereApproximative.Y + Math.Sign(WallX[j].A.X - PositionSourceDeLumiereApproximative.X)));
+                double Angle = Math.Atan2(WallX[j].A.Y - LightSource.Y, WallX[j].A.X - LightSource.X);
+                ListeAngle.Add(Angle - 0.0001);
+             //   ListeAngle.Add(Angle);
+                ListeAngle.Add(Angle + 0.0001);
 
-                ListeAngle2.Add(new Point(WallX[j].A.X - PositionSourceDeLumiereApproximative.X + Math.Sign(WallX[j].A.Y - PositionSourceDeLumiereApproximative.Y), WallX[j].A.Y - PositionSourceDeLumiereApproximative.Y - Math.Sign(WallX[j].A.X - PositionSourceDeLumiereApproximative.X)));
-
-
-
-                ListeAngle2.Add(new Point(WallX[j].B.X - PositionSourceDeLumiereApproximative.X - Math.Sign(WallX[j].B.Y - PositionSourceDeLumiereApproximative.Y),WallX[j].B.Y - PositionSourceDeLumiereApproximative.Y + Math.Sign(WallX[j].B.X - PositionSourceDeLumiereApproximative.X)));
-                                                                                              
-                ListeAngle2.Add(new Point(WallX[j].B.X - PositionSourceDeLumiereApproximative.X + Math.Sign(WallX[j].B.Y - PositionSourceDeLumiereApproximative.Y), WallX[j].B.Y - PositionSourceDeLumiereApproximative.Y - Math.Sign(WallX[j].B.X - PositionSourceDeLumiereApproximative.X)));
-
-
-                
+                Angle = Math.Atan2(WallX[j].B.Y - LightSource.Y, WallX[j].B.X - LightSource.X);
+                ListeAngle.Add(Angle - 0.0001);
+             //   ListeAngle.Add(Angle);
+                ListeAngle.Add(Angle + 0.0001);
             }
-
-            
-
-            for (int j = ListeAngle2.Count - 1; j >= 0; j--)
+            for (int j = ListeAngle.Count - 1; j >= 0; j--)
             {
-                
-                int dx = ListeAngle2[j].X;//Math.Cos(ListeAngle[j]);
-                int dy = ListeAngle2[j].Y;//Math.Sin(ListeAngle[j]);
-                
+                double dx = Math.Cos(ListeAngle[j]);
+                double dy = Math.Sin(ListeAngle[j]);
 
-
-                Point RayA = new Point(PositionSourceDeLumiereApproximative.X, PositionSourceDeLumiereApproximative.Y);
-                Point RayB = new Point(PositionSourceDeLumiereApproximative.X + dx, PositionSourceDeLumiereApproximative.Y + dy);
-
+                PointF RayA = new PointF(LightSource.X, LightSource.Y);
+                DoublePoint RayB = new DoublePoint(LightSource.X + dx, LightSource.Y + dy);
 
                 PointWVect ClosestIntersect = null;
-                int i = WallX.Length - 1;
-
-                while (ClosestIntersect == null && i >= 0)
+                for (int i = WallX.Length - 1; i >= 0; i--)
                 {
-                    ClosestIntersect = GetIntersection(RayA, RayB, WallX[i]);
-                    i--;
-                }
-                
-                for (; i >= 0; i--)
-                {
-                    
                     PointWVect Intersect = GetIntersection(RayA, RayB, WallX[i]);
-                    
-                    if (Intersect?.Longueur < ClosestIntersect.Longueur)
+                    if (Intersect == null) continue;
+                    if (ClosestIntersect == null || Intersect.Longueur < ClosestIntersect.Longueur)
                     {
                         ClosestIntersect = Intersect;
                     }
                 }
 
-
                 if (ClosestIntersect != null) // Add to list of intersects
                 {
-                    ListeDePointIntersectionOmbre.Add((Point) ClosestIntersect);
+                    ListeDePointIntersectionOmbre.Add((PointF) ClosestIntersect);
                 }
-               
             }
-
             
-
-
-            ListeDePointIntersectionOmbre = ListeDePointIntersectionOmbre.OrderBy(x => Math.Atan2(x.X - PositionSourceDeLumiereApproximative.X, x.Y - LightSource.Y)).ToList();
+            
+            ListeDePointIntersectionOmbre = ListeDePointIntersectionOmbre.OrderBy(x => Math.Atan2(x.X - LightSource.X, x.Y - LightSource.Y)).ToList();
 
             for (int i = ListeDePointIntersectionOmbre.Count - 1; i >= 1; i--)
             {
@@ -92,8 +64,6 @@ namespace MultiplayerTopDownShooter
                 
             }
 
-
-            
             for (int i = ListeDePointIntersectionOmbre.Count - 1; i >= 2; i--)
             {
                 if (Math.Abs(ListeDePointIntersectionOmbre[i].X *
@@ -106,44 +76,32 @@ namespace MultiplayerTopDownShooter
                     ListeDePointIntersectionOmbre.RemoveAt(i-1);
                 }
             }
-
-
-
            
-
-
-            //          ListeDePointIntersectionOmbre = ListeDePointIntersectionOmbre.OrderBy(x => Math.Atan2(x.X - LightSource.X, x.Y - LightSource.Y)).ToList();
+  //          ListeDePointIntersectionOmbre = ListeDePointIntersectionOmbre.OrderBy(x => Math.Atan2(x.X - LightSource.X, x.Y - LightSource.Y)).ToList();
             ListeDePointIntersectionOmbre.Add(ListeDePointIntersectionOmbre[0]);
-            ListeDePointIntersectionOmbre.Add(new Point( PositionSourceDeLumiereApproximative.X, 0));
-            ListeDePointIntersectionOmbre.Add(new Point(Settings.GameSize.Width + 0, 0));
-            ListeDePointIntersectionOmbre.Add(new Point(Settings.GameSize.Width + 0, Settings.GameSize.Height + 0));
-            ListeDePointIntersectionOmbre.Add(new Point(0, Settings.GameSize.Height + 0));
+            ListeDePointIntersectionOmbre.Add(new PointF( LightSource.X, -0));
+            ListeDePointIntersectionOmbre.Add(new PointF(Settings.GameSize.Width + 0, -0));
+            ListeDePointIntersectionOmbre.Add(new PointF(Settings.GameSize.Width + 0, Settings.GameSize.Height + 0));
+            ListeDePointIntersectionOmbre.Add(new PointF(-0, Settings.GameSize.Height + 0));
 
 
-            ListeDePointIntersectionOmbre.Add(new Point(0, 0));
+            ListeDePointIntersectionOmbre.Add(new PointF(-0, -0));
             
-            ListeDePointIntersectionOmbre.Add(new Point(PositionSourceDeLumiereApproximative.X, 0));
+            ListeDePointIntersectionOmbre.Add(new PointF(LightSource.X, -0));
 
-            //   ListeDePointIntersectionOmbre.Add(ListeDePointIntersectionOmbre[ListeDePointIntersectionOmbre.Count - 7/*Copie le derier de la liste avant les ajouts*/]);
+         //   ListeDePointIntersectionOmbre.Add(ListeDePointIntersectionOmbre[ListeDePointIntersectionOmbre.Count - 7/*Copie le derier de la liste avant les ajouts*/]);
             //double test = Math.Atan2(ListeDePointIntersectionOmbre[0].X - LightSource.X, ListeDePointIntersectionOmbre[0].Y - LightSource.Y);
-
-            
-//pointf
             return ListeDePointIntersectionOmbre.ToArray();
 
         }
-        private static PointWVect GetIntersection(Point RayA, Point RayB, Mur Segment)
+        private static PointWVect GetIntersection(PointF RayA, DoublePoint RayB, Mur Segment)
         {
 
             // RAY in parametric: Point + Delta*T1
-            int r_px = RayA.X;
-            int r_dy = RayB.Y - RayA.Y;
-            int r_py = RayA.Y;
-            int r_dx = RayB.X - RayA.X;
-            if (r_dx == 0)
-            {
-                r_dx = 1;
-            }
+            double r_px = RayA.X;
+            double r_py = RayA.Y;
+            double r_dx = RayB.X - RayA.X;
+            double r_dy = RayB.Y - RayA.Y;
 
             // SEGMENT in parametric: Point + Delta*T2
             int s_px = Segment.A.X;
@@ -152,8 +110,8 @@ namespace MultiplayerTopDownShooter
             int s_dy = Segment.B.Y - Segment.A.Y;
 
             // Are they parallel? If so, no intersect
-            float r_mag = (float)Math.Sqrt(r_dx * r_dx + r_dy * r_dy);
-            float s_mag = (float)Math.Sqrt(s_dx * s_dx + s_dy * s_dy);
+            double r_mag = Math.Sqrt(r_dx * r_dx + r_dy * r_dy);
+            double s_mag = Math.Sqrt(s_dx * s_dx + s_dy * s_dy);
             if (r_dx / r_mag == s_dx / s_mag && r_dy / r_mag == s_dy / s_mag)
             {
                 // Unit vectors are the same.
@@ -165,7 +123,7 @@ namespace MultiplayerTopDownShooter
             // ==> T1 = (s_px+s_dx*T2-r_px)/r_dx = (s_py+s_dy*T2-r_py)/r_dy
             // ==> s_px*r_dy + s_dx*T2*r_dy - r_px*r_dy = s_py*r_dx + s_dy*T2*r_dx - r_py*r_dx
             // ==> T2 = (r_dx*(s_py-r_py) + r_dy*(r_px-s_px))/(s_dx*r_dy - s_dy*r_dx)
-            double T2 = ((double)r_dx * (s_py - r_py) + r_dy * (r_px - s_px)) / (s_dx * r_dy - s_dy * r_dx);
+            double T2 = (r_dx * (s_py - r_py) + r_dy * (r_px - s_px)) / (s_dx * r_dy - s_dy * r_dx);
             double T1 = (s_px + s_dx * T2 - r_px) / r_dx;
 
             // Must be within parametic whatevers for RAY/SEGMENT
@@ -173,7 +131,7 @@ namespace MultiplayerTopDownShooter
             if (T2 < 0 || T2 > 1) return null;
 
             // Return the POINT OF INTERSECTION
-            return new PointWVect((int)(r_px + r_dx * T1), (int)(r_py + r_dy * T1), T1);
+            return new PointWVect((r_px + r_dx * T1), (r_py + r_dy * T1), T1);
 
         }
 
@@ -219,23 +177,23 @@ namespace MultiplayerTopDownShooter
 
         private class PointWVect
         {
-            private int m_X;
-            private int m_Y;
+            private double m_X;
+            private double m_Y;
             private double m_Longueur;
 
-            public PointWVect(int X, int Y, double Longueur)
+            public PointWVect(double X, double Y, double Longueur)
             {
                 m_X = X;
                 m_Y = Y;
                 m_Longueur = Longueur;
             }
 
-            public static explicit operator Point(PointWVect PWV)
+            public static explicit operator PointF(PointWVect PWV)
             {
-                return new Point(PWV.m_X,PWV.m_Y);
+                return new PointF((float)PWV.m_X,(float)PWV.m_Y);
             }
 
-            public int X
+            public double X
             {
                 get
                 {
@@ -248,7 +206,7 @@ namespace MultiplayerTopDownShooter
                 }
             }
 
-            public int Y
+            public double Y
             {
                 get
                 {
